@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:clipChildren="false"
+    tools:context=".ActivityChat">
+
+    <com.hiro_a.naruko.BackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background_chat" />
+
+    <FrameLayout
+        android:id="@+id/canvasLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/editTextlayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:clipChildren="false">
+
+        <com.hiro_a.naruko.CanvasView_userIcon_Line
+            android:id="@+id/canvasView_usersLine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.hiro_a.naruko.CanvasView_history
+            android:id="@+id/canvasView_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.hiro_a.naruko.CanvasView
+            android:id="@+id/canvasView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.hiro_a.naruko.CanvasView_impassive
+            android:id="@+id/canvasView_impassive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/userImageView"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="#CC000000"
+            app:civ_shadow_radius="10" />
+
+        <com.hiro_a.naruko.CanvasView_userIcon_outerCircle
+            android:id="@+id/canvasView_userIcon_outerCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <!--        <SurfaceView-->
+<!--            android:id="@+id/canvasView_users"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content" />-->
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/editTextlayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_above="@id/chatUILayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:background="@drawable/frame_ui_top">
+
+        <EditText
+            android:id="@+id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:background="@drawable/frame_edittext"
+            android:cursorVisible="false"
+            android:ems="10" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/chatUILayout"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/frame_ui_bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/chat_ui"
+                layout="@layout/chat_ui"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/btn_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:tint="#ffffff"
+                app:srcCompat="@android:drawable/sym_action_chat" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>
