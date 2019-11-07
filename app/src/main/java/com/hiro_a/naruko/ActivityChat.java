@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.SurfaceView;
 import android.view.View;
@@ -19,8 +20,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
@@ -29,13 +41,9 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     float userImagePosX, userImagePosY;
     int menuAnimLength;
     int userColor = Color.rgb(255,192,203);
-    int animFrameRate = 1;
-    long animStartTimeMillis, animElapsedTimeMills;
     boolean menuPos = true;
-    boolean animIsRunning = true;
     Point userGrid;
 
-    TextView fpsViewer;
     EditText mMessageText;
     ImageView mSendMessageButton;
     ImageView mMenuSlideButton;
@@ -44,12 +52,15 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     CanvasView canvasView;
     CanvasView_history canvasViewHistory;
     CanvasView_impassive canvasViewImpassive;
-    CanvasView_users canvasViewUsers;
-    SurfaceView surfaceView;
     CanvasView_userIcon_outerCircle canvasViewUserIconOuterCircle;
     CanvasView_userIcon_Line canvasViewUserIconLine;
 
     View menuView;
+
+    FirebaseAuth mFirebaseAuth;
+    DatabaseReference mFirebaseDatabaseRef;
+
+    String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +115,47 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         //アニメーション
         //viewFloating();
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        userId = mFirebaseAuth.getCurrentUser().getUid();
+
+        mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
+
+        mFirebaseDatabaseRef.child("Message").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String text = (String)dataSnapshot.child("text").getValue();
+                //canvasViewに文字列を送信
+                (canvasView).getMessage(text);
+                viewRotate();
+
+                //canvasViewHistoryに文字列を送信
+                canvasViewHistory.getMessage(text);
+
+                //白線
+                (canvasViewUserIconLine).getUserGrid(userGrid);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -111,6 +163,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             case R.id.btn_send:
                 if (!(TextUtils.isEmpty(mMessageText.getText().toString()))){
+                    sendMessage();
+                    /*
                     //canvasViewに文字列を送信
                     (canvasView).getMessage(mMessageText.getText().toString());
                     viewRotate();
@@ -121,6 +175,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
                     //
                     (canvasViewUserIconLine).getUserGrid(userGrid);
+
+                     */
                 }
                 break;
             case R.id.btn_slide:
@@ -193,5 +249,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     public static float convertDp2Px(float dp, Context context){
         DisplayMetrics metrics = context.getResources().getDisplayMetrics();
         return dp * metrics.density;
+    }
+
+    public void sendMessage(){
+        String text = mMessageText.getText().toString();
+
+        Message message = new Message(text, userId);
+        mFirebaseDatabaseRef.child("Message").push().setValue(message);
+        mMessageText.setText("");
     }
 }

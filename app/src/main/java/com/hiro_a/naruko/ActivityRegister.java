@@ -15,30 +15,36 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class ActivityRegister extends AppCompatActivity implements View.OnClickListener{
-    FirebaseAuth mFirebaseAuth;
 
     EditText mEmailField;
     EditText mPasswordField;
     EditText mPasswordField_again;
-    EditText mUserIdField;
+    EditText mUserNameField;
     Button mRegisterButton;
+
+    FirebaseAuth mFirebaseAuth;
+    DatabaseReference mFirebaseDatabaseRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        //登録フォーム
         mEmailField = (EditText)findViewById(R.id.email_login);
         mPasswordField = (EditText)findViewById(R.id.password_login);
         mPasswordField_again = (EditText)findViewById(R.id.password_reg_again);
-        mUserIdField = (EditText)findViewById(R.id.username_reg);
+        mUserNameField = (EditText)findViewById(R.id.username_reg);
 
         mRegisterButton = (Button)findViewById(R.id.user_reg_button);
         mRegisterButton.setOnClickListener(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -59,6 +65,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            makeUser(task.getResult().getUser().getUid(), mUserNameField.getText().toString(), mEmailField.getText().toString());
                             Toast.makeText(ActivityRegister.this, "登録完了！", Toast.LENGTH_SHORT).show();
                             //ログインフォームへ
                             Intent makeAccount = new Intent(ActivityRegister.this, ActivityLogin.class);
@@ -90,5 +97,12 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         }
 
         return check;
+    }
+
+    public void makeUser(String userId, String username, String email){
+        User user = new User(username, email);
+
+        mFirebaseDatabaseRef.child("Users").child(userId).child("_id").setValue(userId);
+        mFirebaseDatabaseRef.child("Users").child(userId).child("userName").setValue(username);
     }
 }

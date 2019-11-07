@@ -38,11 +38,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.hiro_a.naruko.CanvasView_impassive
-            android:id="@+id/canvasView_impassive"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/userImageView"
             android:layout_width="120dp"
@@ -53,6 +48,11 @@
 
         <com.hiro_a.naruko.CanvasView_userIcon_outerCircle
             android:id="@+id/canvasView_userIcon_outerCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.hiro_a.naruko.CanvasView_impassive
+            android:id="@+id/canvasView_impassive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
