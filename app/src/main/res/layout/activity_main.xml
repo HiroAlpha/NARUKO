@@ -39,9 +39,25 @@
             android:layout_height="wrap_content" />
 
         <com.mikhaellopez.circularimageview.CircularImageView
-            android:id="@+id/userImageView"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:id="@+id/userImageView01"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="#CC000000"
+            app:civ_shadow_radius="10" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/userImageView02"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            app:civ_shadow="true"
+            app:civ_shadow_color="#CC000000"
+            app:civ_shadow_radius="10" />
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/userImageView03"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             app:civ_shadow="true"
             app:civ_shadow_color="#CC000000"
             app:civ_shadow_radius="10" />

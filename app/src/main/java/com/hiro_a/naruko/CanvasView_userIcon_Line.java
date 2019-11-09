@@ -55,13 +55,12 @@ public class CanvasView_userIcon_Line extends View {
         super.onDraw(canvas);
         canvas.rotate(90);
 
-        Log.w("Debug", "Running...");
         if (isRunning){
             startTime = System.currentTimeMillis();
             lineEndX = cos((Math.PI/180)*deg)*radius+(textSize/2)+45;
             lineEndY = sin((Math.PI/180)*deg)*radius-(textSize/2);
 
-            canvas.drawLine(lineStartX+iconOffset, lineStartY-21, -(float)lineEndX, -(float)lineEndY, linePaint);
+            canvas.drawLine(lineStartX+iconOffset, lineStartY-iconOffset, -(float)lineEndX, -(float)lineEndY, linePaint);
 
             elapsedTime = System.currentTimeMillis();
             if (elapsedTime-startTime < sleepTime){
@@ -82,7 +81,7 @@ public class CanvasView_userIcon_Line extends View {
             lineEndX = cos((Math.PI/180)*deg)*radius+(textSize/2)+45;
             lineEndY = sin((Math.PI/180)*deg)*radius-(textSize/2);
 
-            canvas.drawLine(lineStartX+iconOffset, lineStartY-21, -(float)lineEndX, -(float)lineEndY, linePaint);
+            canvas.drawLine(lineStartX+iconOffset, lineStartY-iconOffset, -(float)lineEndX, -(float)lineEndY, linePaint);
         }
     }
 
@@ -95,7 +94,7 @@ public class CanvasView_userIcon_Line extends View {
         }
         radius = ((count-1) * (textSize+10)) + 400;
 
-        iconOffset = convertDp2Px(60, getContext());
+        iconOffset = convertDp2Px(50, getContext());
         lineStartX = userGrid.x;
         lineStartY = userGrid.y;
 

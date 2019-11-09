@@ -13,7 +13,7 @@ import android.view.View;
 
 public class CanvasView_userIcon_outerCircle extends View {
     float lineWidth = convertDp2Px(2, getContext());
-    float iconOffset = convertDp2Px(120, getContext());
+    float iconOffset = convertDp2Px(100, getContext());
     float iconBorderOffset = 0;
     Point userGrid = new Point(0, 0);
 

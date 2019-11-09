@@ -8,9 +8,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,16 +16,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,16 +33,15 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
     int statusBarHeight;
     int screenWidth, screenHeight;
-    float userImagePosX, userImagePosY;
     int menuAnimLength;
     int userColor = Color.rgb(255,192,203);
     boolean menuPos = true;
-    Point userGrid;
+    Point[] userGrid = new Point[5];
 
     EditText mMessageText;
     ImageView mSendMessageButton;
     ImageView mMenuSlideButton;
-    CircularImageView userImageView;
+    CircularImageView userImageView01, userImageView02, userImageView03;
 
     CanvasView canvasView;
     CanvasView_history canvasViewHistory;
@@ -76,20 +70,42 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         screenWidth = size.x;
         screenHeight = size.y;
 
-        //ユーザーアイコン座標
-        userImagePosX = screenWidth-convertDp2Px(120, this);
-        userImagePosY = (screenHeight/2)-convertDp2Px(60, this);
-        //userGrid = new Point(userImagePosX, userImagePosY);
+        //ユーザーアイコン座標(右上から反時計回り)
+        int topLeftUserX = (int)(screenWidth-convertDp2Px(100, this));
+        int topLeftUserY = (int)((screenHeight/2)-convertDp2Px(100, this));
+        userGrid[0] = new Point(topLeftUserX, topLeftUserY);
+
+        int topMiddleUserX = (int)((screenWidth/2)-convertDp2Px(50, this));
+        int topMiddleUserY = (int)((screenHeight/2)-convertDp2Px(40, this));
+        userGrid[1] = new Point(topMiddleUserX, topMiddleUserY);
+
+        int topRightUserX = 0;
+        int topRightUserY = (int)((screenHeight/2)-convertDp2Px(-20, this));
+        userGrid[2] = new Point(topRightUserX, topRightUserY);
 
         //入力メニュー移動幅
         menuAnimLength = -(screenWidth/2)+20;
 
         //ユーザーアイコン
-        userImageView = (CircularImageView) findViewById(R.id.userImageView);
-        userImageView.setBorderColor(userColor);
-        userImageView.setImageResource(R.drawable.gyuki);
-        userImageView.setX(userImagePosX);
-        userImageView.setY(userImagePosY);
+        userImageView01 = (CircularImageView) findViewById(R.id.userImageView01);
+        userImageView01.setBorderColor(userColor);
+        userImageView01.setImageResource(R.drawable.gyuki);
+        userImageView01.setX(topLeftUserX);
+        userImageView01.setY(topLeftUserY);
+
+        userImageView02 = (CircularImageView) findViewById(R.id.userImageView02);
+        userImageView02.setBorderColor(userColor);
+        userImageView02.setImageResource(R.drawable.gyuki);
+        userImageView02.setX(topMiddleUserX);
+        userImageView02.setY(topMiddleUserY);
+
+        userImageView03 = (CircularImageView) findViewById(R.id.userImageView03);
+        userImageView03.setBorderColor(userColor);
+        userImageView03.setImageResource(R.drawable.gyuki);
+        userImageView03.setX(topRightUserX);
+        userImageView03.setY(topRightUserY);
+        userImageView03.setVisibility(View.GONE);
+
 
         //メッセージフォーム
         mMessageText = (EditText)findViewById(R.id.messageText);
@@ -124,16 +140,25 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         mFirebaseDatabaseRef.child("Message").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String name = (String)dataSnapshot.child("name").getValue();
                 String text = (String)dataSnapshot.child("text").getValue();
-                //canvasViewに文字列を送信
-                (canvasView).getMessage(text);
-                viewRotate();
+                if (!TextUtils.isEmpty(text)){
+                    Point grid = userGrid[0];
 
-                //canvasViewHistoryに文字列を送信
-                canvasViewHistory.getMessage(text);
+                    if (!userId.equals(name)){
+                        grid = userGrid[1];
+                    }
 
-                //白線
-                (canvasViewUserIconLine).getUserGrid(userGrid);
+                    //canvasViewに文字列を送信
+                    (canvasView).getMessage(text);
+                    viewRotate();
+
+                    //canvasViewHistoryに文字列を送信
+                    canvasViewHistory.getMessage(text);
+
+                    //白線
+                    (canvasViewUserIconLine).getUserGrid(grid);
+                }
             }
 
             @Override
@@ -156,6 +181,12 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        (canvasViewUserIconOuterCircle).getUserGrid(userGrid[0]);
     }
 
     @Override
@@ -186,37 +217,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-
-        //ステータスバーサイズ取得
-        Rect rect = new Rect();
-        Window window = getWindow();
-        window.getDecorView().getWindowVisibleDisplayFrame(rect);
-        statusBarHeight = rect.top;
-
-        //UserImageViewの座標生成
-        getViewGrid();
-    }
-
-    private void getViewGrid(){
-        int[] viewGrid = new int[2];
-        userImageView.getLocationOnScreen(viewGrid);
-        userGrid = new Point(viewGrid[0], viewGrid[1]-statusBarHeight);
-
-        //canvasViewに文字列を送信
-        (canvasViewUserIconOuterCircle).getUserGrid(userGrid);
-        //Toast.makeText(this, userGrid.x+":"+userGrid.y, Toast.LENGTH_SHORT).show();
-    }
-
     private void viewFloating(){
         //ユーザーアイコン上下アニメーション
-        ObjectAnimator iconFloatingUp = ObjectAnimator.ofFloat(userImageView,"translationY", userImagePosY-8, userImagePosY+8);
-        iconFloatingUp.setDuration(1000);
-        iconFloatingUp.setRepeatCount(ObjectAnimator.INFINITE);
-        iconFloatingUp.setRepeatMode(ObjectAnimator.REVERSE);
-        iconFloatingUp.start();
+//        ObjectAnimator iconFloatingUp = ObjectAnimator.ofFloat(userImageView01,"translationY", topLeftUserX-8, topLeftUserY+8);
+//        iconFloatingUp.setDuration(1000);
+//        iconFloatingUp.setRepeatCount(ObjectAnimator.INFINITE);
+//        iconFloatingUp.setRepeatMode(ObjectAnimator.REVERSE);
+//        iconFloatingUp.start();
     }
 
     private void viewRotate(){
