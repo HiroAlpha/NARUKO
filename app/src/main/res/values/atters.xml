@@ -1,0 +1,6 @@
+<resources>
+    <declare-styleable name="MenuItem">
+        <attr name="iconImage" format="reference"/>
+        <attr name="iconText" format="string"/>
+    </declare-styleable>
+</resources>

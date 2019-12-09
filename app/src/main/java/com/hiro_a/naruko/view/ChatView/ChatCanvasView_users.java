@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.view.ChatView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class CanvasView_users implements SurfaceHolder.Callback, Runnable {
+public class ChatCanvasView_users implements SurfaceHolder.Callback, Runnable {
     int iconOffset = 240;
     float size = 0;
     int animFps = 10;
@@ -28,7 +28,7 @@ public class CanvasView_users implements SurfaceHolder.Callback, Runnable {
     Thread thread;
     SurfaceHolder surfaceHolder = null;
 
-    public CanvasView_users(Context context, SurfaceView surfaceView) {
+    public ChatCanvasView_users(Context context, SurfaceView surfaceView) {
         surfaceHolder = surfaceView.getHolder();
         surfaceHolder.addCallback(this);
     }
@@ -120,7 +120,7 @@ public class CanvasView_users implements SurfaceHolder.Callback, Runnable {
 //
 //    Path iconOuterCirclePath;
 //
-//    public CanvasView_users(Context context, AttributeSet attrs) {
+//    public ChatCanvasView_users(Context context, AttributeSet attrs) {
 //        super(context, attrs);
 //        iconOuterCirclePath = new Path();
 //

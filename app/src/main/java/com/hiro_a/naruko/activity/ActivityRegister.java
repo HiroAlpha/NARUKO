@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +17,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.common.User;
 
 public class ActivityRegister extends AppCompatActivity implements View.OnClickListener{
 

@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.view.ChatView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,7 +14,7 @@ import android.view.View;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class CanvasView_userIcon_Line extends View {
+public class ChatCanvasView_userIcon_Line extends View {
     int count = 0;
     int radius = 400;
     int textSize = 30;
@@ -35,7 +35,7 @@ public class CanvasView_userIcon_Line extends View {
     double deg = 90;
     long sleepTime = 1000 / animFps;
 
-    public CanvasView_userIcon_Line(Context context, AttributeSet attrs) {
+    public ChatCanvasView_userIcon_Line(Context context, AttributeSet attrs) {
         super(context, attrs);
         iconOuterCirclePath = new Path();
 

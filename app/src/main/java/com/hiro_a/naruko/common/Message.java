@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.common;
 
 public class Message {
     public String name;

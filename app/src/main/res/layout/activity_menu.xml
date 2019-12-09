@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activity.ActivityMenu"
+    android:id="@+id/menuFrameLayout">
+
+    <com.hiro_a.naruko.view.BackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/chat_background" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/menuChatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:gravity="center" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageView
+        android:id="@+id/overlayColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        app:srcCompat="@android:color/background_dark"
+        tools:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="-100dp">
+
+        <com.hiro_a.naruko.item.MenuItem
+            android:id="@+id/friendButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-35dp"
+            android:background="@drawable/menu_main_button_background_red"
+            android:gravity="center"
+            android:tint="@android:color/background_light"
+            app:iconImage="@drawable/ic_group_black_24dp"
+            app:iconText="勇者" />
+
+        <com.hiro_a.naruko.item.MenuItem
+            android:id="@+id/chatButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-35dp"
+            android:background="@drawable/menu_main_button_background_blue"
+            android:gravity="center"
+            android:tint="@android:color/background_light"
+            app:iconImage="@android:drawable/sym_action_chat"
+            app:iconText="NARUKO" />
+
+        <com.hiro_a.naruko.item.MenuItem
+            android:id="@+id/settingButton"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-35dp"
+            android:background="@drawable/menu_main_button_background_purple"
+            android:gravity="center"
+            android:tint="@android:color/background_light"
+            app:iconImage="@drawable/ic_build_black_24dp"
+            app:iconText="設定" />
+
+        <TextView
+            android:id="@+id/flowerImage"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-100dp"
+            android:background="@drawable/menu_main_button_background_pink"
+            android:gravity="center"
+            android:text="Flower Image Here" />
+    </RelativeLayout>
+
+</FrameLayout>

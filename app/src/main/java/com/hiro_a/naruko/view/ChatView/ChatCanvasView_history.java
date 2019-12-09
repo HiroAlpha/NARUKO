@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.view.ChatView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class CanvasView_history extends View {
+public class ChatCanvasView_history extends View {
     float textSize = convertDp2Px(15, getContext());  //文字サイズ
     float radius;   //回転半径
     float radiusPivotOffset = 45;
@@ -41,13 +42,15 @@ public class CanvasView_history extends View {
     Path graphicPath_Colored;
     Path shadowPath;
 
-    public CanvasView_history(Context context, AttributeSet attrs) {
+    public ChatCanvasView_history(Context context, AttributeSet attrs) {
         super(context, attrs);
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "anzu_font.ttf"); //フォント
 
         //文字列設定
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         textPaint.setColor(Color.BLACK);
+        textPaint.setTypeface(typeface);
         textPaint.setTextSize(textSize);
 
         //文字列補助線Path設定

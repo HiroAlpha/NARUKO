@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.view.ChatView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public class CanvasView_userIcon_outerCircle extends View {
+public class ChatCanvasView_userIcon_outerCircle extends View {
     float lineWidth = convertDp2Px(2, getContext());
     float iconOffset = convertDp2Px(100, getContext());
     float iconBorderOffset = 0;
@@ -21,7 +21,7 @@ public class CanvasView_userIcon_outerCircle extends View {
 
     Path iconOuterCirclePath;
 
-    public CanvasView_userIcon_outerCircle(Context context, AttributeSet attrs) {
+    public ChatCanvasView_userIcon_outerCircle(Context context, AttributeSet attrs) {
         super(context, attrs);
         iconOuterCirclePath = new Path();
 

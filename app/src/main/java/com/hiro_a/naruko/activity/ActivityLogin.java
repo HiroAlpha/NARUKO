@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.hiro_a.naruko.R;
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
     FirebaseAuth mFirebaseAuth;
@@ -77,8 +78,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 //                    Intent mainPage = new Intent(ActivityLogin.this, ActivityMainPage.class);
 //                    startActivity(mainPage);
 
-                    Intent chatPage = new Intent(ActivityLogin.this, ActivityChat.class);
-                    startActivity(chatPage);
+                    Intent narukoMenu = new Intent(ActivityLogin.this, ActivityMenu.class);
+                    startActivity(narukoMenu);
                 }else {
                     Toast.makeText(ActivityLogin.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }

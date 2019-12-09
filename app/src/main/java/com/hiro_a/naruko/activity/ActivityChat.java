@@ -1,22 +1,20 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -28,6 +26,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.hiro_a.naruko.common.Message;
+import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.view.ChatView.ChatCanvasView;
+import com.hiro_a.naruko.view.ChatView.ChatCanvasView_history;
+import com.hiro_a.naruko.view.ChatView.ChatCanvasView_impassive;
+import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_Line;
+import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
@@ -43,11 +48,11 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     ImageView mMenuSlideButton;
     CircularImageView userImageView01, userImageView02, userImageView03;
 
-    CanvasView canvasView;
-    CanvasView_history canvasViewHistory;
-    CanvasView_impassive canvasViewImpassive;
-    CanvasView_userIcon_outerCircle canvasViewUserIconOuterCircle;
-    CanvasView_userIcon_Line canvasViewUserIconLine;
+    ChatCanvasView canvasView;
+    ChatCanvasView_history canvasViewHistory;
+    ChatCanvasView_impassive canvasViewImpassive;
+    ChatCanvasView_userIcon_outerCircle canvasViewUserIconOuterCircle;
+    ChatCanvasView_userIcon_Line canvasViewUserIconLine;
 
     View menuView;
 
@@ -60,6 +65,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf"); //フォント
 
         //ウィンドウサイズ取得
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
@@ -89,19 +95,19 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         //ユーザーアイコン
         userImageView01 = (CircularImageView) findViewById(R.id.userImageView01);
         userImageView01.setBorderColor(userColor);
-        userImageView01.setImageResource(R.drawable.gyuki);
+        userImageView01.setImageResource(R.drawable.ic_launcher_background);
         userImageView01.setX(topLeftUserX);
         userImageView01.setY(topLeftUserY);
 
         userImageView02 = (CircularImageView) findViewById(R.id.userImageView02);
         userImageView02.setBorderColor(userColor);
-        userImageView02.setImageResource(R.drawable.gyuki);
+        userImageView02.setImageResource(R.drawable.ic_launcher_background);
         userImageView02.setX(topMiddleUserX);
         userImageView02.setY(topMiddleUserY);
 
         userImageView03 = (CircularImageView) findViewById(R.id.userImageView03);
         userImageView03.setBorderColor(userColor);
-        userImageView03.setImageResource(R.drawable.gyuki);
+        userImageView03.setImageResource(R.drawable.ic_launcher_background);
         userImageView03.setX(topRightUserX);
         userImageView03.setY(topRightUserY);
         userImageView03.setVisibility(View.GONE);
@@ -109,6 +115,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         //メッセージフォーム
         mMessageText = (EditText)findViewById(R.id.messageText);
+        mMessageText.setTypeface(typeface);
         mMessageText.setWidth(screenWidth-20);
 
         mSendMessageButton = (ImageView) findViewById(R.id.btn_send);
@@ -118,13 +125,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         mMenuSlideButton.setOnClickListener(this);
 
         //アニメーション用View
-        canvasView = (CanvasView)findViewById(R.id.canvasView);
-        canvasViewHistory = (CanvasView_history)findViewById(R.id.canvasView_history);
-        canvasViewImpassive = (CanvasView_impassive) findViewById(R.id.canvasView_impassive);
+        canvasView = (ChatCanvasView)findViewById(R.id.canvasView);
+        canvasViewHistory = (ChatCanvasView_history)findViewById(R.id.canvasView_history);
+        canvasViewImpassive = (ChatCanvasView_impassive) findViewById(R.id.canvasView_impassive);
 //        surfaceView = (SurfaceView)findViewById(R.id.canvasView_users);
-//        canvasViewUsers = new CanvasView_users(this, surfaceView);
-        canvasViewUserIconOuterCircle = (CanvasView_userIcon_outerCircle)findViewById(R.id.canvasView_userIcon_outerCircle);
-        canvasViewUserIconLine = (CanvasView_userIcon_Line)findViewById(R.id.canvasView_usersLine);
+//        canvasViewUsers = new ChatCanvasView_users(this, surfaceView);
+        canvasViewUserIconOuterCircle = (ChatCanvasView_userIcon_outerCircle)findViewById(R.id.canvasView_userIcon_outerCircle);
+        canvasViewUserIconLine = (ChatCanvasView_userIcon_Line)findViewById(R.id.canvasView_usersLine);
 
         //入力メニュー
         menuView = findViewById(R.id.chat_ui);

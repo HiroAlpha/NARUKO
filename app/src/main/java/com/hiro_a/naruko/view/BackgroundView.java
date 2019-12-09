@@ -1,4 +1,4 @@
-package com.hiro_a.naruko;
+package com.hiro_a.naruko.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
