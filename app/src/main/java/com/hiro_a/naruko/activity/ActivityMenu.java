@@ -7,6 +7,8 @@ import android.animation.PropertyValuesHolder;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,9 +17,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.common.MenuChatData;
 import com.hiro_a.naruko.item.MenuItem;
@@ -31,9 +44,17 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
     int screenWidth, screenHeight;
     boolean popout = false;
 
+    List<MenuChatData> dataList;
+    List<MenuChatData> saveData;
+
     TextView mFlowerImage;
-    ImageView mOverlayColor;
+    ImageView mOverlayColor, mGroupAddButton;
     MenuItem mFriendButton, mNarukoButton, mSettingButton;
+
+    FirebaseFirestore mFirebaseDatabase;
+    CollectionReference roomRef;
+
+    String TAG = "NARUKO_DEBUG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +85,12 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         mSettingButton = (MenuItem) findViewById(R.id.settingButton);
         mSettingButton.setOnClickListener(this);
 
-        RecyclerView menuChatRecyclerView = (RecyclerView)findViewById(R.id.menuChatRecyclerView);
-        MenuAdapter adapter = new MenuAdapter(this.createDataset()){
-            @Override
-            protected void onMenuClicked(@NonNull String title){
-                super.onMenuClicked(title);
-                Toast.makeText(ActivityMenu.this, title, Toast.LENGTH_SHORT).show();
-                Intent chat = new Intent(ActivityMenu.this, ActivityChat.class);
-                startActivity(chat);
-            }
-        };
+        mGroupAddButton = (ImageView)findViewById(R.id.buttonGroupAdd);
+        mGroupAddButton.setOnClickListener(this);
 
-        MenuLayoutManger layoutManager = new MenuLayoutManger();
-
-        menuChatRecyclerView.setHasFixedSize(true);
-        menuChatRecyclerView.setLayoutManager(layoutManager);
-        menuChatRecyclerView.setAdapter(adapter);
-
+        mFirebaseDatabase = FirebaseFirestore.getInstance();
+        roomRef = mFirebaseDatabase.collection("room");
+        updateRoom();
     }
 
     public void onClick(View view){
@@ -113,19 +123,10 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 }
                 popout = !popout;
                 break;
-        }
-    }
 
-    private List<MenuChatData> createDataset(){
-        List<MenuChatData> dataList = new ArrayList<>();
-        for (int i=0; i<3; i++){
-            MenuChatData data = new MenuChatData();
-            data.setInt(R.drawable.ic_launcher_background);
-            data.setString("グループ" + i);
-
-            dataList.add(data);
+            case R.id.buttonGroupAdd:
+                break;
         }
-        return dataList;
     }
 
     //メニューを出す
@@ -281,5 +282,64 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             }
         });
         toCenterSet.start();
+    }
+
+    //View生成
+    public void updateMenu(){
+        final RecyclerView menuChatRecyclerView = (RecyclerView)findViewById(R.id.menuChatRecyclerView);
+        MenuAdapter adapter = new MenuAdapter(dataList){
+            @Override
+            protected void onMenuClicked(@NonNull int position){
+                super.onMenuClicked(position);
+                String roomId = (dataList.get(position)).getid();
+
+                Intent room = new Intent(ActivityMenu.this, ActivityChat.class);
+                room.putExtra("roomId", roomId);
+                Log.w(TAG, roomId);
+                startActivity(room);
+            }
+        };
+
+        MenuLayoutManger layoutManager = new MenuLayoutManger();
+
+        menuChatRecyclerView.setHasFixedSize(true);
+        menuChatRecyclerView.setLayoutManager(layoutManager);
+        menuChatRecyclerView.setAdapter(adapter);
+    }
+
+    //グループ取得
+    public void updateRoom(){
+        dataList = new ArrayList<>();
+        roomRef.orderBy("datetime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                for (DocumentChange document : snapshots.getDocumentChanges()) {
+                    switch (document.getType()){
+                        case ADDED:
+                            String roomName = document.getDocument().getString("roomName");
+                            String roomId = document.getDocument().getId();
+
+                            if (!TextUtils.isEmpty(roomName)) {
+                                MenuChatData data = new MenuChatData();
+                                data.setInt(R.drawable.ic_launcher_background);
+                                data.setTitle(roomName);
+                                data.setId(roomId);
+
+                                dataList.add(data);
+                                Log.w(TAG, roomName+":"+roomId);
+                            }
+                            break;
+                    }
+                }
+
+                updateMenu();
+
+            }
+        });
     }
 }

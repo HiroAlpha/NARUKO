@@ -21,6 +21,17 @@
 
     </androidx.recyclerview.widget.RecyclerView>
 
+    <com.hiro_a.naruko.view.MenuGroupAdd
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+    <ImageView
+        android:id="@+id/buttonGroupAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_group_add_black_24dp"
+        android:tint="#c0fff4"/>
+
     <ImageView
         android:id="@+id/overlayColor"
         android:layout_width="match_parent"

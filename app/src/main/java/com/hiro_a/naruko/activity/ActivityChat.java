@@ -2,12 +2,15 @@ package com.hiro_a.naruko.activity;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -15,17 +18,34 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+/*
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+ */
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.hiro_a.naruko.common.Message;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView;
@@ -34,6 +54,15 @@ import com.hiro_a.naruko.view.ChatView.ChatCanvasView_impassive;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_Line;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle;
 import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
     int statusBarHeight;
@@ -57,15 +86,24 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     View menuView;
 
     FirebaseAuth mFirebaseAuth;
-    DatabaseReference mFirebaseDatabaseRef;
+    //DatabaseReference mFirebaseDatabaseRef;
+    FirebaseFirestore mFirebaseDatabase;
+    CollectionReference messageRef;
 
+    String roomId;
     String userId;
+
+    String TAG = "NARUKO_DEBUG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf"); //フォント
+
+        //roomId取得
+        Intent room = getIntent();
+        roomId = room.getStringExtra("roomId");
 
         //ウィンドウサイズ取得
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
@@ -142,8 +180,12 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         mFirebaseAuth = FirebaseAuth.getInstance();
         userId = mFirebaseAuth.getCurrentUser().getUid();
 
-        mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        //mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabase = FirebaseFirestore.getInstance();
+        messageRef = mFirebaseDatabase.collection("room").document(roomId).collection("messages");
+        updateMessage();
 
+        /* RealtimeDatabase残骸
         mFirebaseDatabaseRef.child("Message").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -188,6 +230,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+         */
     }
 
     @Override
@@ -265,11 +308,77 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         return dp * metrics.density;
     }
 
+    //メッセージ送信
     public void sendMessage(){
+        SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
+        String time = SD.format(new Date()).toString();
         String text = mMessageText.getText().toString();
 
+        Map<String, Object> message = new HashMap<>();
+        message.put("datetime", time);
+        message.put("userId", userId);
+        message.put("message", text);
+
+        messageRef.add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            @Override
+            public void onSuccess(DocumentReference documentReference) {
+                Log.w(TAG, "SUCSESS adding document");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding document", e);
+            }
+        });
+        mMessageText.setText("");
+
+        /* RealtimeDatabase残骸
         Message message = new Message(text, userId);
         mFirebaseDatabaseRef.child("Message").push().setValue(message);
         mMessageText.setText("");
+         */
+    }
+
+    //会話更新
+    public void updateMessage(){
+        messageRef.orderBy("datetime", Query.Direction.ASCENDING).limit(6).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                for (DocumentChange document : snapshots.getDocumentChanges()) {
+                    switch (document.getType()){
+                        case ADDED:
+                            String datetime = document.getDocument().getString("datetime");
+                            String name = document.getDocument().getString("userId");
+                            String text = document.getDocument().getString("message");
+
+                            Log.w(TAG, datetime+":"+name+":"+text);
+                            if (!TextUtils.isEmpty(text)) {
+                                Point grid = userGrid[0];
+
+                                if (!userId.equals(name)) {
+                                    grid = userGrid[1];
+                                }
+
+                                //canvasViewに文字列を送信
+                                (canvasView).getMessage(text);
+                                viewRotate();
+
+                                //canvasViewHistoryに文字列を送信
+                                canvasViewHistory.getMessage(text);
+
+                                //白線
+                                (canvasViewUserIconLine).getUserGrid(grid);
+                            }
+                            break;
+                    }
+                }
+
+            }
+        });
     }
 }
