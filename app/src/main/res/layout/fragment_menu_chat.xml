@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.hiro_a.naruko.view.BackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/chat_background" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/menuChatRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        android:gravity="center" >
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <com.hiro_a.naruko.view.MenuGroupAdd
+        android:layout_width="100dp"
+        android:layout_height="100dp"/>
+
+    <ImageView
+        android:id="@+id/buttonGroupAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_group_add_black_24dp"
+        android:tint="#c0fff4"/>
+
+</FrameLayout>

@@ -182,7 +182,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         //mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
         mFirebaseDatabase = FirebaseFirestore.getInstance();
-        messageRef = mFirebaseDatabase.collection("room").document(roomId).collection("messages");
+        messageRef = mFirebaseDatabase.collection("rooms").document(roomId).collection("messages");
         updateMessage();
 
         /* RealtimeDatabase残骸

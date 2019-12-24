@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "111796044659",
-    "firebase_url": "https://naruko-9f3b4.firebaseio.com",
-    "project_id": "naruko-9f3b4",
-    "storage_bucket": "naruko-9f3b4.appspot.com"
+    "project_number": "889864257299",
+    "firebase_url": "https://naruko-5976e.firebaseio.com",
+    "project_id": "naruko-5976e",
+    "storage_bucket": "naruko-5976e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:111796044659:android:270317e6b7e8b421ae7b06",
+        "mobilesdk_app_id": "1:889864257299:android:97b709306b0e837905a4e6",
         "android_client_info": {
           "package_name": "com.hiro_a.naruko"
         }
       },
       "oauth_client": [
         {
-          "client_id": "111796044659-mut0p0hg9737kgqhncvq4293ueoio5s4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.hiro_a.naruko",
-            "certificate_hash": "742018988f14e22c5aeac703a0f5b1eede207344"
-          }
-        },
-        {
-          "client_id": "111796044659-iakn4c194tapv76qd0hbe7fhn3bsobfd.apps.googleusercontent.com",
+          "client_id": "889864257299-dbpk3k9scodmrhnnllq82hva981m2a1r.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDsdaDhWxnrVoEseGGktCv-7-p0YncZEh4"
+          "current_key": "AIzaSyCmsRAz5nUxGKqdUPCYUXylFWwldoUoq5Y"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "111796044659-iakn4c194tapv76qd0hbe7fhn3bsobfd.apps.googleusercontent.com",
+              "client_id": "889864257299-dbpk3k9scodmrhnnllq82hva981m2a1r.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
