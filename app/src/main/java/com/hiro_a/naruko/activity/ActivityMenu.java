@@ -4,54 +4,36 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.hiro_a.naruko.Fragment.menuChat;
 import com.hiro_a.naruko.Fragment.menuFriend;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.common.MenuChatData;
 import com.hiro_a.naruko.item.MenuItem;
-import com.hiro_a.naruko.view.MenuRecyclerView.MenuAdapter;
-import com.hiro_a.naruko.view.MenuRecyclerView.MenuLayoutManger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActivityMenu extends AppCompatActivity implements View.OnClickListener{
+public class ActivityMenu extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener{
     int screenWidth, screenHeight;
     boolean popout = false;
 
     TextView mFlowerImage;
     ImageView mOverlayColor;
-    MenuItem mFriendButton, mNarukoButton, mSettingButton;
+    MenuItem mFriendButton, mRoomButton, mSettingButton;
+    MenuItem mRoomAddButton, mRoomFavButton;
 
     FragmentManager fragmentManager;
 
@@ -77,50 +59,46 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         mFlowerImage = (TextView)findViewById(R.id.flowerImage);
         mFlowerImage.setOnClickListener(this);
 
+        //フレンド系
         mFriendButton = (MenuItem) findViewById(R.id.friendButton);
         mFriendButton.setOnClickListener(this);
 
-        mNarukoButton = (MenuItem) findViewById(R.id.chatButton);
-        mNarukoButton.setOnClickListener(this);
+        //グループ系
+        mRoomButton = (MenuItem) findViewById(R.id.roomButton);
+        mRoomButton.setOnClickListener(this);
+        mRoomButton.setOnLongClickListener(this);
 
+        mRoomAddButton = (MenuItem) findViewById(R.id.roomAddButton);
+        mRoomAddButton.setOnClickListener(this);
+
+        mRoomFavButton = (MenuItem) findViewById(R.id.roomFavButton);
+        mRoomFavButton.setOnClickListener(this);
+
+        //設定系
         mSettingButton = (MenuItem) findViewById(R.id.settingButton);
         mSettingButton.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
 
-        Fragment fragmentChat = new menuChat();
-        FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
-        transactionToChat.replace(R.id.fragmentContainer, fragmentChat);
-        transactionToChat.addToBackStack(null);
-        transactionToChat.commit();
+        fragmentChanger(1002);
     }
 
+    @Override
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.friendButton:
-                Fragment fragmentFriend = new menuFriend();
-                FragmentTransaction transactionToFriend = fragmentManager.beginTransaction();
-                transactionToFriend.replace(R.id.fragmentContainer, fragmentFriend);
-                transactionToFriend.addToBackStack(null);
-                transactionToFriend.commit();
-
+                fragmentChanger(1001);
                 goBackAnimation();
                 popout = !popout;
                 break;
 
-            case R.id.chatButton:
-                Fragment fragmentChat = new menuChat();
-                FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
-                transactionToChat.replace(R.id.fragmentContainer, fragmentChat);
-                transactionToChat.addToBackStack(null);
-                transactionToChat.commit();
-
+            case R.id.roomButton:
+                fragmentChanger(1002);
                 goBackAnimation();
                 popout = !popout;
                 break;
 
             case R.id.settingButton:
-                //Toast.makeText(this, "clicked!", Toast.LENGTH_LONG).show();
                 goBackAnimation();
                 popout = !popout;
                 break;
@@ -140,14 +118,49 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onLongClick(View view){
+        switch (view.getId()) {
+            case R.id.friendButton:
+                break;
+
+            case R.id.roomButton:
+                subMenuScaleAnimation(view);
+                subMenuPopupAnimation(view);
+                break;
+        }
+        return true;
+    }
+
+    //Fragment変更
+    public void fragmentChanger(int buttonId){
+        switch (buttonId){
+            case 1001:
+                Fragment fragmentFriend = new menuFriend();
+                FragmentTransaction transactionToFriend = fragmentManager.beginTransaction();
+                transactionToFriend.replace(R.id.fragmentContainer, fragmentFriend);
+                transactionToFriend.addToBackStack(null);
+                transactionToFriend.commit();
+                break;
+
+            case 1002:
+                Fragment fragmentChat = new menuChat();
+                FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
+                transactionToChat.replace(R.id.fragmentContainer, fragmentChat);
+                transactionToChat.addToBackStack(null);
+                transactionToChat.commit();
+                break;
+        }
+    }
+
     //メニューを出す
     private void popupAnimation(){
         View[] viewList_all = new View[]{
-                mFlowerImage, mFriendButton, mNarukoButton, mSettingButton
+                mFlowerImage, mFriendButton, mRoomButton, mSettingButton
         };
 
         View[] viewList_button = new View[]{
-                mNarukoButton, mFriendButton, mSettingButton
+                mRoomButton, mFriendButton, mSettingButton
         };
 
         int distance = 300;
@@ -178,12 +191,13 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             float degree = (i * 360 / viewNum)+90;
             View target = viewList_button[i];
 
-            float endGridX = (float)(distance * Math.cos(Math.toRadians(degree)));
-            float endGridY = (float)(distance * Math.sin(Math.toRadians(degree))+(float)(screenHeight/3));
+            float mainButtonEndGridX = (float)(distance * Math.cos(Math.toRadians(degree)));
+            float mainButtonEndGridY = (float)(distance * Math.sin(Math.toRadians(degree))+(float)(screenHeight/3));
+            Log.d(TAG, target.toString()+":"+degree);
 
             //X, Yを0からendGridへ
-            PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat( "translationX", 0f, endGridX );
-            PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat( "translationY", -(float)(screenHeight/3), -endGridY );
+            PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat( "translationX", 0f, mainButtonEndGridX );
+            PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat( "translationY", -(float)(screenHeight/3), -mainButtonEndGridY );
 
             buttonAnim[i] = ObjectAnimator.ofPropertyValuesHolder(target, holderX, holderY);
             buttonAnim[i].setDuration(350);
@@ -220,11 +234,11 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
     //メニューをしまう
     private void goBackAnimation(){
         View[] viewList_all = new View[]{
-                mFlowerImage, mFriendButton, mNarukoButton, mSettingButton
+                mFlowerImage, mFriendButton, mRoomButton, mSettingButton
         };
 
         View[] viewList_button = new View[]{
-                mNarukoButton, mFriendButton, mSettingButton
+                mRoomButton, mFriendButton, mSettingButton
         };
 
         int distance = 300;
@@ -239,12 +253,12 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             float degree = (i * 360 / viewNum)+90;
             View target = viewList_button[i];
 
-            float endGridX = (float)(distance * Math.cos(Math.toRadians(degree)));
-            float endGridY = (float)(distance * Math.sin(Math.toRadians(degree))+(float)(screenHeight/3));
+            float mainButtonEndGridX = (float)(distance * Math.cos(Math.toRadians(degree)));
+            float mainButtonEndGridY = (float)(distance * Math.sin(Math.toRadians(degree))+(float)(screenHeight/3));
 
             //X, Yを0からendGridへ
-            PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat( "translationX", endGridX, 0f );
-            PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat( "translationY", -endGridY, -(float)(screenHeight/3));
+            PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat( "translationX", mainButtonEndGridX, 0f );
+            PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat( "translationY", -mainButtonEndGridY, -(float)(screenHeight/3));
 
             buttonAnim[i] = ObjectAnimator.ofPropertyValuesHolder(target, holderX, holderY);
             buttonAnim[i].setDuration(500);
@@ -293,5 +307,73 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             }
         });
         toCenterSet.start();
+    }
+
+    //サブメニューを出す
+    private void subMenuPopupAnimation(View view){
+        float mainButtonDegree = 0;
+        switch (view.getId()) {
+            case R.id.roomButton:
+                mainButtonDegree = 90f;
+                break;
+
+            case R.id.friendButton:
+                mainButtonDegree = 210f;
+                break;
+
+            case R.id.settingButton:
+                mainButtonDegree = 330f;
+                break;
+        }
+
+        //親ボタン位置
+        float mainButtonEndGridX = (float)(300 * Math.cos(Math.toRadians(mainButtonDegree)));
+        float mainButtonEndGridY = (float)(300 * Math.sin(Math.toRadians(mainButtonDegree))+(float)(screenHeight/3));
+
+        View[] viewList_subButton = new View[]{
+                mRoomAddButton, mRoomFavButton
+        };
+
+        int distance = 200;
+        int viewNum = viewList_subButton.length;
+        List<Animator> animatorList_toCenter = new ArrayList<Animator>();
+        List<Animator> animatorList_button = new ArrayList<Animator>();
+
+        //ボタンアニメーション
+        ObjectAnimator[] buttonAnim = new ObjectAnimator[viewNum];
+        for (int i=0;i<viewNum;i++){
+
+            float degree = (i * 180 / viewNum)+45;
+            View target = viewList_subButton[i];
+
+            //サブボタン最終地点
+            float subButtonEndGridX = (float)(distance * Math.cos(Math.toRadians(degree))+mainButtonEndGridX);
+            float subButtonEndGridY = (float)(distance * Math.sin(Math.toRadians(degree))+mainButtonEndGridY);
+
+            //X, Yを0からendGridへ
+            PropertyValuesHolder holderX = PropertyValuesHolder.ofFloat( "translationX", mainButtonEndGridX, subButtonEndGridX );
+            PropertyValuesHolder holderY = PropertyValuesHolder.ofFloat( "translationY", -mainButtonEndGridY, -subButtonEndGridY);
+
+            buttonAnim[i] = ObjectAnimator.ofPropertyValuesHolder(target, holderX, holderY);
+            buttonAnim[i].setDuration(500);
+            animatorList_button.add(buttonAnim[i]);
+        }
+
+        AnimatorSet buttonSet = new AnimatorSet();
+        buttonSet.playTogether(animatorList_button);
+        buttonSet.start();
+    }
+
+    //サブメニュー縮小&画像変更
+    public void subMenuScaleAnimation(View view){
+        View target = view;
+
+        PropertyValuesHolder scaleToX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.8f);
+        PropertyValuesHolder scaleToY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 0.8f);
+
+        ObjectAnimator buttonScaleAnim = new ObjectAnimator();
+        buttonScaleAnim = ObjectAnimator.ofPropertyValuesHolder(target, scaleToX, scaleToY);
+        buttonScaleAnim.setDuration(100);
+        buttonScaleAnim.start();
     }
 }

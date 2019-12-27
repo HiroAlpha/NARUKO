@@ -184,53 +184,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         messageRef = mFirebaseDatabase.collection("rooms").document(roomId).collection("messages");
         updateMessage();
-
-        /* RealtimeDatabase残骸
-        mFirebaseDatabaseRef.child("Message").addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String name = (String)dataSnapshot.child("name").getValue();
-                String text = (String)dataSnapshot.child("text").getValue();
-                if (!TextUtils.isEmpty(text)){
-                    Point grid = userGrid[0];
-
-                    if (!userId.equals(name)){
-                        grid = userGrid[1];
-                    }
-
-                    //canvasViewに文字列を送信
-                    (canvasView).getMessage(text);
-                    viewRotate();
-
-                    //canvasViewHistoryに文字列を送信
-                    canvasViewHistory.getMessage(text);
-
-                    //白線
-                    (canvasViewUserIconLine).getUserGrid(grid);
-                }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-         */
     }
 
     @Override
@@ -245,19 +198,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_send:
                 if (!(TextUtils.isEmpty(mMessageText.getText().toString()))){
                     sendMessage();
-                    /*
-                    //canvasViewに文字列を送信
-                    (canvasView).getMessage(mMessageText.getText().toString());
-                    viewRotate();
-
-                    //canvasViewHistoryに文字列を送信
-                    canvasViewHistory.getMessage(mMessageText.getText().toString());
-                    mMessageText.setText("");
-
-                    //
-                    (canvasViewUserIconLine).getUserGrid(userGrid);
-
-                     */
                 }
                 break;
             case R.id.btn_slide:

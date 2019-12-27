@@ -1,31 +1,30 @@
-package com.hiro_a.naruko.view.MenuRecyclerView;
+package com.hiro_a.naruko.view.IconRecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.common.MenuChatData;
+import com.hiro_a.naruko.common.MenuRoomData;
 
 import java.util.List;
 
-public class MenuAdapter extends RecyclerView.Adapter<MenuViewHolder>{
-    private List<MenuChatData> list;
+public class IconRecyclerViewAdapter extends RecyclerView.Adapter<IconRecyclerViewHolder>{
+    private List<MenuRoomData> list;
 
-    public MenuAdapter(List<MenuChatData> list){
+    public IconRecyclerViewAdapter(List<MenuRoomData> list){
         this.list = list;
     }
 
     @NonNull
     @Override
-    public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_menu, parent, false);
+    public IconRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_room, parent, false);
 
-        final MenuViewHolder menuHolder = new MenuViewHolder(view);
+        final IconRecyclerViewHolder menuHolder = new IconRecyclerViewHolder(view);
         menuHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -38,7 +37,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MenuViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull IconRecyclerViewHolder holder, int position) {
         holder.imageView.setImageResource(list.get(position).getInt());
         holder.textView.setText(list.get(position).getTitle());
     }

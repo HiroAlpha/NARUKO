@@ -1,11 +1,11 @@
-package com.hiro_a.naruko.view.MenuRecyclerView;
+package com.hiro_a.naruko.view.IconRecyclerView;
 
 import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class MenuLayoutManger extends RecyclerView.LayoutManager {
+public class IconRecyclerViewLayoutManger extends RecyclerView.LayoutManager {
 
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {

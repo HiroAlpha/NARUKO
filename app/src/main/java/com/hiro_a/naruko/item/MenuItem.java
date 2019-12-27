@@ -41,7 +41,7 @@ public class MenuItem extends RelativeLayout {
 
     private void setProperty(Context context){
         LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.item_menu_main, this, true);
+        inflater.inflate(R.layout.item_menu, this, true);
 
         ImageView iconImageView = (ImageView)findViewById(R.id.iconImageView);
         iconImageView.setImageResource(iconImage);

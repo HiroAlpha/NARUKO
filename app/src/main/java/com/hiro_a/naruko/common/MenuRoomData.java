@@ -1,6 +1,6 @@
 package com.hiro_a.naruko.common;
 
-public class MenuChatData {
+public class MenuRoomData {
     private String title;
     private String id;
     private int image;

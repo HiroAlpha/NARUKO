@@ -23,16 +23,15 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityChat;
-import com.hiro_a.naruko.activity.ActivityMenu;
-import com.hiro_a.naruko.common.MenuChatData;
-import com.hiro_a.naruko.view.MenuRecyclerView.MenuAdapter;
-import com.hiro_a.naruko.view.MenuRecyclerView.MenuLayoutManger;
+import com.hiro_a.naruko.common.MenuRoomData;
+import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
+import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class menuChat extends Fragment {
-    List<MenuChatData> dataList;
+    List<MenuRoomData> dataList;
 
     ImageView mGroupAddButton;
 
@@ -52,14 +51,6 @@ public class menuChat extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        mGroupAddButton = (ImageView)view.findViewById(R.id.buttonGroupAdd);
-        mGroupAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
 
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
@@ -84,13 +75,13 @@ public class menuChat extends Fragment {
                             String roomId = document.getDocument().getId();
 
                             if (!TextUtils.isEmpty(roomName)) {
-                                MenuChatData data = new MenuChatData();
+                                MenuRoomData data = new MenuRoomData();
                                 data.setInt(R.drawable.ic_launcher_background);
                                 data.setTitle(roomName);
                                 data.setId(roomId);
 
                                 dataList.add(data);
-                                Log.w(TAG, roomName+":"+roomId);
+                                Log.d(TAG, roomName+":"+roomId);
                             }
                             break;
                     }
@@ -104,8 +95,11 @@ public class menuChat extends Fragment {
 
     //View生成
     public void updateMenu(View view){
-        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.menuChatRecyclerView);
-        MenuAdapter adapter = new MenuAdapter(dataList){
+        //RecyclerView
+        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomRecyclerView);
+
+        //Adapter
+        IconRecyclerViewAdapter adapter = new IconRecyclerViewAdapter(dataList){
             @Override
             protected void onMenuClicked(@NonNull int position){
                 super.onMenuClicked(position);
@@ -113,15 +107,16 @@ public class menuChat extends Fragment {
 
                 Intent room = new Intent(getContext(), ActivityChat.class);
                 room.putExtra("roomId", roomId);
-                Log.w(TAG, roomId);
+                Log.d(TAG, roomId);
                 startActivity(room);
             }
         };
+        menuChatRecyclerView.setAdapter(adapter);
 
-        MenuLayoutManger layoutManager = new MenuLayoutManger();
+        //LayoutManager
+        IconRecyclerViewLayoutManger layoutManager = new IconRecyclerViewLayoutManger();
+        menuChatRecyclerView.setLayoutManager(layoutManager);
 
         menuChatRecyclerView.setHasFixedSize(true);
-        menuChatRecyclerView.setLayoutManager(layoutManager);
-        menuChatRecyclerView.setAdapter(adapter);
     }
 }
