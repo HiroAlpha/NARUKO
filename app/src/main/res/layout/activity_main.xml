@@ -117,7 +117,7 @@
 
             <include
                 android:id="@+id/chat_ui"
-                layout="@layout/chat_ui"
+                layout="@layout/ui_chat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

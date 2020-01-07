@@ -31,7 +31,7 @@
         android:paddingBottom="-100dp">
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/friendButton"
+            android:id="@+id/friendAddButton"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
@@ -40,10 +40,21 @@
             android:background="@drawable/menu_main_button_background_red"
             android:gravity="center"
             android:tint="@android:color/background_light"
-            app:iconImage="@drawable/ic_group_black_24dp"
-            app:iconText="勇者" >
+            app:iconImage="@drawable/ic_person_add_black_24dp"
+            app:iconText="部員登録" />
 
-        </com.hiro_a.naruko.item.MenuItem>
+        <com.hiro_a.naruko.item.MenuItem
+            android:id="@+id/friendButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-35dp"
+            android:background="@drawable/menu_main_button_background_red"
+            android:gravity="center"
+            android:tint="@android:color/background_light"
+            app:iconImage="@drawable/ic_group_black_24dp"
+            app:iconText="勇者部員" />
 
         <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/roomFavButton"
@@ -73,8 +84,8 @@
 
         <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/roomButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-35dp"
@@ -86,8 +97,8 @@
 
         <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/settingButton"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-35dp"

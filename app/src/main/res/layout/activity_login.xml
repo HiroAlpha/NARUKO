@@ -1,53 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="top"
     android:orientation="vertical"
-    tools:context=".activity.ActivityLogin">
+    >
 
-    <EditText
-        android:id="@+id/email_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:ems="10"
-        android:hint="メールアドレス"
-        android:inputType="textEmailAddress" />
+    <ImageView
+        android:id="@+id/loginBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:srcCompat="@color/background" />
 
-    <EditText
-        android:id="@+id/password_login"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/email_login"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:ems="10"
-        android:hint="パスワード"
-        android:inputType="textPassword" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".activity.ActivityLogin">
+
+        <EditText
+            android:id="@+id/email_login"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_above="@id/password_login"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/edittext_login_style"
+            android:cursorVisible="true"
+            android:ems="10"
+            android:hint="メールアドレスを入力"
+            android:inputType="textEmailAddress"
+            android:paddingStart="10dp"
+            android:textColorLink="#2196F3"
+            android:textCursorDrawable="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/password_login"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/edittext_login_style"
+            android:cursorVisible="true"
+            android:ems="10"
+            android:hint="パスワードを入力"
+            android:inputType="textPassword"
+            android:paddingStart="10dp"
+            android:textColorLink="#2196F3"
+            android:textCursorDrawable="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/user_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_login"
+            android:layout_centerHorizontal="true"
+            android:text="ログイン" />
+
+        <TextView
+            android:id="@+id/makeAccount"
+            android:layout_width="148dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/user_login_button"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:text="アカウントを作成"
+            android:textAlignment="center"
+            android:textColor="#000000" />
+    </RelativeLayout>
 
 
-    <Button
-        android:id="@+id/user_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/password_login"
-        android:layout_centerHorizontal="true"
-        android:text="ログイン" />
-
-    <TextView
-        android:id="@+id/makeAccount"
-        android:layout_width="148dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_login_button"
-        android:layout_centerHorizontal="true"
-        android:layout_weight="1"
-        android:text="アカウントを作成"
-        android:textAlignment="center"
-        android:textColor="#000000" />
-
-</RelativeLayout>
+</FrameLayout>
