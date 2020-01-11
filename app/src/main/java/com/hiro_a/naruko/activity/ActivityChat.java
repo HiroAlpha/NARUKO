@@ -262,7 +262,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         messageRef.add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                Log.w(TAG, "SUCSESS adding document");
+                Log.d(TAG, "SUCSESS adding document");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

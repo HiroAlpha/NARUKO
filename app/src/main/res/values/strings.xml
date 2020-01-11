@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Naruko_Animation</string>
+    <string name="CONSUMER_KEY" translatable="false">lLjQWpD18MPOtuuP6OkF7Jm25</string>
+    <string name="CONSUMER_KEY_SECRET" translatable="false">ih5l2QYhjq2HBvwNlmmh60YqyzbllfBdDV6MiSSl8ILpmi0ceo</string>
 </resources>

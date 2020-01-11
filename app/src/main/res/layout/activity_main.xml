@@ -11,7 +11,7 @@
     <com.hiro_a.naruko.view.BackgroundView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/chat_background" />
+        android:src="@drawable/image_chat_background" />
 
     <FrameLayout
         android:id="@+id/canvasLayout"
@@ -86,14 +86,14 @@
         android:layout_above="@id/chatUILayout"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/chat_edittext_background_top">
+        android:background="@drawable/edittext_chat_background_top">
 
         <EditText
             android:id="@+id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical|center_horizontal"
-            android:background="@drawable/chat_edittext_style"
+            android:background="@drawable/edittext_chat_style"
             android:fontFamily="@android:asset"
             android:cursorVisible="false"
             android:ems="10" />
@@ -106,7 +106,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/chat_edittext_background_bottom"
+        android:background="@drawable/edittext_chat_background_bottom"
         android:orientation="horizontal">
 
         <LinearLayout

@@ -8,7 +8,7 @@
         android:id="@+id/backgroundView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/chat_background" />
+        android:src="@drawable/image_chat_background" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/friendRecyclerView"
@@ -24,7 +24,7 @@
 <!--            android:id="@+id/searchBar"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/search_edittext_style"-->
+<!--            android:background="@drawable/edittext_search_style"-->
 <!--            android:drawableLeft="@drawable/ic_search_black_24dp"-->
 <!--            android:drawableTint="#ffffff"-->
 <!--            android:ems="10"-->

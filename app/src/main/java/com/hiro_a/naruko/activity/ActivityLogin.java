@@ -41,9 +41,9 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         mLoginButton = (Button)findViewById(R.id.user_login_button);
         mLoginButton.setOnClickListener(this);
 
-        //アカウント作成ボタン
-        mMakeAccountButton = (TextView)findViewById(R.id.makeAccount);
-        mMakeAccountButton.setOnClickListener(this);
+//        //アカウント作成ボタン
+//        mMakeAccountButton = (TextView)findViewById(R.id.aaaa);
+//        mMakeAccountButton.setOnClickListener(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
     }
@@ -56,11 +56,11 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 login(mEmailField.getText().toString(), mPasswordField.getText().toString());
                 break;
 
-            case R.id.makeAccount:
-                //登録フォームへ
-                Intent makeAccount = new Intent(ActivityLogin.this, ActivityRegister.class);
-                startActivity(makeAccount);
-                break;
+//            case R.id.aaaa:
+//                //登録フォームへ
+//                Intent makeAccount = new Intent(ActivityLogin.this, ActivityRegister.class);
+//                startActivity(makeAccount);
+//                break;
         }
     }
 
