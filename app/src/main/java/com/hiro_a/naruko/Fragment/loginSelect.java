@@ -29,10 +29,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.activity.ActivityLogin;
 import com.hiro_a.naruko.activity.ActivityMenu;
 import com.hiro_a.naruko.activity.ActivityRegister;
-import com.hiro_a.naruko.activity.ActivitySelectLogin;
 import com.hiro_a.naruko.item.SelectorItem;
 
 import java.text.SimpleDateFormat;
@@ -102,10 +100,13 @@ public class loginSelect extends Fragment implements View.OnClickListener {
                 //Emailログイン画面へ
                 FragmentManager fragmentManager = getFragmentManager();
                 Fragment fragmentEmail = new loginEmail();
-                FragmentTransaction transactionToEmail = fragmentManager.beginTransaction();
+
+                final FragmentTransaction transactionToEmail = fragmentManager.beginTransaction();
+                transactionToEmail.setCustomAnimations(R.anim.fragment_in_rigt, R.anim.fragment_out_left);
                 transactionToEmail.replace(R.id.login_fragment, fragmentEmail);
                 transactionToEmail.addToBackStack(null);
                 transactionToEmail.commit();
+
                 break;
         }
     }

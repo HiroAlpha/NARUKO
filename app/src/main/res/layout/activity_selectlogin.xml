@@ -22,7 +22,7 @@
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="75dp"
-            android:background="@drawable/edittext_test_style"
+            android:background="@drawable/background_login_narukoicon"
             android:gravity="center_vertical"
             android:text="NARUKO Icon"
             android:textAlignment="center" />

@@ -2,6 +2,7 @@ package com.hiro_a.naruko.item;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.hiro_a.naruko.R;
 public class SelectorItem extends LinearLayout {
     int selectorImage;
     String selectorText;
+    int selectorTextColor;
 
     public SelectorItem(Context context) {
         this(context, null);
@@ -32,6 +34,7 @@ public class SelectorItem extends LinearLayout {
         try {
             selectorImage = typedArray.getResourceId(R.styleable.SelectorItem_selectorImage, 0);
             selectorText = typedArray.getString(R.styleable.SelectorItem_selectorText);
+            selectorTextColor = typedArray.getColor(R.styleable.SelectorItem_selectorTextColor, Color.BLACK);
         }finally {
             typedArray.recycle();
         }
@@ -47,6 +50,7 @@ public class SelectorItem extends LinearLayout {
         selectorImageView.setImageResource(selectorImage);
 
         TextView selectorTextView = (TextView)findViewById(R.id.selectorText);
+        selectorTextView.setTextColor(selectorTextColor);
         selectorTextView.setText(selectorText);
     }
 }

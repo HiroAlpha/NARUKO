@@ -70,8 +70,8 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
                             makeUser(task.getResult().getUser().getUid(), mUserNameField.getText().toString(), mEmailField.getText().toString());
                             Toast.makeText(ActivityRegister.this, "登録完了！", Toast.LENGTH_SHORT).show();
                             //ログインフォームへ
-                            Intent makeAccount = new Intent(ActivityRegister.this, ActivityLogin.class);
-                            startActivity(makeAccount);
+//                            Intent makeAccount = new Intent(ActivityRegister.this, ActivityLogin.class);
+//                            startActivity(makeAccount);
                         } else {
                             Toast.makeText(ActivityRegister.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                         }

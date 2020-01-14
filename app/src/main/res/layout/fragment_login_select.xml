@@ -13,10 +13,11 @@
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/edittext_select_style"
+        android:background="@drawable/background_login_selectbutton"
         android:backgroundTint="#1DA1F2"
         app:selectorImage="@drawable/image_twitter_logo_blue"
-        app:selectorText="Twitterでログイン" />
+        app:selectorText="Twitterでログイン"
+        app:selectorTextColor="#ffffff"/>
 
     <com.hiro_a.naruko.item.SelectorItem
         android:id="@+id/loginSelector_Email"
@@ -24,10 +25,11 @@
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
-        android:background="@drawable/edittext_select_style"
+        android:background="@drawable/background_login_selectbutton"
         android:backgroundTint="#FF6600"
         app:selectorImage="@drawable/ic_email_black_24dp"
-        app:selectorText="メールアドレスでログイン" />
+        app:selectorText="メールアドレスでログイン"
+        app:selectorTextColor="#ffffff"/>
 
     <LinearLayout
         android:layout_width="match_parent"

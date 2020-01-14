@@ -24,7 +24,7 @@
 <!--            android:id="@+id/searchBar"-->
 <!--            android:layout_width="match_parent"-->
 <!--            android:layout_height="wrap_content"-->
-<!--            android:background="@drawable/edittext_search_style"-->
+<!--            android:background="@drawable/background_search_edittext"-->
 <!--            android:drawableLeft="@drawable/ic_search_black_24dp"-->
 <!--            android:drawableTint="#ffffff"-->
 <!--            android:ems="10"-->

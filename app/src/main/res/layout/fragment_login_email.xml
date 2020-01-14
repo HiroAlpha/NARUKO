@@ -2,42 +2,64 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal|center_vertical"
     android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/email_login"
+    <TextView
+        android:id="@+id/title_login"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="30dp"
+        android:fontFamily="@font/allerta"
+        android:text="ログイン"
+        android:textAlignment="center"
+        android:textSize="25sp" />
+
+    <EditText
+        android:id="@+id/login_email_edittext"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginBottom="5dp"
-        android:background="@drawable/edittext_login_style"
-        android:cursorVisible="true"
+        android:background="@drawable/background_login_selectbutton"
+        android:backgroundTint="#ffffff"
         android:ems="10"
+        android:fontFamily="@font/allerta"
         android:hint="メールアドレスを入力"
         android:inputType="textEmailAddress"
-        android:paddingStart="10dp"
-        android:textColorLink="#2196F3"
-        android:textCursorDrawable="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="18sp" />
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp" />
 
     <EditText
-        android:id="@+id/password_login"
+        android:id="@+id/login_password_edittext"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@drawable/edittext_login_style"
-        android:cursorVisible="true"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/background_login_selectbutton"
+        android:backgroundTint="#ffffff"
         android:ems="10"
+        android:fontFamily="@font/allerta"
         android:hint="パスワードを入力"
         android:inputType="textPassword"
-        android:paddingStart="10dp"
-        android:textColorLink="#2196F3"
-        android:textCursorDrawable="@color/common_google_signin_btn_text_dark_focused"
-        android:textSize="18sp" />
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp" />
 
-    <Button
-        android:id="@+id/user_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ログイン" />
+    <TextView
+        android:id="@+id/emailLoginButton"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/background_login_button"
+        android:backgroundTint="#FF6600"
+        android:gravity="center_vertical"
+        android:text="ログイン"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold" />
 
 </LinearLayout>
