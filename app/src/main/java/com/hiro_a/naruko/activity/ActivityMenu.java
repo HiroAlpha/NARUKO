@@ -4,11 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,7 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.hiro_a.naruko.Fragment.menuChat;
+import com.hiro_a.naruko.Fragment.menuRoom;
 import com.hiro_a.naruko.Fragment.menuFriend;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.item.MenuItem;
@@ -92,7 +89,6 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         mSettingButton.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
-
         fragmentChanger(1002);
     }
 
@@ -163,15 +159,15 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             case 1001:
                 Fragment fragmentFriend = new menuFriend();
                 FragmentTransaction transactionToFriend = fragmentManager.beginTransaction();
-                transactionToFriend.replace(R.id.fragmentContainer, fragmentFriend);
+                transactionToFriend.replace(R.id.menu_fragment, fragmentFriend);
                 transactionToFriend.addToBackStack(null);
                 transactionToFriend.commit();
                 break;
 
             case 1002:
-                Fragment fragmentChat = new menuChat();
+                Fragment fragmentChat = new menuRoom();
                 FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
-                transactionToChat.replace(R.id.fragmentContainer, fragmentChat);
+                transactionToChat.replace(R.id.menu_fragment, fragmentChat);
                 transactionToChat.addToBackStack(null);
                 transactionToChat.commit();
                 break;

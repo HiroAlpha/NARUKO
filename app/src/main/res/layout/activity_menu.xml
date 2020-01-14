@@ -8,12 +8,12 @@
 
 <!--    <fragment-->
 <!--        android:id="@+id/menuFragment"-->
-<!--        android:name="com.hiro_a.naruko.Fragment.menuChat"-->
+<!--        android:name="com.hiro_a.naruko.Fragment.menuRoom"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="match_parent" />-->
 
     <FrameLayout
-        android:id="@+id/fragmentContainer"
+        android:id="@+id/menu_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

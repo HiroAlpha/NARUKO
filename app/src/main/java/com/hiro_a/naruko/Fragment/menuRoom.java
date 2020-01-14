@@ -30,7 +30,7 @@ import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class menuChat extends Fragment {
+public class menuRoom extends Fragment {
     List<MenuRoomData> dataList;
 
     ImageView mGroupAddButton;
@@ -81,7 +81,9 @@ public class menuChat extends Fragment {
                                 data.setId(roomId);
 
                                 dataList.add(data);
-                                Log.d(TAG, roomName+":"+roomId);
+                                Log.d(TAG, "RoomName: "+roomName);
+                                Log.d(TAG, "RoomId: "+roomId);
+                                Log.d(TAG, "---------------------------------");
                             }
                             break;
                     }
@@ -107,7 +109,6 @@ public class menuChat extends Fragment {
 
                 Intent room = new Intent(getContext(), ActivityChat.class);
                 room.putExtra("roomId", roomId);
-                Log.d(TAG, roomId);
                 startActivity(room);
             }
         };

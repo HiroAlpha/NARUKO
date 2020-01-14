@@ -8,7 +8,6 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -18,16 +17,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 /*
 import com.google.firebase.database.ChildEventListener;
@@ -39,14 +35,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.hiro_a.naruko.common.Message;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_history;
@@ -56,13 +49,10 @@ import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.google.firebase.firestore.DocumentChange.Type.ADDED;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
     int statusBarHeight;
@@ -99,11 +89,14 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf"); //フォント
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/anzu_font.ttf"); //フォント
 
         //roomId取得
         Intent room = getIntent();
         roomId = room.getStringExtra("roomId");
+        Log.d(TAG, "SUCSESS Entering ChatRoom");
+        Log.d(TAG, "RoomId: " + roomId);
+        Log.d(TAG, "---------------------------------");
 
         //ウィンドウサイズ取得
         WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
@@ -263,11 +256,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 Log.d(TAG, "SUCSESS adding document");
+                Log.d(TAG, "---------------------------------");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "Error adding document", e);
+                Log.w(TAG, "---------------------------------");
             }
         });
         mMessageText.setText("");
@@ -286,6 +281,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e);
+                    Log.w(TAG, "---------------------------------");
                     return;
                 }
 
@@ -296,7 +292,11 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                             String name = document.getDocument().getString("userId");
                             String text = document.getDocument().getString("message");
 
-                            Log.w(TAG, datetime+":"+name+":"+text);
+                            Log.d(TAG, "PostedTime: "+datetime);
+                            Log.d(TAG, "UserId: "+name);
+                            Log.d(TAG, "Message: "+text);
+                            Log.d(TAG, "---------------------------------");
+
                             if (!TextUtils.isEmpty(text)) {
                                 Point grid = userGrid[0];
 

@@ -8,11 +8,11 @@
     android:orientation="vertical"
     >
 
-    <ImageView
-        android:id="@+id/loginBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:srcCompat="@color/background" />
+    <com.hiro_a.naruko.view.BackgroundView
+        android:id="@+id/login_background"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/image_login_fromtop_background" />
 
     <RelativeLayout
         android:layout_width="match_parent"

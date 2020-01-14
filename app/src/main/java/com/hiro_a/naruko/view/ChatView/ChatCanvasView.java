@@ -44,7 +44,7 @@ public class ChatCanvasView extends View {
 
     public ChatCanvasView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "anzu_font.ttf"); //フォント
+        Typeface typeface = Typeface.createFromAsset(context.getAssets(), "font/anzu_font.ttf"); //フォント
 
         //文字列設定
         textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
