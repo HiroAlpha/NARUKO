@@ -1,7 +1,9 @@
 package com.hiro_a.naruko.common;
 
+import android.net.Uri;
+
 public class MenuFriendData {
-    private int friendImage;
+    private String friendImage;
     private String friendName;
     private String friendId;
 
@@ -9,7 +11,7 @@ public class MenuFriendData {
         return friendName;
     }
 
-    public int getFriendImage() {
+    public String getFriendImage() {
         return friendImage;
     }
 
@@ -21,7 +23,7 @@ public class MenuFriendData {
         this.friendName = friendName;
     }
 
-    public void setFriendImage(int friendImage) {
+    public void setFriendImage(String friendImage) {
         this.friendImage = friendImage;
     }
 

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -17,8 +18,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.hiro_a.naruko.Fragment.menuRoom;
-import com.hiro_a.naruko.Fragment.menuFriend;
+import com.hiro_a.naruko.fragment.menuRoom;
+import com.hiro_a.naruko.fragment.menuFriend;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.item.MenuItem;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityMenu extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener{
+    int recyCount = 0;
+
     int screenWidth, screenHeight;
     boolean popout = false;
     boolean popoutFriend = false;
@@ -35,7 +38,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
     TextView mFlowerImage;
     ImageView mOverlayColor;
     MenuItem mFriendButton, mRoomButton, mSettingButton;
-    MenuItem mRoomAddButton, mRoomFavButton, mFriendAddButton;
+    MenuItem mRoomAddButton, mRoomFavButton, mFriendSearchButton;
 
     FragmentManager fragmentManager;
 
@@ -67,9 +70,9 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         mFriendButton.setOnClickListener(this);
         mFriendButton.setOnLongClickListener(this);
 
-        mFriendAddButton = (MenuItem) findViewById(R.id.friendAddButton);
-        mFriendAddButton.setVisibility(View.GONE);
-        mFriendAddButton.setOnClickListener(this);
+        mFriendSearchButton = (MenuItem) findViewById(R.id.friendAddButton);
+        mFriendSearchButton.setVisibility(View.GONE);
+        mFriendSearchButton.setOnClickListener(this);
 
         //グループ系
         mRoomButton = (MenuItem) findViewById(R.id.roomButton);
@@ -89,7 +92,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         mSettingButton.setOnClickListener(this);
 
         fragmentManager = getSupportFragmentManager();
-        fragmentChanger(1002);
+        fragmentChanger("FRAG_MENU_ROOM");
     }
 
     @Override
@@ -100,16 +103,20 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 break;
 
             case R.id.friendButton:
-                fragmentChanger(1001);
+                fragmentChanger("FRAG_MENU_FRIEND");
                 goBackAnimation();
                 break;
 
             case R.id.roomButton:
-                fragmentChanger(1002);
+                fragmentChanger("FRAG_MENU_ROOM");
                 goBackAnimation();
                 break;
 
             case R.id.settingButton:
+                //設定画面へ
+                Intent setting = new Intent(ActivityMenu.this, ActivityUserProfile.class);
+                startActivity(setting);
+
                 goBackAnimation();
                 break;
 
@@ -154,25 +161,54 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
     }
 
     //Fragment変更
-    public void fragmentChanger(int buttonId){
-        switch (buttonId){
-            case 1001:
+    public void fragmentChanger(String fragmentId){
+        switch (fragmentId){
+            case "FRAG_MENU_FRIEND":
                 Fragment fragmentFriend = new menuFriend();
                 FragmentTransaction transactionToFriend = fragmentManager.beginTransaction();
-                transactionToFriend.replace(R.id.menu_fragment, fragmentFriend);
-                transactionToFriend.addToBackStack(null);
+                transactionToFriend.setCustomAnimations(
+                        R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt,
+                        R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left);
+                transactionToFriend.replace(R.id.menu_fragment, fragmentFriend, "FRAG_MENU_FRIEND");
                 transactionToFriend.commit();
                 break;
 
-            case 1002:
+            case "FRAG_MENU_ROOM":
                 Fragment fragmentChat = new menuRoom();
                 FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
-                transactionToChat.replace(R.id.menu_fragment, fragmentChat);
-                transactionToChat.addToBackStack(null);
+                if (recyCount!=0) {
+                    transactionToChat.setCustomAnimations(
+                            R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left,
+                            R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt);
+                }
+                transactionToChat.replace(R.id.menu_fragment, fragmentChat, "FRAG_MENU_ROOM");
                 transactionToChat.commit();
+
+                recyCount++;
                 break;
         }
     }
+
+    //表示フラグメント確認
+    public String checkFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        //フラグメント
+        Fragment fragmentFriend = fragmentManager.findFragmentByTag("FRAG_MENU_FRIEND");
+        Fragment fragmentRoom = fragmentManager.findFragmentByTag("FRAG_MENU_ROOM");
+
+        if (fragmentFriend != null && fragmentFriend.isVisible()){
+            return "FRAG_MENU_FRIEND";
+        }
+
+        if (fragmentRoom != null && fragmentRoom.isVisible()){
+            return "FRAG_MENU_ROOM";
+        }
+
+        return "FRAG_NOT_VISIBLE";
+    }
+
+    //↓以下アニメーション
 
     //メニューを出す
     private void popupAnimation(){
@@ -401,7 +437,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 lastButtonEndGridY = (float) (300 * Math.sin(Math.toRadians(mainButtonDegree)) + (float) (screenHeight / 3));
 
                 //サブメニューリスト
-                viewList_subButton.add(mFriendAddButton);
+                viewList_subButton.add(mFriendSearchButton);
 
                 for (int i=0;i<viewList_subButton.size();i++){
                     viewList_subButton.get(i).setX(lastButtonEndGridX);
@@ -500,7 +536,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 mainButtonDegree = 210f;    //親viewの角度
 
                 //サブメニューリスト
-                viewList_subButton.add(mFriendAddButton);
+                viewList_subButton.add(mFriendSearchButton);
 
                 popoutFriend = !popoutFriend;
                 break;
@@ -574,44 +610,4 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         });
         buttonSet.start();
     }
-
-    /*
-    //サブメニュー縮小&画像変更
-    public void subMenuScaleAnimation(View view){
-        boolean subPopout = false;
-        View target = view;
-
-        switch (view.getId()) {
-            case R.id.roomButton:
-                subPopout = popoutRoom;
-                break;
-
-            case R.id.friendButton:
-                subPopout = popoutFriend;
-                break;
-
-            case R.id.settingButton:
-                subPopout = popoutSetting;
-                break;
-        }
-
-        PropertyValuesHolder scaleToX = null;
-        PropertyValuesHolder scaleToY = null;
-        if (subPopout){
-            scaleToX = PropertyValuesHolder.ofFloat("scaleX", 0.8f, 1.0f);
-            scaleToY = PropertyValuesHolder.ofFloat("scaleY", 0.8f, 1.0f);
-        }
-
-        if (!subPopout){
-            scaleToX = PropertyValuesHolder.ofFloat("scaleX", 1.0f, 0.8f);
-            scaleToY = PropertyValuesHolder.ofFloat("scaleY", 1.0f, 0.8f);
-        }
-
-        ObjectAnimator buttonScaleAnim = new ObjectAnimator();
-        buttonScaleAnim = ObjectAnimator.ofPropertyValuesHolder(target, scaleToX, scaleToY);
-        buttonScaleAnim.setDuration(100);
-        buttonScaleAnim.start();
-    }
-
-     */
 }

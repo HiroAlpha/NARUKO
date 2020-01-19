@@ -17,7 +17,7 @@
         android:backgroundTint="#1DA1F2"
         app:selectorImage="@drawable/image_twitter_logo_blue"
         app:selectorText="Twitterでログイン"
-        app:selectorTextColor="#ffffff"/>
+        app:selectorTextColor="#ffffff" />
 
     <com.hiro_a.naruko.item.SelectorItem
         android:id="@+id/loginSelector_Email"
@@ -29,11 +29,12 @@
         android:backgroundTint="#FF6600"
         app:selectorImage="@drawable/ic_email_black_24dp"
         app:selectorText="メールアドレスでログイン"
-        app:selectorTextColor="#ffffff"/>
+        app:selectorTextColor="#ffffff" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
@@ -46,7 +47,7 @@
 
         <TextView
             android:id="@+id/security"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TextView"

@@ -89,7 +89,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Typeface typeface = Typeface.createFromAsset(getAssets(), "font/anzu_font.ttf"); //フォント
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf"); //フォント
 
         //roomId取得
         Intent room = getIntent();

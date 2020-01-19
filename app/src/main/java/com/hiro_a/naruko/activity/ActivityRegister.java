@@ -6,19 +6,31 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.common.User;
+import com.hiro_a.naruko.view.LoginButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class ActivityRegister extends AppCompatActivity implements View.OnClickListener{
 
@@ -26,10 +38,12 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
     EditText mPasswordField;
     EditText mPasswordField_again;
     EditText mUserNameField;
-    Button mRegisterButton;
+    LoginButton mRegisterButton;
 
     FirebaseAuth mFirebaseAuth;
-    DatabaseReference mFirebaseDatabaseRef;
+    FirebaseFirestore mFirebaseDatabase;
+
+    String TAG = "NARUKO_DEBUG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +51,22 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         //登録フォーム
-        mEmailField = (EditText)findViewById(R.id.email_login);
-        mPasswordField = (EditText)findViewById(R.id.password_login);
-        mPasswordField_again = (EditText)findViewById(R.id.password_reg_again);
-        mUserNameField = (EditText)findViewById(R.id.username_reg);
+        mEmailField = (EditText)findViewById(R.id.register_email_edittext);
+        mPasswordField = (EditText)findViewById(R.id.register_password_edittext);
+        mPasswordField_again = (EditText)findViewById(R.id.register_password_edittext_check);
+        mUserNameField = (EditText)findViewById(R.id.register_username_edittext);
 
-        mRegisterButton = (Button)findViewById(R.id.user_reg_button);
+        mRegisterButton = (LoginButton)findViewById(R.id.emailRegisterButton);
         mRegisterButton.setOnClickListener(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        mFirebaseDatabase = FirebaseFirestore.getInstance();
     }
 
     @Override
     public void onClick(View view){
         switch (view.getId()){
-            case R.id.user_reg_button:
+            case R.id.emailRegisterButton:
                 createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
                 break;
         }
@@ -98,13 +112,42 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
             check = false;
         }
 
+        String userName = mUserNameField.getText().toString();
+        if (TextUtils.isEmpty(userName)){
+            mPasswordField_again.setError("ユーザー名が入力されていません");
+            check = false;
+        }
+
         return check;
     }
 
     public void makeUser(String userId, String username, String email){
-        User user = new User(username, email);
+        CollectionReference userRef = mFirebaseDatabase.collection("users");
 
-        mFirebaseDatabaseRef.child("Users").child(userId).child("_id").setValue(userId);
-        mFirebaseDatabaseRef.child("Users").child(userId).child("userName").setValue(username);
+        SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
+        String time = SD.format(new Date()).toString();
+
+        Map<String, Object> newUser = new HashMap<>();
+        newUser.put("datetime", time);
+        newUser.put("userId", userId);
+        newUser.put("userName", username);
+
+        userRef.document(userId).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void done) {
+
+
+                //ログイン画面へ
+                Intent selectLogin = new Intent(ActivityRegister.this, ActivitySelectLogin.class);
+                selectLogin.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(selectLogin);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "Error adding User to Database", e);
+                Log.w(TAG, "---------------------------------");
+            }
+        });
     }
 }

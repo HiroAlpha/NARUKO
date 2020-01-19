@@ -6,11 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".activity.ActivityMenu">
 
-<!--    <fragment-->
-<!--        android:id="@+id/menuFragment"-->
-<!--        android:name="com.hiro_a.naruko.Fragment.menuRoom"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+    <com.hiro_a.naruko.view.BackgroundView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/image_chat_background"/>
 
     <FrameLayout
         android:id="@+id/menu_fragment"
@@ -41,7 +40,7 @@
             android:gravity="center"
             android:tint="@android:color/background_light"
             app:iconImage="@drawable/ic_person_add_black_24dp"
-            app:iconText="部員登録" />
+            app:iconText="部員検索" />
 
         <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/friendButton"

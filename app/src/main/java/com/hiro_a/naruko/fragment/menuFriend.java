@@ -1,5 +1,6 @@
-package com.hiro_a.naruko.Fragment;
+package com.hiro_a.naruko.fragment;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -11,13 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.common.FriendId;
 import com.hiro_a.naruko.common.MenuFriendData;
-import com.hiro_a.naruko.view.RecyclerView.LinearLayoutAdapter;
+import com.hiro_a.naruko.view.RecyclerView.FriendView.LinearLayoutAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +67,7 @@ public class menuFriend extends Fragment {
     }
 
     //フレンド取得（自動更新はしない）
-    public void getFriend(final View view){
+    private void getFriend(final View view){
         friendList = new ArrayList<>();
         friendRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -76,6 +77,10 @@ public class menuFriend extends Fragment {
 
                     if (document.exists()){
                         final List<String> friendArray = (List<String>) document.get("friend");
+
+                        if (friendArray == null){
+                            return;
+                        }
 
                         friendData.setFriendArraySize(friendArray.size());
                         friendData.setView(view);
@@ -112,12 +117,16 @@ public class menuFriend extends Fragment {
                 DocumentSnapshot document = task.getResult();
 
                 if (document.exists()){
-                    int friendImage = R.mipmap.ic_launcher; //画像
+                    String friendImage = document.getString("userImage"); //画像
                     String friendName = document.getString("userName"); //名前
                     String friendId = friendData.getFriendId(); //ID
 
                     MenuFriendData data = new MenuFriendData();
-                    data.setFriendImage(friendImage);
+                    if (friendImage ==null){
+                        data.setFriendImage("noImage");
+                    }else {
+                        data.setFriendImage(friendImage);
+                    }
                     data.setFriendName(friendName);
                     data.setFriendId(friendId);
 
