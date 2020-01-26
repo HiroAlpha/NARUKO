@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -65,6 +66,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     EditText mMessageText;
     ImageView mSendMessageButton;
     ImageView mMenuSlideButton;
+    RecyclerView userIconRecyclerView;
     CircularImageView userImageView01, userImageView02, userImageView03;
 
     ChatCanvasView canvasView;
@@ -124,6 +126,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         menuAnimLength = -(screenWidth/2)+20;
 
         //ユーザーアイコン
+        //updateUserIcon();
+
         userImageView01 = (CircularImageView) findViewById(R.id.userImageView01);
         userImageView01.setBorderColor(userColor);
         userImageView01.setImageResource(R.drawable.ic_launcher_background);
@@ -198,47 +202,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
-    }
-
-    private void viewFloating(){
-        //ユーザーアイコン上下アニメーション
-//        ObjectAnimator iconFloatingUp = ObjectAnimator.ofFloat(userImageView01,"translationY", topLeftUserX-8, topLeftUserY+8);
-//        iconFloatingUp.setDuration(1000);
-//        iconFloatingUp.setRepeatCount(ObjectAnimator.INFINITE);
-//        iconFloatingUp.setRepeatMode(ObjectAnimator.REVERSE);
-//        iconFloatingUp.start();
-    }
-
-    private void viewRotate(){
-        //文字列回転アニメーション
-        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.view_rotation);    //アニメーションはR.anim.view_rotationから
-        canvasView.startAnimation(rotate);
-
-        //履歴回転アニメーション（ずらす）
-        Animation rotate_instant = AnimationUtils.loadAnimation(this, R.anim.view_rotation_instant);    //アニメーションはR.anim.view_rotation_instantから
-        canvasViewHistory.startAnimation(rotate_instant);
-    }
-
-    private void viewSlide(){
-        //入力メニュースライドアニメーション
-        if (menuPos){
-            ObjectAnimator translate = ObjectAnimator.ofFloat(menuView, "translationX", 0, menuAnimLength);
-            translate.setDuration(700);
-            translate.start();
-            menuPos = false;
-
-        } else if (!menuPos){
-            ObjectAnimator translate = ObjectAnimator.ofFloat(menuView, "translationX", menuAnimLength, 0);
-            translate.setDuration(700);
-            translate.start();
-            menuPos = true;
-        }
-    }
-
-    //dp→px変換
-    public static float convertDp2Px(float dp, Context context){
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
     }
 
     //メッセージ送信
@@ -320,5 +283,43 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+    }
+
+    private void updateUserIcon(){
+
+    }
+
+    //dp→px変換
+    public static float convertDp2Px(float dp, Context context){
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return dp * metrics.density;
+    }
+
+    //↓以下アニメーション
+
+    private void viewRotate(){
+        //文字列回転アニメーション
+        Animation rotate = AnimationUtils.loadAnimation(this, R.anim.view_rotation);    //アニメーションはR.anim.view_rotationから
+        canvasView.startAnimation(rotate);
+
+        //履歴回転アニメーション（ずらす）
+        Animation rotate_instant = AnimationUtils.loadAnimation(this, R.anim.view_rotation_instant);    //アニメーションはR.anim.view_rotation_instantから
+        canvasViewHistory.startAnimation(rotate_instant);
+    }
+
+    private void viewSlide(){
+        //入力メニュースライドアニメーション
+        if (menuPos){
+            ObjectAnimator translate = ObjectAnimator.ofFloat(menuView, "translationX", 0, menuAnimLength);
+            translate.setDuration(700);
+            translate.start();
+            menuPos = false;
+
+        } else if (!menuPos){
+            ObjectAnimator translate = ObjectAnimator.ofFloat(menuView, "translationX", menuAnimLength, 0);
+            translate.setDuration(700);
+            translate.start();
+            menuPos = true;
+        }
     }
 }

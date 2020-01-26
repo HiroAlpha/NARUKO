@@ -16,7 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivitySelectLogin;
-import com.hiro_a.naruko.view.LoginButton;
+import com.hiro_a.naruko.view.CustomButtonLogin;
 
 public class loginEmail extends Fragment implements View.OnClickListener {
     private EditText mEmailField, mPasswordField;
@@ -42,7 +42,7 @@ public class loginEmail extends Fragment implements View.OnClickListener {
         mPasswordField.setText("naruko");
 
         //ログインボタン
-        LoginButton mLoginButton = (LoginButton) view.findViewById(R.id.emailLoginButton);
+        CustomButtonLogin mLoginButton = (CustomButtonLogin) view.findViewById(R.id.emailLoginButton);
         mLoginButton.setOnTouchListener(new View.OnTouchListener() {
             int defaultButtonColor = Color.parseColor("#FF6600");
 

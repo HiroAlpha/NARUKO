@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class IconRecyclerViewLayoutManger extends RecyclerView.LayoutManager {
 
+    String TAG = "NARUKO_DEBUG";
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(RecyclerView.LayoutParams.WRAP_CONTENT, RecyclerView.LayoutParams.WRAP_CONTENT);
@@ -95,10 +97,10 @@ public class IconRecyclerViewLayoutManger extends RecyclerView.LayoutManager {
 //            Log.d("DEBUG", "Bottom:"+bottom);
 //            Log.d("DEBUG", "------------------");
         }
-        Log.d("DEBUG", "Screen Width:"+screenWidth);
-        Log.d("DEBUG", "Screen Height:"+screenHeight);
-        Log.d("DEBUG", "Item Width:"+viewWidth);
-        Log.d("DEBUG", "Item Height:"+viewHeight);
+//        Log.d(TAG, "Screen Width:"+screenWidth);
+//        Log.d(TAG, "Screen Height:"+screenHeight);
+//        Log.d(TAG, "Item Width:"+viewWidth);
+//        Log.d(TAG, "Item Height:"+viewHeight);
     }
 /*
     @Override

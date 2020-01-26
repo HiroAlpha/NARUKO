@@ -11,7 +11,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:background="#FC7EAB"
+        android:background="#D66A91"
         android:gravity="center">
 
         <FrameLayout
@@ -48,7 +48,7 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"></androidx.appcompat.widget.Toolbar>
+                android:layout_height="?attr/actionBarSize" />
 
             <TextView
                 android:id="@+id/title_userProfile"

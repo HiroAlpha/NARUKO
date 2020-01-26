@@ -11,18 +11,18 @@ import android.widget.Button;
 
 import androidx.appcompat.widget.AppCompatButton;
 
-public class LoginButton extends AppCompatButton {
+public class CustomButtonLogin extends AppCompatButton {
     int defaultButtonColor;
 
-    public LoginButton(Context context) {
+    public CustomButtonLogin(Context context) {
         super(context);
     }
 
-    public LoginButton(Context context, AttributeSet attrs) {
+    public CustomButtonLogin(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public LoginButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomButtonLogin(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

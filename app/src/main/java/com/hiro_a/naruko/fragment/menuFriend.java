@@ -1,5 +1,6 @@
 package com.hiro_a.naruko.fragment;
 
+import android.app.ProgressDialog;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,6 +69,12 @@ public class menuFriend extends Fragment {
 
     //フレンド取得（自動更新はしない）
     private void getFriend(final View view){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("勇者部員の情報を読み込み中...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
+
         friendList = new ArrayList<>();
         friendRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -97,6 +104,8 @@ public class menuFriend extends Fragment {
 
                             if (!TextUtils.isEmpty(friendId)) {
                                 getFriendInfo();
+
+                                progressDialog.dismiss();
                             }
                         }
                     }else {

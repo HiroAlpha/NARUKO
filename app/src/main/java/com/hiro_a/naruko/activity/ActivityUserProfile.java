@@ -83,9 +83,6 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         userId = user.getUid();
         userEmail = user.getEmail();
         userImage = user.getPhotoUrl();
-        if (userImage.toString().contains("pbs.twimg.com")){
-            userImage = Uri.parse(userImage.toString().replace("_normal", ""));
-        }
         emailVerified = user.isEmailVerified();
 
         mFirebaseDatabase = FirebaseFirestore.getInstance();
@@ -97,8 +94,14 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         title_userProfile.setOnClickListener(this);
 
         setting_userImage = (CircularImageView) findViewById(R.id.setting_userImageview);
-        new DownloadImageTask((ImageView)findViewById(R.id.setting_userImageview))
-                .execute(userImage.toString());
+        if (userImage==null){
+            setting_userImage.setImageResource(R.drawable.ic_person_black_24dp);
+        }else {
+            if (userImage.toString().contains("pbs.twimg.com")){
+                userImage = Uri.parse(userImage.toString().replace("_normal", ""));
+            }
+            new DownloadImageTask((ImageView)findViewById(R.id.setting_userImageview)).execute(userImage.toString());
+        }
 
         setting_chageImage = (ImageView)findViewById(R.id.setting_changeImage);
         setting_chageImage.setOnClickListener(this);
@@ -228,12 +231,6 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
                     if (document.exists()){
                         String userName = document.getString("userName");
                         title_userProfile.setText(userName);
-
-                        Log.d(TAG, "userId: "+userId);
-                        Log.d(TAG, "userEmail: "+userEmail);
-                        Log.d(TAG, "userImage: "+userImage.toString());
-                        Log.d(TAG, "---------------------------------");
-
                     }else {
                         Log.w(TAG, "No such document");
                     }
@@ -248,16 +245,23 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
     public void settingRecyclerView(){
         //リスト
         List<String> titleData = new ArrayList<>(Arrays.asList(
-                "ユーザーID", "メールアドレス"
+                "ユーザーID", "メールアドレス", "メールアドレス認証"
         ));
 
         //リスト
         List<String> userData = new ArrayList<>();
-        userData.add(userId);
+        userData.add(userId);   //ユーザーID
+        //メールアドレス
         if (userEmail == null){
             userData.add("メールアドレスが登録されていません");
         } else {
             userData.add(userEmail);
+        }
+        //メールアドレス認証
+        if (emailVerified){
+            userData.add("認証済み");
+        } else {
+            userData.add("認証されていません");
         }
 
         //RecyclerView

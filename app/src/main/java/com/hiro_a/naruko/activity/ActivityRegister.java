@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -18,13 +17,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.common.User;
-import com.hiro_a.naruko.view.LoginButton;
+import com.hiro_a.naruko.view.CustomButtonLogin;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,7 +34,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
     EditText mPasswordField;
     EditText mPasswordField_again;
     EditText mUserNameField;
-    LoginButton mRegisterButton;
+    CustomButtonLogin mRegisterButton;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseFirestore mFirebaseDatabase;
@@ -56,7 +52,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         mPasswordField_again = (EditText)findViewById(R.id.register_password_edittext_check);
         mUserNameField = (EditText)findViewById(R.id.register_username_edittext);
 
-        mRegisterButton = (LoginButton)findViewById(R.id.emailRegisterButton);
+        mRegisterButton = (CustomButtonLogin)findViewById(R.id.emailRegisterButton);
         mRegisterButton.setOnClickListener(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();

@@ -1,9 +1,14 @@
 package com.hiro_a.naruko.item;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,5 +53,12 @@ public class MenuItem extends RelativeLayout {
 
         TextView iconTextView = (TextView)findViewById(R.id.iconTextView);
         iconTextView.setText(iconText);
+    }
+
+    @Override
+    public boolean performClick() {
+        super.performClick();
+
+        return true;
     }
 }

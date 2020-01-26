@@ -1,5 +1,6 @@
 package com.hiro_a.naruko.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,8 +34,6 @@ import java.util.List;
 public class menuRoom extends Fragment {
     List<MenuRoomData> dataList;
 
-    ImageView mGroupAddButton;
-
     FirebaseFirestore mFirebaseDatabase;
     CollectionReference roomRef;
 
@@ -59,6 +58,11 @@ public class menuRoom extends Fragment {
 
     //グループ取得
     public void updateRoom(final View view){
+        final ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle("チャットルーム読み込み中...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+
         dataList = new ArrayList<>();
         roomRef.orderBy("datetime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -89,14 +93,14 @@ public class menuRoom extends Fragment {
                     }
                 }
 
-                updateMenu(view);
+                updateMenu(view, progressDialog);
 
             }
         });
     }
 
     //View生成
-    public void updateMenu(View view){
+    public void updateMenu(View view, ProgressDialog progressDialog){
         //RecyclerView
         final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomRecyclerView);
 
@@ -119,5 +123,7 @@ public class menuRoom extends Fragment {
         menuChatRecyclerView.setLayoutManager(layoutManager);
 
         menuChatRecyclerView.setHasFixedSize(true);
+
+        progressDialog.dismiss();
     }
 }
