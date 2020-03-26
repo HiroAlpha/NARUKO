@@ -2,4 +2,10 @@
     <string name="app_name">Naruko_Animation</string>
     <string name="CONSUMER_KEY" translatable="false">lLjQWpD18MPOtuuP6OkF7Jm25</string>
     <string name="CONSUMER_KEY_SECRET" translatable="false">ih5l2QYhjq2HBvwNlmmh60YqyzbllfBdDV6MiSSl8ILpmi0ceo</string>
+    <string name="LOGIN_KEY" translatable="false">2014101720141216</string>
+    <string name="roomAddDialog">部屋の作成は１日３回までとなります。</string>
+    <string-array name="off_on">
+        <item>オフ</item>
+        <item>オン</item>
+    </string-array>
 </resources>

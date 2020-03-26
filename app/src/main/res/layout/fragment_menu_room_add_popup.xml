@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.isseiaoki.simplecropview.CropImageView
+        android:id="@+id/menu_roomRegister_cropImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        custom:scv_crop_mode="circle_square"
+        custom:scv_initial_frame_scale="0.75" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_room_add_popup_top">
+
+            <com.hiro_a.naruko.view.CustomImageView
+                android:id="@+id/menu_roomRegister_cropRotateRight"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_room_add_popup_top_content_01"
+                android:src="@drawable/ic_rotate_right_black_24dp"
+                android:tint="#FFFFFF" />
+
+            <com.hiro_a.naruko.view.CustomImageView
+                android:id="@+id/menu_roomRegister_cropRotateLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:background="@drawable/background_room_add_popup_top_content_02"
+                android:src="@drawable/ic_rotate_left_black_24dp"
+                android:tint="#FFFFFF" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_room_add_popup_bottom">
+
+            <com.hiro_a.naruko.view.CustomImageView
+                android:id="@+id/menu_roomRegister_cropFinish"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_marginTop="1dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_check_black_24dp"
+                android:tint="#FFFFFF" />
+        </TableRow>
+
+    </TableLayout>
+
+
+</LinearLayout>

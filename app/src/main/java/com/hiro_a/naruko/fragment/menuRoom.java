@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,29 +33,67 @@ import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class menuRoom extends Fragment {
-    List<MenuRoomData> dataList;
+public class menuRoom extends Fragment implements View.OnClickListener {
+    private int favAreaHeight;
+    private List<MenuRoomData> dataList;
 
-    FirebaseFirestore mFirebaseDatabase;
-    CollectionReference roomRef;
+    private LinearLayout favArea;
+    private Button favButton;
 
-    String TAG = "NARUKO_DEBUG";
+    private FirebaseFirestore mFirebaseDatabase;
+    private CollectionReference roomRef;
+
+    private String TAG = "NARUKO_DEBUG";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_menu_chat, container, false);
+        return inflater.inflate(R.layout.fragment_menu_room, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+//        favArea = (LinearLayout) view.findViewById(R.id.menu_room_favArea);
+//        favAreaHeight = favArea.getHeight();
+//
+//        favButton = (Button) view.findViewById(R.id.menu_room_favButton);
+//        favButton.setOnClickListener(this);
+
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
         updateRoom(view);
+    }
+
+    @Override
+    public void onClick(View view) {
+//        switch (view.getId()){
+//            case R.id.menu_room_favButton:
+//                //お気に入りが開いている時
+//                if (favArea.getHeight() > 0){
+//                    Log.d(TAG, "お気に入り開き");
+//                    favButton.setBackgroundResource(R.drawable.ic_expand_less_black_24dp);
+//
+//                    //圧縮アニメーション
+//                    AccordionAnimation closeAnimation = new AccordionAnimation(favArea, -favAreaHeight, favAreaHeight);
+//                    closeAnimation.setDuration(500);
+//                    favArea.startAnimation(closeAnimation);
+//
+//                } else {
+//                    Log.d(TAG, "お気に入り閉まり");
+//                    favButton.setBackgroundResource(R.drawable.ic_expand_more_black_24dp);
+//
+//                    //展開アニメーション
+//                    AccordionAnimation openAnimation = new AccordionAnimation(favArea, favAreaHeight, 0);
+//                    openAnimation.setDuration(500);
+//                    favArea.startAnimation(openAnimation);
+//
+//                }
+//                break;
+//        }
     }
 
     //グループ取得
@@ -68,10 +108,10 @@ public class menuRoom extends Fragment {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
+                    Log.w(TAG, "Error Listening Room", e);
                     return;
                 }
-
+                Log.d(TAG, "チャットルーム読み込み");
                 for (DocumentChange document : snapshots.getDocumentChanges()) {
                     switch (document.getType()){
                         case ADDED:
@@ -86,23 +126,29 @@ public class menuRoom extends Fragment {
 
                                 dataList.add(data);
                                 Log.d(TAG, "RoomName: "+roomName);
-                                Log.d(TAG, "RoomId: "+roomId);
-                                Log.d(TAG, "---------------------------------");
                             }
                             break;
                     }
                 }
+                Log.d(TAG, "---------------------------------");
 
-                updateMenu(view, progressDialog);
+                TextView no_room = (TextView) view.findViewById(R.id.no_room);
+                if (!dataList.isEmpty()){
+                    no_room.setVisibility(View.GONE);
+                    updateFavMenu(view, progressDialog);
+                } else {
+                    no_room.setVisibility(View.VISIBLE);
+                    progressDialog.dismiss();
+                }
 
             }
         });
     }
 
-    //View生成
-    public void updateMenu(View view, ProgressDialog progressDialog){
+    //お気に入り生成
+    public void updateFavMenu(View view, ProgressDialog progressDialog){
         //RecyclerView
-        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomRecyclerView);
+        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomFavRecyclerView);
 
         //Adapter
         IconRecyclerViewAdapter adapter = new IconRecyclerViewAdapter(dataList){

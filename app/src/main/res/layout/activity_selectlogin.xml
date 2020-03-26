@@ -16,16 +16,25 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/naruko_icon"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+<!--        <ImageView-->
+<!--            android:id="@+id/naruko_image"-->
+<!--            android:layout_width="100dp"-->
+<!--            android:layout_height="100dp"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:layout_marginTop="75dp"-->
+<!--            app:srcCompat="@drawable/image_menu_flower"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:textAlignment="center"/>-->
+
+        <ImageView
+            android:id="@+id/naruko_image_test"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="75dp"
-            android:background="@drawable/background_login_narukoicon"
+            app:srcCompat="@mipmap/ic_launcher_foreground"
             android:gravity="center_vertical"
-            android:text="NARUKO Icon"
-            android:textAlignment="center" />
+            android:textAlignment="center"/>
 
         <TextView
             android:id="@+id/title_naruko"

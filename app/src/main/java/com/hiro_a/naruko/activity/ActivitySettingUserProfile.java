@@ -2,10 +2,8 @@ package com.hiro_a.naruko.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.ArrayMap;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,19 +34,15 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.common.User;
 import com.hiro_a.naruko.task.DownloadImageTask;
 import com.hiro_a.naruko.view.RecyclerView.ProfileView.LinearLayoutAdapter;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class ActivityUserProfile extends AppCompatActivity implements View.OnClickListener {
+public class ActivitySettingUserProfile extends AppCompatActivity implements View.OnClickListener {
     private String userId;
     private String userEmail;
     private Uri userImage;
@@ -278,10 +272,10 @@ public class ActivityUserProfile extends AppCompatActivity implements View.OnCli
         settingProfileRecyclerView.setAdapter(adapter);
 
         //LayoutManager
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ActivityUserProfile.this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(ActivitySettingUserProfile.this);
         settingProfileRecyclerView.setLayoutManager(layoutManager);
 
-        RecyclerView.ItemDecoration devideLine = new DividerItemDecoration(ActivityUserProfile.this, DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration devideLine = new DividerItemDecoration(ActivitySettingUserProfile.this, DividerItemDecoration.VERTICAL);
         settingProfileRecyclerView.addItemDecoration(devideLine);
 
         settingProfileRecyclerView.setHasFixedSize(true);

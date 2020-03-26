@@ -49,11 +49,22 @@ import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_Line;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
     int statusBarHeight;
@@ -208,10 +219,12 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     public void sendMessage(){
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
+        String globalIP = getPublicIPAddress();
         String text = mMessageText.getText().toString();
 
         Map<String, Object> message = new HashMap<>();
         message.put("datetime", time);
+        message.put("globalIP", globalIP);
         message.put("userId", userId);
         message.put("message", text);
 
@@ -252,10 +265,12 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                     switch (document.getType()){
                         case ADDED:
                             String datetime = document.getDocument().getString("datetime");
+                            String globalIP = document.getDocument().getString("globalIP");
                             String name = document.getDocument().getString("userId");
                             String text = document.getDocument().getString("message");
 
                             Log.d(TAG, "PostedTime: "+datetime);
+                            Log.d(TAG, "GlobalIP: "+globalIP);
                             Log.d(TAG, "UserId: "+name);
                             Log.d(TAG, "Message: "+text);
                             Log.d(TAG, "---------------------------------");
@@ -278,6 +293,9 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                                 (canvasViewUserIconLine).getUserGrid(grid);
                             }
                             break;
+
+                        case REMOVED:
+                            break;
                     }
                 }
 
@@ -287,6 +305,43 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
     private void updateUserIcon(){
 
+    }
+
+    //グローバルIP
+    public static String getPublicIPAddress(){
+        String value = null;
+        ExecutorService es = Executors.newSingleThreadExecutor();
+        Future<String> result = es.submit(new Callable<String>() {
+            public String call() throws Exception {
+                try {
+                    URL url = new URL("http://whatismyip.akamai.com/");
+                    HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                    try {
+                        InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                        BufferedReader r = new BufferedReader(new InputStreamReader(in));
+                        StringBuilder total = new StringBuilder();
+                        String line;
+                        while ((line = r.readLine()) != null) {
+                            total.append(line).append('\n');
+                        }
+                        urlConnection.disconnect();
+                        return total.toString();
+                    }finally {
+                        urlConnection.disconnect();
+                    }
+                }catch (IOException e){
+                    Log.e("Public IP: ",e.getMessage());
+                }
+                return null;
+            }
+        });
+        try {
+            value = result.get();
+        } catch (Exception e) {
+            // failed
+        }
+        es.shutdown();
+        return value;
     }
 
     //dp→px変換

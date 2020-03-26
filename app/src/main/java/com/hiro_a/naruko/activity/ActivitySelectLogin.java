@@ -1,6 +1,7 @@
 package com.hiro_a.naruko.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,8 +26,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.hiro_a.naruko.fragment.loginSelect;
 import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.fragment.loginSelect;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,6 +36,8 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActivitySelectLogin extends AppCompatActivity {
+    SharedPreferences userData;
+
     FirebaseAuth mFirebaseAuth;
     FirebaseFirestore mFirebaseDatabase;
 
@@ -60,6 +63,10 @@ public class ActivitySelectLogin extends AppCompatActivity {
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseDatabase = FirebaseFirestore.getInstance();
+
+//        Log.d(TAG, "wifi: " + getWifiIPAddress(getApplicationContext()));
+//        Log.d(TAG, "ipv4: " + getLocalIpv4Address());
+//        Log.d(TAG, "public: " + getPublicIPAddress());
     }
 
     //Emailログインフロー
@@ -247,4 +254,40 @@ public class ActivitySelectLogin extends AppCompatActivity {
 
         return "FRAG_NOT_VISIBLE";
     }
+    /*
+    //wifiアドレス取得
+    private static String getWifiIPAddress(Context context) {
+        WifiManager manager = (WifiManager)context.getSystemService(WIFI_SERVICE);
+        WifiInfo info = manager.getConnectionInfo();
+        int ipAddr = info.getIpAddress();
+        String wifiIp = String.format("%02d.%02d.%02d.%02d", (ipAddr>>0)&0xff, (ipAddr>>8)&0xff, (ipAddr>>16)&0xff, (ipAddr>>24)&0xff);
+
+        if (wifiIp.equals("00.00.00.00")){
+            return "none";
+        } else {
+            return wifiIp;
+        }
+    }
+
+    //ipv4アドレス取得
+    public String getLocalIpv4Address(){
+        try{
+            for (Enumeration<NetworkInterface> networkInterfaceEnum = NetworkInterface.getNetworkInterfaces(); networkInterfaceEnum.hasMoreElements();){
+                NetworkInterface networkInterface = networkInterfaceEnum.nextElement();
+                for (Enumeration<InetAddress> ipAddressEnum = networkInterface.getInetAddresses(); ipAddressEnum.hasMoreElements();) {
+                    InetAddress inetAddress = (InetAddress) ipAddressEnum.nextElement();
+
+                    //ipv4かどうか
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex){
+            Log.w(TAG, "Error getting ipv4 address", ex);
+        }
+
+        return "none";
+    }
+    */
 }

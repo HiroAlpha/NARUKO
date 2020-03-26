@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center|start"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/menu_roomRegister_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/allerta"
+        android:text="ルーム作成"
+        android:textAlignment="center"
+        android:textSize="24sp" />
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="5dp">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/menu_roomRegister_imageView"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            app:civ_shadow="false"
+            app:srcCompat="@drawable/ic_launcher_background" />
+
+        <ImageView
+            android:id="@+id/menu_roomRegister_changeImage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="bottom|end"
+            android:tint="#5F5F5F"
+            app:srcCompat="@drawable/ic_perm_media_black_24dp" />
+
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/menu_roomRegister_roomName"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/background_login_selectbutton"
+        android:backgroundTint="#ffffff"
+        android:ems="10"
+        android:fontFamily="@font/allerta"
+        android:hint="部屋名（全半角15文字以内）"
+        android:maxLength="15"
+        android:maxLines="1"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp" />
+
+    <CheckBox
+        android:id="@+id/menu_roomRegister_passwordCheckBox"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:fontFamily="@font/allerta"
+        android:text="パスワードを有効化" />
+
+    <EditText
+        android:id="@+id/menu_roomRegister_password"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/background_login_selectbutton"
+        android:backgroundTint="#ffffff"
+        android:ems="10"
+        android:fontFamily="@font/allerta"
+        android:hint="パスワード（半角英数8文字以内）"
+        android:inputType="textPassword"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp" />
+
+    <com.hiro_a.naruko.view.CustomButton
+        android:id="@+id/menu_roomRegister_button"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/background_login_button"
+        android:backgroundTint="#808080"
+        android:gravity="center_vertical"
+        android:text="部屋を作成"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

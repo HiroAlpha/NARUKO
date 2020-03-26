@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.view.CustomButtonLogin;
+import com.hiro_a.naruko.view.CustomButton;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,7 +34,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
     EditText mPasswordField;
     EditText mPasswordField_again;
     EditText mUserNameField;
-    CustomButtonLogin mRegisterButton;
+    CustomButton mRegisterButton;
 
     FirebaseAuth mFirebaseAuth;
     FirebaseFirestore mFirebaseDatabase;
@@ -52,7 +52,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         mPasswordField_again = (EditText)findViewById(R.id.register_password_edittext_check);
         mUserNameField = (EditText)findViewById(R.id.register_username_edittext);
 
-        mRegisterButton = (CustomButtonLogin)findViewById(R.id.emailRegisterButton);
+        mRegisterButton = (CustomButton)findViewById(R.id.emailRegisterButton);
         mRegisterButton.setOnClickListener(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
@@ -122,6 +122,9 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
 
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
+
+        //String ipAddress = getIp();
+        //Log.d(TAG, "IP: " + ipAddress);
 
         Map<String, Object> newUser = new HashMap<>();
         newUser.put("datetime", time);

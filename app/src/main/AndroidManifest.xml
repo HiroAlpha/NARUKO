@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.hiro_a.naruko">
 
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="NARUKO"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".activity.ActivitySelectLogin"
-            android:screenOrientation="portrait">
+        android:theme="@style/AppTheme"
+        android:screenOrientation="portrait"
+        tools:replace="android:label">
+        <activity android:name=".activity.ActivitySelectLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW"/>
@@ -22,21 +29,21 @@
         </activity>
 
         <activity android:name=".activity.ActivityRegister"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".activity.ActivityMenu"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity android:name=".activity.ActivityMenu"/>
 
         <activity android:name=".activity.ActivityChat"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".activity.ActivityUserProfile"
+        <activity android:name=".activity.ActivitySetting"
+            android:theme="@style/SettingTheme"
+            android:label="設定"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity android:name=".activity.ActivitySettingUserProfile"
             android:theme="@style/SettingTheme"
             android:label="ユーザー設定"
-            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
     </application>

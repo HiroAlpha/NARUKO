@@ -7,22 +7,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.widget.AppCompatButton;
 
-public class CustomButtonLogin extends AppCompatButton {
+public class CustomButton extends AppCompatButton {
     int defaultButtonColor;
 
-    public CustomButtonLogin(Context context) {
+    public CustomButton(Context context) {
         super(context);
     }
 
-    public CustomButtonLogin(Context context, AttributeSet attrs) {
+    public CustomButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomButtonLogin(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
