@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.common.MenuRoomData;
 
@@ -38,7 +40,14 @@ public class IconRecyclerViewAdapter extends RecyclerView.Adapter<IconRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull IconRecyclerViewHolder holder, int position) {
-        holder.imageView.setImageResource(list.get(position).getInt());
+        if (list.get(position).getImage() == null){
+            holder.imageView.setImageResource(R.drawable.ic_launcher_background);
+        } else {
+            Glide.with(holder.imageView.getContext())
+                    .using(new FirebaseImageLoader())
+                    .load(list.get(position).getImage())
+                    .into(holder.imageView);
+        }
         holder.textView.setText(list.get(position).getTitle());
     }
 

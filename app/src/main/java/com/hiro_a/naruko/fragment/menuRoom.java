@@ -2,14 +2,18 @@ package com.hiro_a.naruko.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +21,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -24,12 +32,17 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityChat;
 import com.hiro_a.naruko.common.MenuRoomData;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +55,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
 
     private FirebaseFirestore mFirebaseDatabase;
     private CollectionReference roomRef;
+    private StorageReference mStorageRefernce;
 
     private String TAG = "NARUKO_DEBUG";
 
@@ -57,14 +71,11 @@ public class menuRoom extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        favArea = (LinearLayout) view.findViewById(R.id.menu_room_favArea);
-//        favAreaHeight = favArea.getHeight();
-//
-//        favButton = (Button) view.findViewById(R.id.menu_room_favButton);
-//        favButton.setOnClickListener(this);
-
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
+
+        mStorageRefernce = FirebaseStorage.getInstance().getReference();
+
         updateRoom(view);
     }
 
@@ -113,40 +124,61 @@ public class menuRoom extends Fragment implements View.OnClickListener {
                 }
                 Log.d(TAG, "チャットルーム読み込み");
                 for (DocumentChange document : snapshots.getDocumentChanges()) {
+                    final String roomName = document.getDocument().getString("roomName");
+                    final String roomId = document.getDocument().getId();
+                    boolean imageIs = document.getDocument().getBoolean("imageIs");
+
                     switch (document.getType()){
                         case ADDED:
-                            String roomName = document.getDocument().getString("roomName");
-                            String roomId = document.getDocument().getId();
-
+                            Log.w(TAG, "Event Occurred: " + roomName + " ADDED");
                             if (!TextUtils.isEmpty(roomName)) {
+                                StorageReference imageReference = mStorageRefernce.child("Images/RoomImages/" + roomId + ".jpg");
+
+                                if (imageIs){
+                                    imageReference = mStorageRefernce.child("Images/RoomImages/" + roomId + ".jpg");
+                                }
+
                                 MenuRoomData data = new MenuRoomData();
-                                data.setInt(R.drawable.ic_launcher_background);
+                                data.setImage(imageReference);
                                 data.setTitle(roomName);
                                 data.setId(roomId);
 
                                 dataList.add(data);
-                                Log.d(TAG, "RoomName: "+roomName);
                             }
+
                             break;
+
+                        case REMOVED:
+                            Log.w(TAG, "Event Occurred: " + roomName + " REMOVED");
+                            break;
+
+                        case MODIFIED:
+                            Log.w(TAG, "Event Occurred: " + roomName + " MODIFIED");
+                            break;
+
                     }
                 }
+                dataCheck(view, progressDialog);
                 Log.d(TAG, "---------------------------------");
-
-                TextView no_room = (TextView) view.findViewById(R.id.no_room);
-                if (!dataList.isEmpty()){
-                    no_room.setVisibility(View.GONE);
-                    updateFavMenu(view, progressDialog);
-                } else {
-                    no_room.setVisibility(View.VISIBLE);
-                    progressDialog.dismiss();
-                }
-
             }
         });
     }
 
-    //お気に入り生成
-    public void updateFavMenu(View view, ProgressDialog progressDialog){
+    //データ有無確認
+    private void dataCheck(View view, ProgressDialog progressDialog){
+        TextView no_room = (TextView) view.findViewById(R.id.no_room);
+        if (!dataList.isEmpty()){
+            no_room.setVisibility(View.GONE);
+            roomRecycleView(view, progressDialog);
+        } else {
+            Log.w(TAG, "WARNING DATALIST is EMPTY");
+            no_room.setVisibility(View.VISIBLE);
+            progressDialog.dismiss();
+        }
+    }
+
+    //RecycleView
+    private void roomRecycleView(View view, ProgressDialog progressDialog){
         //RecyclerView
         final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomFavRecyclerView);
 

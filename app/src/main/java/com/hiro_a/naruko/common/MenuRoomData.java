@@ -1,9 +1,13 @@
 package com.hiro_a.naruko.common;
 
+import android.net.Uri;
+
+import com.google.firebase.storage.StorageReference;
+
 public class MenuRoomData {
     private String title;
     private String id;
-    private int image;
+    private StorageReference image;
 
     public String getTitle(){
         return title;
@@ -13,7 +17,7 @@ public class MenuRoomData {
         return id;
     }
 
-    public int getInt(){
+    public StorageReference getImage(){
         return image;
     }
 
@@ -25,7 +29,7 @@ public class MenuRoomData {
         this.id = id;
     }
 
-    public void setInt(int image){
+    public void setImage(StorageReference image){
         this.image = image;
     }
 }

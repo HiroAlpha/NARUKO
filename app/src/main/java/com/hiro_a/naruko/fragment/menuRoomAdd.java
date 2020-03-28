@@ -35,7 +35,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.task.ButtonColorChangeTask;
 import com.hiro_a.naruko.view.CustomButton;
@@ -65,6 +69,11 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
     FragmentManager manager;
     PopupWindow cropImagePopup;
+
+    StorageReference mStorageRefernce;
+
+    Boolean imageIs = false;
+    Uri trialImageUri;
 
     String TAG = "NARUKO_DEBUG";
     int STRAGEACCESSFRAMEWORK_REQUEST_CODE = 42;
@@ -101,6 +110,8 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         roomAddButton.setOnClickListener(this);
 
         manager = getFragmentManager();
+
+        mStorageRefernce = FirebaseStorage.getInstance().getReference();
     }
 
     public void onClick(View view){
@@ -208,13 +219,15 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
     //部屋画像保存Uri
     public Uri makeNewUri(){
-        String fileName = "sample.jpeg";
+        String fileName = "TrialImage.jpg";
 
-        File dataDir;
-        dataDir = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM, "NARUKO");
-        dataDir.mkdirs();
+        File dataDir = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM, "NARUKO");
+        if(!dataDir.exists()){
+            dataDir.mkdirs();
+            Log.d(TAG, "SUCSESS CREATING DCIM/NARUKO");
+        }
         File filePath = new File(dataDir,fileName);
-        Uri newUri = Uri.fromFile(filePath);
+        trialImageUri = Uri.fromFile(filePath);
 
         ContentValues values = new ContentValues();
         ContentResolver contentResolver = getContext().getContentResolver();
@@ -225,7 +238,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         values.put(MediaStore.Images.Media.DATA, Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/" + "NARUKO/" +fileName);
         contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
 
-        return newUri;
+        return trialImageUri;
     }
 
     //ボタン色変え
@@ -274,23 +287,41 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
 
-        String userId = mFirebaseAuth.getUid();
+        final String userId = mFirebaseAuth.getUid();
 
-        String roomName = roomNameEdittext.getText().toString();
+        final String roomName = roomNameEdittext.getText().toString();
 
         Map<String, Object> newRoom = new HashMap<>();
         newRoom.put("datetime", time);
         newRoom.put("creatorId", userId);
         newRoom.put("roomName", roomName);
+        newRoom.put("imageIs", imageIs);
 
         if (passwordCheckBox.isChecked()){
             String passwordString = passwordEditText.getText().toString();
             newRoom.put("password", passwordString);
         }
 
-        roomRef.document().set(newRoom).addOnSuccessListener(new OnSuccessListener<Void>() {
+        roomRef.add(newRoom).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
-            public void onSuccess(Void aVoid) {
+            public void onSuccess(DocumentReference documentReference) {
+                String docName = documentReference.getId().toString();
+                StorageReference uploadImageRef = mStorageRefernce.child("Images/RoomImages/" + docName + ".jpg");
+                UploadTask uploadTask = uploadImageRef.putFile(trialImageUri);
+                uploadTask.addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error adding RoomImage to Database", e);
+                        Log.w(TAG, "---------------------------------");
+                    }
+                });
+
+                Log.d(TAG, "SCSESS adding Room to Database");
+                Log.d(TAG, "RoomName: " + roomName);
+                Log.d(TAG, "RoomID: " + docName);
+                Log.d(TAG, "CreatorID: " + userId);
+                Log.d(TAG, "---------------------------------");
+
                 //ルームメニューへ
                 Fragment fragmentChat = new menuRoom();
                 FragmentTransaction transactionToChat = manager.beginTransaction();
@@ -324,6 +355,8 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
             cropImagePopup.dismiss();
             roomImagePreview.setImageURI(outputUri);
+
+            imageIs = true;
         }
 
         @Override public void onError(Throwable e) {
