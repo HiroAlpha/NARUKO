@@ -6,10 +6,13 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+
+import com.hiro_a.naruko.task.ConvertDp2Px;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
@@ -18,22 +21,22 @@ public class ChatCanvasView_userIcon_Line extends View {
     int count = 0;
     int radius = 400;
     int textSize = 30;
-    float iconOffset = 0;
-    float lineStartX, lineStartY;
-    double lineEndX, lineEndY;
-    Point userGrid = new Point(0, 0);
-
     int animFps = 90;
     long startTime, elapsedTime;
+    long sleepTime = 1000 / animFps;
+    float iconOffset = 0;
+    float lineStartX, lineStartY;
+    double deg = 90;
+    double lineEndX, lineEndY;
     boolean isRunning = false;
+    boolean touching = false;
+    Point userIconGrid = new Point(0, 0);
+    Point userIconMovingGrid = new Point(0, 0);
 
     Paint linePaint;
     Paint iconOuterCirclePaint;
 
     Path iconOuterCirclePath;
-
-    double deg = 90;
-    long sleepTime = 1000 / animFps;
 
     public ChatCanvasView_userIcon_Line(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,6 +56,7 @@ public class ChatCanvasView_userIcon_Line extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         canvas.rotate(90);
 
         if (isRunning){
@@ -77,6 +81,9 @@ public class ChatCanvasView_userIcon_Line extends View {
             }else {
                 isRunning = false;
             }
+        }else if (touching) {
+            canvas.drawLine((float)(userIconMovingGrid.y + iconOffset + 45), -(float)userIconMovingGrid.x - iconOffset, -(float)lineEndX, -(float)lineEndY, linePaint);
+            touching = false;
         }else {
             lineEndX = cos((Math.PI/180)*deg)*radius+(textSize/2)+45;
             lineEndY = sin((Math.PI/180)*deg)*radius-(textSize/2);
@@ -86,7 +93,7 @@ public class ChatCanvasView_userIcon_Line extends View {
     }
 
     public void getUserGrid(Point grid){
-        userGrid = new Point(grid.y, -grid.x);
+        userIconGrid = new Point(grid.y, -grid.x);
 
         //1回目の文字列は既定の半径、2回目以降はTextSize分ずらす
         if (count < 6){
@@ -94,18 +101,21 @@ public class ChatCanvasView_userIcon_Line extends View {
         }
         radius = ((count-1) * (textSize+10)) + 400;
 
-        iconOffset = convertDp2Px(50, getContext());
-        lineStartX = userGrid.x;
-        lineStartY = userGrid.y;
+        ConvertDp2Px convertDp2Px = new ConvertDp2Px();
+        iconOffset = convertDp2Px.convert(50, getContext());
+        lineStartX = userIconGrid.x;
+        lineStartY = userIconGrid.y;
 
         isRunning = true;
         deg = 90;
         invalidate();
     }
 
-    //dp→px変換
-    public static float convertDp2Px(float dp, Context context){
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
+    public void getUserGridMoving(Point grid){
+        userIconMovingGrid = grid;
+
+
+        touching = true;
+        invalidate();
     }
 }

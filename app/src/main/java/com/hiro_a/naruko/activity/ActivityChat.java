@@ -3,7 +3,6 @@ package com.hiro_a.naruko.activity;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,22 +16,14 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-/*
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
- */
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
@@ -42,12 +33,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.common.DeviceInfo;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_history;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_impassive;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_Line;
 import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle;
-import com.mikhaellopez.circularimageview.CircularImageView;
+import com.hiro_a.naruko.view.NarukoUserIconPopoutView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -57,6 +49,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -67,137 +60,108 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
-    int statusBarHeight;
-    int screenWidth, screenHeight;
-    int menuAnimLength;
-    int userColor = Color.rgb(255,192,203);
+    String TAG = "NARUKO_DEBUG @ ActivityChat";
+    Context context;
+
+    int lastSpokeIconNum;
+    float screenWidth, screenHeight;
+    float menuAnimLength;
+    String roomId;
+    String userName_original;
+    String userId_original;
     boolean menuPos = true;
-    Point[] userGrid = new Point[5];
+    Point screenSize;
+
+    ArrayList<String> userIdArray;
+
+    RelativeLayout relativeLayout;
 
     EditText mMessageText;
     ImageView mSendMessageButton;
     ImageView mMenuSlideButton;
-    RecyclerView userIconRecyclerView;
-    CircularImageView userImageView01, userImageView02, userImageView03;
 
     ChatCanvasView canvasView;
     ChatCanvasView_history canvasViewHistory;
     ChatCanvasView_impassive canvasViewImpassive;
     ChatCanvasView_userIcon_outerCircle canvasViewUserIconOuterCircle;
     ChatCanvasView_userIcon_Line canvasViewUserIconLine;
+    NarukoUserIconPopoutView narukoUserIconPopoutView;
 
     View menuView;
 
-    FirebaseAuth mFirebaseAuth;
-    //DatabaseReference mFirebaseDatabaseRef;
     FirebaseFirestore mFirebaseDatabase;
     CollectionReference messageRef;
-
-    String roomId;
-    String userId;
-
-    String TAG = "NARUKO_DEBUG";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        context = getApplicationContext();
+
+        userIdArray = new ArrayList<String>();
         Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf"); //フォント
 
-        //roomId取得
+        //User_Info
+        DeviceInfo userInfo = new DeviceInfo();
+        userId_original = userInfo.getUserId(context);
+        userName_original = userInfo.getUserName(context);
+        Log.d(TAG, "*** User_Info ***");
+        Log.d(TAG, "UserName: " + userName_original);
+        Log.d(TAG, "UserId: " + userId_original);
+        Log.d(TAG, "---------------------------------");
+
+        //Room_Info
         Intent room = getIntent();
         roomId = room.getStringExtra("roomId");
-        Log.d(TAG, "SUCSESS Entering ChatRoom");
+        Log.d(TAG, "*** ChatRoom_Info ***");
         Log.d(TAG, "RoomId: " + roomId);
         Log.d(TAG, "---------------------------------");
 
-        //ウィンドウサイズ取得
-        WindowManager wm = (WindowManager)getSystemService(WINDOW_SERVICE);
-        Display disp = wm.getDefaultDisplay();
-        Point size = new Point();
-        disp.getSize(size);
-
-        screenWidth = size.x;
-        screenHeight = size.y;
-
-        //ユーザーアイコン座標(右上から反時計回り)
-        int topLeftUserX = (int)(screenWidth-convertDp2Px(100, this));
-        int topLeftUserY = (int)((screenHeight/2)-convertDp2Px(100, this));
-        userGrid[0] = new Point(topLeftUserX, topLeftUserY);
-
-        int topMiddleUserX = (int)((screenWidth/2)-convertDp2Px(50, this));
-        int topMiddleUserY = (int)((screenHeight/2)-convertDp2Px(40, this));
-        userGrid[1] = new Point(topMiddleUserX, topMiddleUserY);
-
-        int topRightUserX = 0;
-        int topRightUserY = (int)((screenHeight/2)-convertDp2Px(-20, this));
-        userGrid[2] = new Point(topRightUserX, topRightUserY);
+        //getWindowWidth
+        screenWidth = (int) userInfo.getScreenWidth(context);
+        screenHeight = (int) userInfo.getScreenHeight(context);
+        screenSize = new Point((int) screenWidth, (int) screenHeight);
 
         //入力メニュー移動幅
         menuAnimLength = -(screenWidth/2)+20;
 
-        //ユーザーアイコン
-        //updateUserIcon();
+        //User_Icon
+        relativeLayout = (RelativeLayout) findViewById(R.id.narukoRelativeLayout);
+        narukoUserIconPopoutView = (NarukoUserIconPopoutView)findViewById(R.id.userIcon_view);
 
-        userImageView01 = (CircularImageView) findViewById(R.id.userImageView01);
-        userImageView01.setBorderColor(userColor);
-        userImageView01.setImageResource(R.drawable.ic_launcher_background);
-        userImageView01.setX(topLeftUserX);
-        userImageView01.setY(topLeftUserY);
-
-        userImageView02 = (CircularImageView) findViewById(R.id.userImageView02);
-        userImageView02.setBorderColor(userColor);
-        userImageView02.setImageResource(R.drawable.ic_launcher_background);
-        userImageView02.setX(topMiddleUserX);
-        userImageView02.setY(topMiddleUserY);
-
-        userImageView03 = (CircularImageView) findViewById(R.id.userImageView03);
-        userImageView03.setBorderColor(userColor);
-        userImageView03.setImageResource(R.drawable.ic_launcher_background);
-        userImageView03.setX(topRightUserX);
-        userImageView03.setY(topRightUserY);
-        userImageView03.setVisibility(View.GONE);
-
-
-        //メッセージフォーム
+        //Message_EditText
         mMessageText = (EditText)findViewById(R.id.messageText);
         mMessageText.setTypeface(typeface);
-        mMessageText.setWidth(screenWidth-20);
+        mMessageText.setWidth((int) screenWidth-20);
 
+        //Send_button
         mSendMessageButton = (ImageView) findViewById(R.id.btn_send);
         mSendMessageButton.setOnClickListener(this);
 
+        //Slide_button
         mMenuSlideButton = (ImageView) findViewById(R.id.btn_slide);
         mMenuSlideButton.setOnClickListener(this);
 
-        //アニメーション用View
+        //Sub_button
+        menuView = findViewById(R.id.chat_ui);
+
+        //View for animation
         canvasView = (ChatCanvasView)findViewById(R.id.canvasView);
         canvasViewHistory = (ChatCanvasView_history)findViewById(R.id.canvasView_history);
         canvasViewImpassive = (ChatCanvasView_impassive) findViewById(R.id.canvasView_impassive);
-//        surfaceView = (SurfaceView)findViewById(R.id.canvasView_users);
-//        canvasViewUsers = new ChatCanvasView_users(this, surfaceView);
-        canvasViewUserIconOuterCircle = (ChatCanvasView_userIcon_outerCircle)findViewById(R.id.canvasView_userIcon_outerCircle);
         canvasViewUserIconLine = (ChatCanvasView_userIcon_Line)findViewById(R.id.canvasView_usersLine);
 
-        //入力メニュー
-        menuView = findViewById(R.id.chat_ui);
-
-        //アニメーション
-        //viewFloating();
-
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        userId = mFirebaseAuth.getCurrentUser().getUid();
-
-        //mFirebaseDatabaseRef = FirebaseDatabase.getInstance().getReference();
+        //Firebase
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         messageRef = mFirebaseDatabase.collection("rooms").document(roomId).collection("messages");
+
         updateMessage();
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        (canvasViewUserIconOuterCircle).getUserGrid(userGrid[0]);
+        //(canvasViewUserIconOuterCircle).getUserGrid(userGrid[0]);
     }
 
     @Override
@@ -215,48 +179,43 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //メッセージ送信
+    //Send_message
     public void sendMessage(){
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
-        String globalIP = getPublicIPAddress();
+//        String globalIP = getPublicIPAddress();
+        String globalIP = null;
         String text = mMessageText.getText().toString();
 
         Map<String, Object> message = new HashMap<>();
         message.put("datetime", time);
         message.put("globalIP", globalIP);
-        message.put("userId", userId);
+        message.put("userId", userId_original);
         message.put("message", text);
 
         messageRef.add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
             @Override
             public void onSuccess(DocumentReference documentReference) {
-                Log.d(TAG, "SUCSESS adding document");
+                Log.d(TAG, "SUCSESS: Document Added");
                 Log.d(TAG, "---------------------------------");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding document", e);
+                Log.w(TAG, "ERROR: Adding Document Failed", e);
                 Log.w(TAG, "---------------------------------");
             }
         });
         mMessageText.setText("");
-
-        /* RealtimeDatabase残骸
-        Message message = new Message(text, userId);
-        mFirebaseDatabaseRef.child("Message").push().setValue(message);
-        mMessageText.setText("");
-         */
     }
 
-    //会話更新
+    //Update_message
     public void updateMessage(){
         messageRef.orderBy("datetime", Query.Direction.ASCENDING).limit(6).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w(TAG, "Listen failed.", e);
+                    Log.w(TAG, "ERROR: Listen Failed", e);
                     Log.w(TAG, "---------------------------------");
                     return;
                 }
@@ -266,31 +225,35 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                         case ADDED:
                             String datetime = document.getDocument().getString("datetime");
                             String globalIP = document.getDocument().getString("globalIP");
-                            String name = document.getDocument().getString("userId");
+                            String userId = document.getDocument().getString("userId");
                             String text = document.getDocument().getString("message");
 
+                            Log.d(TAG, "*** Message_Info ***");
                             Log.d(TAG, "PostedTime: "+datetime);
                             Log.d(TAG, "GlobalIP: "+globalIP);
-                            Log.d(TAG, "UserId: "+name);
+                            Log.d(TAG, "UserId: "+userId);
                             Log.d(TAG, "Message: "+text);
                             Log.d(TAG, "---------------------------------");
 
                             if (!TextUtils.isEmpty(text)) {
-                                Point grid = userGrid[0];
 
-                                if (!userId.equals(name)) {
-                                    grid = userGrid[1];
-                                }
-
-                                //canvasViewに文字列を送信
+                                //Message => canvasView
                                 (canvasView).getMessage(text);
                                 viewRotate();
 
-                                //canvasViewHistoryに文字列を送信
+                                //Message => canvasViewHistory
                                 canvasViewHistory.getMessage(text);
 
-                                //白線
-                                (canvasViewUserIconLine).getUserGrid(grid);
+                                //Add User_Icon
+                                if (!userIdArray.contains(userId)){
+                                    userIdArray.add(userId);
+                                    narukoUserIconPopoutView.addUserIcon(screenSize, relativeLayout, userName_original);
+                                }
+
+                                //White_line
+                                lastSpokeIconNum = userIdArray.indexOf(userId);
+                                narukoUserIconPopoutView.setLastSpeaker(canvasViewUserIconLine, lastSpokeIconNum);
+
                             }
                             break;
 
@@ -303,12 +266,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void updateUserIcon(){
-
-    }
-
-    //グローバルIP
-    public static String getPublicIPAddress(){
+    //Global_IP
+    public String getPublicIPAddress(){
         String value = null;
         ExecutorService es = Executors.newSingleThreadExecutor();
         Future<String> result = es.submit(new Callable<String>() {
@@ -338,19 +297,14 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         try {
             value = result.get();
         } catch (Exception e) {
-            // failed
+            Log.w(TAG, "ERROR: Exception Occured", e);
+            Log.w(TAG, "---------------------------------");
         }
         es.shutdown();
         return value;
     }
 
-    //dp→px変換
-    public static float convertDp2Px(float dp, Context context){
-        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-        return dp * metrics.density;
-    }
-
-    //↓以下アニメーション
+    //------Animation From here------
 
     private void viewRotate(){
         //文字列回転アニメーション

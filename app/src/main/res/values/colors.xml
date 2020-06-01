@@ -4,5 +4,6 @@
     <color name="colorPrimary">#5cd868</color>
     <color name="colorPrimaryDark">#238f2e</color>
     <color name="colorAccent">#D81B60</color>
-    <color name="colorYuna">#FC7EAB</color>
+    <color name="colorYuna">#e0959a</color>
+    <color name="colorYunaLight">#e0cfd1</color>
 </resources>

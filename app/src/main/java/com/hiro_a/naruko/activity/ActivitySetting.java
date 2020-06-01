@@ -27,7 +27,7 @@ public class ActivitySetting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        //戻るボタン有効化
+        //Back_Button active
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -49,13 +49,13 @@ public class ActivitySetting extends AppCompatActivity {
 
     private void startSettings(String item){
         if (item.equals("ユーザー設定")){
-            //プロフィーる設定画面へ
+            //to Profile Setting
             Intent setting = new Intent(ActivitySetting.this, ActivitySettingUserProfile.class);
             startActivity(setting);
         }
 
         if (item.equals("ログアウト")){
-            //ログアウト
+            //Logout
             mFirebaseAuth.signOut();
 
             Intent logout = new Intent(ActivitySetting.this, ActivitySelectLogin.class);

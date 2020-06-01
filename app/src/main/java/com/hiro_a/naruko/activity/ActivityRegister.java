@@ -3,6 +3,7 @@ package com.hiro_a.naruko.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -29,41 +30,42 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActivityRegister extends AppCompatActivity implements View.OnClickListener{
+    Context context;
+    String TAG = "NARUKO_DEBUG @ ActivityRegister";
 
-    EditText mEmailField;
-    EditText mPasswordField;
-    EditText mPasswordField_again;
-    EditText mUserNameField;
-    CustomButton mRegisterButton;
+    EditText editText_Email;
+    EditText editText_Password;
+    EditText editText_Password_again;
+    EditText editText_UserName;
+    CustomButton button_Register;
 
-    FirebaseAuth mFirebaseAuth;
-    FirebaseFirestore mFirebaseDatabase;
-
-    String TAG = "NARUKO_DEBUG";
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        context = getApplicationContext();
 
-        //登録フォーム
-        mEmailField = (EditText)findViewById(R.id.register_email_edittext);
-        mPasswordField = (EditText)findViewById(R.id.register_password_edittext);
-        mPasswordField_again = (EditText)findViewById(R.id.register_password_edittext_check);
-        mUserNameField = (EditText)findViewById(R.id.register_username_edittext);
+        editText_Email = (EditText)findViewById(R.id.register_email_edittext);
+        editText_Password = (EditText)findViewById(R.id.register_password_edittext);
+        editText_Password_again = (EditText)findViewById(R.id.register_password_edittext_check);
+        editText_UserName = (EditText)findViewById(R.id.register_username_edittext);
 
-        mRegisterButton = (CustomButton)findViewById(R.id.emailRegisterButton);
-        mRegisterButton.setOnClickListener(this);
+        button_Register = (CustomButton)findViewById(R.id.emailRegisterButton);
+        button_Register.setOnClickListener(this);
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseFirestore.getInstance();
+        //Firebase
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
     public void onClick(View view){
         switch (view.getId()){
             case R.id.emailRegisterButton:
-                createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                createAccount(editText_Email.getText().toString(), editText_Password.getText().toString());
                 break;
         }
     }
@@ -73,52 +75,55 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
             return;
         }
 
-        mFirebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            makeUser(task.getResult().getUser().getUid(), mUserNameField.getText().toString(), mEmailField.getText().toString());
-                            Toast.makeText(ActivityRegister.this, "登録完了！", Toast.LENGTH_SHORT).show();
+                            createUser(task.getResult().getUser().getUid(), editText_UserName.getText().toString(), editText_Email.getText().toString());
+                            Toast.makeText(context, "登録完了！", Toast.LENGTH_SHORT).show();
                             //ログインフォームへ
 //                            Intent makeAccount = new Intent(ActivityRegister.this, ActivityLogin.class);
 //                            startActivity(makeAccount);
                         } else {
-                            Toast.makeText(ActivityRegister.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.w(TAG, "ERROR: Exception Occured", task.getException());
+                            Log.w(TAG, "---------------------------------");
                         }
                     }
             });
     }
 
+    //Check Form is not empty
     private boolean formChecker(){
         boolean check = true;
 
-        String email = mEmailField.getText().toString();
+        String email = editText_Email.getText().toString();
         if (TextUtils.isEmpty(email)){
-            mEmailField.setError("メールアドレスが入力されていません");
+            editText_Email.setError("メールアドレスが入力されていません");
             check = false;
         }
 
-        String password = mPasswordField.getText().toString();
-        String passwordCheck = mPasswordField_again.getText().toString();
+        String password = editText_Password.getText().toString();
+        String passwordCheck = editText_Password_again.getText().toString();
         if (TextUtils.isEmpty(password)){
-            mPasswordField.setError("パスワードが入力されていません");
+            editText_Password.setError("パスワードが入力されていません");
             check = false;
         } else if (!(passwordCheck.equals(password))){
-            mPasswordField_again.setError("パスワードが一致しません");
+            editText_Password_again.setError("パスワードが一致しません");
             check = false;
         }
 
-        String userName = mUserNameField.getText().toString();
+        String userName = editText_UserName.getText().toString();
         if (TextUtils.isEmpty(userName)){
-            mPasswordField_again.setError("ユーザー名が入力されていません");
+            editText_Password_again.setError("ユーザー名が入力されていません");
             check = false;
         }
 
         return check;
     }
 
-    public void makeUser(String userId, String username, String email){
-        CollectionReference userRef = mFirebaseDatabase.collection("users");
+    //Create_User
+    public void createUser(String userId, String username, String email){
+        CollectionReference userRef = firebaseFirestore.collection("users");
 
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
@@ -144,7 +149,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding User to Database", e);
+                Log.w(TAG, "ERROR: Creating User Failed", e);
                 Log.w(TAG, "---------------------------------");
             }
         });

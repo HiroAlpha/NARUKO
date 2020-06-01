@@ -7,14 +7,19 @@ import com.google.firebase.storage.StorageReference;
 public class MenuRoomData {
     private String title;
     private String id;
+    private String encodedPassword;
     private StorageReference image;
 
     public String getTitle(){
         return title;
     }
 
-    public String getid(){
+    public String getId(){
         return id;
+    }
+
+    public String getPassword() {
+        return encodedPassword;
     }
 
     public StorageReference getImage(){
@@ -27,6 +32,10 @@ public class MenuRoomData {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void setPassword(String password){
+        this.encodedPassword = password;
     }
 
     public void setImage(StorageReference image){

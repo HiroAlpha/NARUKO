@@ -8,17 +8,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hiro_a.naruko.R;
-import com.mikhaellopez.circularimageview.CircularImageView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class LinearLayoutViewHolder extends RecyclerView.ViewHolder {
-    final CircularImageView friendImageView;
+    final CircleImageView friendImageView;
     final TextView friendNameView;
     final TextView friendIdView;
 
     public LinearLayoutViewHolder(@NonNull View itemView){
         super(itemView);
 
-        friendImageView = (CircularImageView) itemView.findViewById(R.id.friendImage);
+        friendImageView = (CircleImageView) itemView.findViewById(R.id.friendImage);
         friendNameView = (TextView)itemView.findViewById(R.id.friendName);
         friendIdView = (TextView)itemView.findViewById(R.id.friendId);
     }

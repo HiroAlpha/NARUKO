@@ -7,17 +7,18 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hiro_a.naruko.R;
-import com.mikhaellopez.circularimageview.CircularImageView;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class IconRecyclerViewHolder extends RecyclerView.ViewHolder{
-    final CircularImageView imageView;
+    final CircleImageView imageView;
     final TextView textView;
 
     public IconRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        imageView = (CircularImageView) itemView.findViewById(R.id.menuChatImageView);
+        imageView = (CircleImageView) itemView.findViewById(R.id.menuChatImageView);
         textView = (TextView)itemView.findViewById(R.id.menuChatTextView);
     }
 }

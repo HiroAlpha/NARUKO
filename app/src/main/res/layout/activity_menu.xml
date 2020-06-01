@@ -4,19 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".activity.ActivityMenu">
-
-    <ImageView
-        android:id="@+id/backgroundColor"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.7"
-        app:srcCompat="@color/colorPrimary" />
 
     <FrameLayout
         android:id="@+id/menu_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/overlayColor"
@@ -114,7 +108,7 @@
             android:gravity="center"
             android:tint="@android:color/background_light"
             app:iconImage="@drawable/ic_build_black_24dp"
-            app:iconText="設定" >
+            app:iconText="設定">
 
         </com.hiro_a.naruko.item.MenuItem>
 

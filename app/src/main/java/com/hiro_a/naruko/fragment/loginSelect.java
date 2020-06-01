@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class loginSelect extends Fragment implements View.OnClickListener {
-    String TAG = "NARUKO_DEBUG";
+    String TAG = "NARUKO_DEBUG @ loginSelect.fragment";
 
     @Nullable
     @Override

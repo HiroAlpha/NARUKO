@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#99A199"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/menu_room_passwordTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/allerta"
+        android:text="パスワードを入力"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/menu_room_password"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/background_login_selectbutton"
+        android:backgroundTint="#ffffff"
+        android:ems="10"
+        android:fontFamily="@font/allerta"
+        android:hint="パスワード"
+        android:inputType="textPassword"
+        android:maxLength="8"
+        android:maxLines="1"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"/>
+
+    <Button
+        android:id="@+id/menu_room_passwordButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/allerta"
+        android:text="完了" />
+</LinearLayout>

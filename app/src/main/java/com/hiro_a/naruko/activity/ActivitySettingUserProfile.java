@@ -36,13 +36,16 @@ import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.task.DownloadImageTask;
 import com.hiro_a.naruko.view.RecyclerView.ProfileView.LinearLayoutAdapter;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ActivitySettingUserProfile extends AppCompatActivity implements View.OnClickListener {
+    String TAG = "NARUKO_DEBUG @ ActivitySettingUserProfile";
+
     private String userId;
     private String userEmail;
     private Uri userImage;
@@ -50,25 +53,23 @@ public class ActivitySettingUserProfile extends AppCompatActivity implements Vie
 
     int STRAGEACCESSFRAMEWORK_REQUEST_CODE = 42;
 
-    TextView title_userProfile;
-    CircularImageView setting_userImage;
-    ImageView setting_chageImage;
+    TextView title_UserImage;
+    CircleImageView image_UserImage;
+    ImageView image_ImageChanger;
 
     FirebaseUser user;
 
-    private FirebaseFirestore mFirebaseDatabase;
+    private FirebaseFirestore firebaseFirestore;
     private CollectionReference userRef;
 
-    private StorageReference mStorageReference;
-
-    String TAG = "NARUKO_DEBUG";
+    private StorageReference storageRefarence;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting_profile);
 
-        //戻るボタン有効化
+        //Back_Button active
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
@@ -79,17 +80,17 @@ public class ActivitySettingUserProfile extends AppCompatActivity implements Vie
         userImage = user.getPhotoUrl();
         emailVerified = user.isEmailVerified();
 
-        mFirebaseDatabase = FirebaseFirestore.getInstance();
-        userRef = mFirebaseDatabase.collection("users");
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        userRef = firebaseFirestore.collection("users");
 
-        mStorageReference = FirebaseStorage.getInstance().getReference();
+        storageRefarence = FirebaseStorage.getInstance().getReference();
 
-        title_userProfile = (TextView)findViewById(R.id.title_userProfile);
-        title_userProfile.setOnClickListener(this);
+        title_UserImage = (TextView)findViewById(R.id.title_userProfile);
+        title_UserImage.setOnClickListener(this);
 
-        setting_userImage = (CircularImageView) findViewById(R.id.setting_userImageview);
+        image_UserImage = (CircleImageView) findViewById(R.id.setting_userImageview);
         if (userImage==null){
-            setting_userImage.setImageResource(R.drawable.ic_person_black_24dp);
+            image_UserImage.setImageResource(R.drawable.ic_person_black_24dp);
         }else {
             if (userImage.toString().contains("pbs.twimg.com")){
                 userImage = Uri.parse(userImage.toString().replace("_normal", ""));
@@ -97,8 +98,8 @@ public class ActivitySettingUserProfile extends AppCompatActivity implements Vie
             new DownloadImageTask((ImageView)findViewById(R.id.setting_userImageview)).execute(userImage.toString());
         }
 
-        setting_chageImage = (ImageView)findViewById(R.id.setting_changeImage);
-        setting_chageImage.setOnClickListener(this);
+        image_ImageChanger = (ImageView)findViewById(R.id.setting_changeImage);
+        image_ImageChanger.setOnClickListener(this);
 
         getUserData();
         settingRecyclerView();
@@ -139,7 +140,7 @@ public class ActivitySettingUserProfile extends AppCompatActivity implements Vie
 
     private void changeUserImage(final Uri imageUri){
         final String imageUriAtServer = "images/" + imageUri.getLastPathSegment();
-        final StorageReference imageRef = mStorageReference.child(imageUriAtServer);
+        final StorageReference imageRef = storageRefarence.child(imageUriAtServer);
         final UploadTask uploadTask = imageRef.putFile(imageUri);
 
         uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -224,7 +225,7 @@ public class ActivitySettingUserProfile extends AppCompatActivity implements Vie
 
                     if (document.exists()){
                         String userName = document.getString("userName");
-                        title_userProfile.setText(userName);
+                        title_UserImage.setText(userName);
                     }else {
                         Log.w(TAG, "No such document");
                     }

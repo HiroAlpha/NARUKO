@@ -2,18 +2,18 @@ package com.hiro_a.naruko.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,10 +21,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
@@ -32,44 +28,45 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityChat;
 import com.hiro_a.naruko.common.MenuRoomData;
+import com.hiro_a.naruko.task.PassDecodeTask;
+import com.hiro_a.naruko.task.PassEncodeTask;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class menuRoom extends Fragment implements View.OnClickListener {
-    private int favAreaHeight;
-    private List<MenuRoomData> dataList;
+import static android.content.Context.WINDOW_SERVICE;
 
-    private LinearLayout favArea;
-    private Button favButton;
+public class menuRoom extends Fragment implements View.OnClickListener {
+    private String TAG = "NARUKO_DEBUG @ menuRoom.fragment";
+    TextView favTitle;
+
+    private List<MenuRoomData> dataList;
 
     private FirebaseFirestore mFirebaseDatabase;
     private CollectionReference roomRef;
     private StorageReference mStorageRefernce;
 
-    private String TAG = "NARUKO_DEBUG";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_menu_room, container, false);
+        return inflater.inflate(R.layout.fragment_menu_room_main, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        favTitle = (TextView) view.findViewById(R.id.menu_room_favText);
 
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
@@ -81,30 +78,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-//        switch (view.getId()){
-//            case R.id.menu_room_favButton:
-//                //お気に入りが開いている時
-//                if (favArea.getHeight() > 0){
-//                    Log.d(TAG, "お気に入り開き");
-//                    favButton.setBackgroundResource(R.drawable.ic_expand_less_black_24dp);
-//
-//                    //圧縮アニメーション
-//                    AccordionAnimation closeAnimation = new AccordionAnimation(favArea, -favAreaHeight, favAreaHeight);
-//                    closeAnimation.setDuration(500);
-//                    favArea.startAnimation(closeAnimation);
-//
-//                } else {
-//                    Log.d(TAG, "お気に入り閉まり");
-//                    favButton.setBackgroundResource(R.drawable.ic_expand_more_black_24dp);
-//
-//                    //展開アニメーション
-//                    AccordionAnimation openAnimation = new AccordionAnimation(favArea, favAreaHeight, 0);
-//                    openAnimation.setDuration(500);
-//                    favArea.startAnimation(openAnimation);
-//
-//                }
-//                break;
-//        }
+
     }
 
     //グループ取得
@@ -119,29 +93,37 @@ public class menuRoom extends Fragment implements View.OnClickListener {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 if (e != null) {
-                    Log.w(TAG, "Error Listening Room", e);
+                    Log.w(TAG, "ERROR: Listening Room", e);
                     return;
                 }
-                Log.d(TAG, "チャットルーム読み込み");
+                Log.d(TAG, "***ChatRoom_Update_Info***");
                 for (DocumentChange document : snapshots.getDocumentChanges()) {
                     final String roomName = document.getDocument().getString("roomName");
                     final String roomId = document.getDocument().getId();
-                    boolean imageIs = document.getDocument().getBoolean("imageIs");
 
                     switch (document.getType()){
                         case ADDED:
                             Log.w(TAG, "Event Occurred: " + roomName + " ADDED");
                             if (!TextUtils.isEmpty(roomName)) {
-                                StorageReference imageReference = mStorageRefernce.child("Images/RoomImages/" + roomId + ".jpg");
+                                boolean passwordIs = document.getDocument().getBoolean("passwordIs");
+                                boolean imageIs = document.getDocument().getBoolean("imageIs");
+
+                                StorageReference imageReference = null;
+                                String encodedPassword = "";
+
+                                if (passwordIs){
+                                    encodedPassword = document.getDocument().getString("password");
+                                }
 
                                 if (imageIs){
                                     imageReference = mStorageRefernce.child("Images/RoomImages/" + roomId + ".jpg");
                                 }
 
                                 MenuRoomData data = new MenuRoomData();
-                                data.setImage(imageReference);
                                 data.setTitle(roomName);
                                 data.setId(roomId);
+                                data.setPassword(encodedPassword);
+                                data.setImage(imageReference);
 
                                 dataList.add(data);
                             }
@@ -187,11 +169,16 @@ public class menuRoom extends Fragment implements View.OnClickListener {
             @Override
             protected void onMenuClicked(@NonNull int position){
                 super.onMenuClicked(position);
-                String roomId = (dataList.get(position)).getid();
+                String roomId = (dataList.get(position)).getId();
+                String encodedPassword = (dataList.get(position)).getPassword();
 
-                Intent room = new Intent(getContext(), ActivityChat.class);
-                room.putExtra("roomId", roomId);
-                startActivity(room);
+                if (!encodedPassword.isEmpty()){
+                    passAuthWindow(roomId, encodedPassword);
+                } else {
+                    Intent room = new Intent(getContext(), ActivityChat.class);
+                    room.putExtra("roomId", roomId);
+                    startActivity(room);
+                }
             }
         };
         menuChatRecyclerView.setAdapter(adapter);
@@ -203,5 +190,49 @@ public class menuRoom extends Fragment implements View.OnClickListener {
         menuChatRecyclerView.setHasFixedSize(true);
 
         progressDialog.dismiss();
+    }
+
+    private void passAuthWindow(String Id, String encodedPassword){
+        final String roomId = Id;
+        final String password = new PassDecodeTask().decode(getString(R.string.ENC_KEY), encodedPassword, "BLOWFISH");
+
+        //ウィンドウサイズ取得
+        WindowManager wm = (WindowManager)getActivity().getSystemService(WINDOW_SERVICE);
+        Display disp = wm.getDefaultDisplay();
+        Point size = new Point();
+        disp.getSize(size);
+
+        int screenHeight = size.y;
+
+        final PopupWindow passAuthPopup = new PopupWindow(getActivity());
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_menu_room_main_popup, null);
+        passAuthPopup.setContentView(view);
+        passAuthPopup.setOutsideTouchable(true);
+        passAuthPopup.setFocusable(true);
+
+        passAuthPopup.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+        passAuthPopup.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+
+        passAuthPopup.showAsDropDown(favTitle);
+
+        final EditText passwordEdittext = (EditText) view.findViewById(R.id.menu_room_password);
+
+        Button enterPassword = (Button) view.findViewById(R.id.menu_room_passwordButton);
+        enterPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String enteredPassword = passwordEdittext.getText().toString();
+
+                if (enteredPassword.equals(password)){
+                    Intent room = new Intent(getContext(), ActivityChat.class);
+                    room.putExtra("roomId", roomId);
+                    startActivity(room);
+
+                    passAuthPopup.dismiss();
+                } else {
+                    passwordEdittext.setText("");
+                }
+            }
+        });
     }
 }

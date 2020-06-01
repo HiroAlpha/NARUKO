@@ -1,6 +1,7 @@
 package com.hiro_a.naruko.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -15,7 +16,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -42,13 +42,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.task.ButtonColorChangeTask;
+import com.hiro_a.naruko.task.PassEncodeTask;
 import com.hiro_a.naruko.view.CustomButton;
 import com.hiro_a.naruko.view.CustomImageView;
 import com.isseiaoki.simplecropview.CropImageView;
 import com.isseiaoki.simplecropview.callback.CropCallback;
 import com.isseiaoki.simplecropview.callback.LoadCallback;
 import com.isseiaoki.simplecropview.callback.SaveCallback;
-import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -57,26 +57,29 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static android.content.Context.WINDOW_SERVICE;
 
 public class menuRoomAdd extends Fragment implements View.OnClickListener {
-    CircularImageView roomImagePreview;
-    ImageView roomImageChange;
-    TextView roomAddTitle;
-    EditText roomNameEdittext;
-    EditText passwordEditText;
-    CheckBox passwordCheckBox;
+    private CircleImageView roomImagePreview;
+    private ImageView roomImageChange;
+    private TextView roomAddTitle;
+    private EditText roomNameEdittext;
+    private EditText passwordEditText;
+    private CheckBox passwordCheckBox;
 
-    FragmentManager manager;
-    PopupWindow cropImagePopup;
+    private FragmentManager manager;
+    private PopupWindow cropImagePopup;
 
-    StorageReference mStorageRefernce;
+    private StorageReference mStorageRefernce;
 
-    Boolean imageIs = false;
-    Uri trialImageUri;
+    private Boolean imageIs = false;
+    private Boolean passwordIs = false;
+    private Uri trialImageUri;
 
-    String TAG = "NARUKO_DEBUG";
-    int STRAGEACCESSFRAMEWORK_REQUEST_CODE = 42;
+    private String TAG = "NARUKO_DEBUG";
+    private int STRAGEACCESSFRAMEWORK_REQUEST_CODE = 42;
     private Bitmap.CompressFormat mCompressFormat = Bitmap.CompressFormat.JPEG;
 
     @Nullable
@@ -92,7 +95,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         roomAddTitle = (TextView) view.findViewById(R.id.menu_roomRegister_title);
-        roomImagePreview = (CircularImageView) view.findViewById(R.id.menu_roomRegister_imageView);
+        roomImagePreview = (CircleImageView) view.findViewById(R.id.menu_roomRegister_imageView);
         roomImageChange = (ImageView) view.findViewById(R.id.menu_roomRegister_changeImage);
         roomImageChange.setOnClickListener(this);
 
@@ -126,18 +129,22 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
             case R.id.menu_roomRegister_passwordCheckBox:
                 if (passwordCheckBox.isChecked()) {
+                    passwordIs = true;
                     passwordEditText.setEnabled(true);
                 } else {
+                    passwordIs = false;
                     passwordEditText.setEnabled(false);
                 }
                 break;
 
             case R.id.menu_roomRegister_button:
                 if (formChecker()) {
-//                  menuRoomAddDialog dialog = new menuRoomAddDialog();
-//                  dialog.setTargetFragment(this, 100);
-//                  dialog.show(getChildFragmentManager(), "dialog");
-                    createRoom();
+                    ProgressDialog progressDialog = new ProgressDialog(getActivity());
+                    progressDialog.setTitle("チャットルーム作成中...");
+                    progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                    progressDialog.show();
+
+                    createRoom(progressDialog);
                 }
                 break;
         }
@@ -166,7 +173,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
                 cropImagePopup.setFocusable(true);
 
                 cropImagePopup.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
-                cropImagePopup.setHeight(screenHeight / 2);
+                cropImagePopup.setHeight((screenHeight / 3) * 2);
 
                 cropImagePopup.showAsDropDown(roomAddTitle);
 
@@ -241,22 +248,6 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         return trialImageUri;
     }
 
-    //ボタン色変え
-    private void changeColor(ImageView view, MotionEvent event, int defaultButtonColor){
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                float[] hsv = new float[3];
-                Color.colorToHSV(defaultButtonColor, hsv);
-                hsv[2] -= 0.2f;
-                view.setColorFilter(Color.HSVToColor(hsv));
-
-                break;
-            case MotionEvent.ACTION_UP:
-                view.setColorFilter(defaultButtonColor);
-                break;
-        }
-    }
-
     //入力チェック
     private boolean formChecker(){
         boolean check = true;
@@ -279,26 +270,28 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
     }
 
     //部屋作成
-    public void createRoom(){
+    public void createRoom(final ProgressDialog progressDialog){
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseFirestore mFirebaseDatabase = FirebaseFirestore.getInstance();
         CollectionReference roomRef = mFirebaseDatabase.collection("rooms");
 
+        //日付
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String time = SD.format(new Date()).toString();
 
+        //ユーザーID, 部屋名
         final String userId = mFirebaseAuth.getUid();
-
         final String roomName = roomNameEdittext.getText().toString();
 
         Map<String, Object> newRoom = new HashMap<>();
         newRoom.put("datetime", time);
         newRoom.put("creatorId", userId);
         newRoom.put("roomName", roomName);
+        newRoom.put("passwordIs", passwordIs);
         newRoom.put("imageIs", imageIs);
 
-        if (passwordCheckBox.isChecked()){
-            String passwordString = passwordEditText.getText().toString();
+        if (passwordIs){
+            String passwordString = new PassEncodeTask().encode(getString(R.string.ENC_KEY), passwordEditText.getText().toString(), "BLOWFISH");
             newRoom.put("password", passwordString);
         }
 
@@ -308,9 +301,23 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
                 String docName = documentReference.getId().toString();
                 StorageReference uploadImageRef = mStorageRefernce.child("Images/RoomImages/" + docName + ".jpg");
                 UploadTask uploadTask = uploadImageRef.putFile(trialImageUri);
-                uploadTask.addOnFailureListener(new OnFailureListener() {
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        //ルームメニューへ
+                        Fragment fragmentChat = new menuRoom();
+                        FragmentTransaction transactionToChat = manager.beginTransaction();
+                        transactionToChat.setCustomAnimations(
+                                R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
+                        transactionToChat.replace(R.id.menu_fragment, fragmentChat, "FRAG_MENU_ROOM");
+                        transactionToChat.commit();
+
+                        progressDialog.dismiss();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
                         Log.w(TAG, "Error adding RoomImage to Database", e);
                         Log.w(TAG, "---------------------------------");
                     }
@@ -321,18 +328,12 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "RoomID: " + docName);
                 Log.d(TAG, "CreatorID: " + userId);
                 Log.d(TAG, "---------------------------------");
-
-                //ルームメニューへ
-                Fragment fragmentChat = new menuRoom();
-                FragmentTransaction transactionToChat = manager.beginTransaction();
-                transactionToChat.setCustomAnimations(
-                        R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
-                transactionToChat.replace(R.id.menu_fragment, fragmentChat, "FRAG_MENU_ROOM");
-                transactionToChat.commit();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
+                progressDialog.dismiss();
+
                 Log.w(TAG, "Error adding Room to Database", e);
                 Log.w(TAG, "---------------------------------");
             }

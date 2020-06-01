@@ -1,7 +1,7 @@
 package com.hiro_a.naruko.activity;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,11 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.common.DeviceInfo;
 import com.hiro_a.naruko.fragment.loginSelect;
 
 import java.text.SimpleDateFormat;
@@ -36,17 +35,19 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActivitySelectLogin extends AppCompatActivity {
-    SharedPreferences userData;
+    Context context;
+    String TAG = "NARUKO_DEBUG @ ActivitySelectLogin";
 
-    FirebaseAuth mFirebaseAuth;
-    FirebaseFirestore mFirebaseDatabase;
+    FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFireStore;
 
-    String TAG = "NARUKO_DEBUG";
+    DeviceInfo userInfo;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selectlogin);
+        context = getApplicationContext();
 
         int fragmentCount = 1;
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -61,41 +62,36 @@ public class ActivitySelectLogin extends AppCompatActivity {
         }
         transactionToSelect.commit();
 
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mFirebaseDatabase = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFireStore = FirebaseFirestore.getInstance();
 
-//        Log.d(TAG, "wifi: " + getWifiIPAddress(getApplicationContext()));
-//        Log.d(TAG, "ipv4: " + getLocalIpv4Address());
-//        Log.d(TAG, "public: " + getPublicIPAddress());
+        userInfo = new DeviceInfo();
     }
 
     //Emailログインフロー
     public void loginWithEmail(String email, String password){
-        mFirebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
-                    //ログイン完了
-                    Log.d(TAG, "SUCSESS login with Email");
+                    Log.d(TAG, "SUCSESS: Login with Email");
                     Log.d(TAG, "---------------------------------");
 
-                    userCheckLog(); //ユーザーチェック（試験用）
+                    userInfo.setDeviceInfo(context);
 
-                    //メニューへ
+                    //to Menu
                     Intent menu = new Intent(ActivitySelectLogin.this, ActivityMenu.class);
                     menu.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(menu);
                 }else {
-                    //ログイン失敗
-                    Log.w(TAG, "ERROR login with Email");
-                    Log.w(TAG, task.getException().getMessage());
-                    Log.w(TAG, "---------------------------------");
+                    Log.w(TAG, "ERROR: Login with Email", task.getException());
+                    Log.d(TAG, "---------------------------------");
                 }
             }
         });
     }
 
-    //Twitterログインフロー
+    //Twitter Login Flow
     public void loginWithTwitter(){
         OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
 
@@ -104,7 +100,7 @@ public class ActivitySelectLogin extends AppCompatActivity {
         保留中のアクティビティがないかどうかチェックする必要がある。
          */
 
-        Task<AuthResult> pendingResultTask = mFirebaseAuth.getPendingAuthResult();
+        Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
         //保留中のアクティビティがある場合
         if (pendingResultTask != null) {
             pendingResultTask
@@ -112,7 +108,7 @@ public class ActivitySelectLogin extends AppCompatActivity {
                             new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
-                                    Log.d(TAG, "SUCSESS handling Twitter login");
+                                    Log.d(TAG, "SUCSESS: Handling Twitter login");
                                     Log.d(TAG, "---------------------------------");
                                 }
                             })
@@ -120,18 +116,18 @@ public class ActivitySelectLogin extends AppCompatActivity {
                             new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error handling Twitter login", e);
+                                    Log.w(TAG, "ERROR: Handling Twitter login", e);
                                     Log.w(TAG, "---------------------------------");
                                 }
                             });
         }
         //保留中の物がない場合
         else {
-            mFirebaseAuth.startActivityForSignInWithProvider(ActivitySelectLogin.this, provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            firebaseAuth.startActivityForSignInWithProvider(ActivitySelectLogin.this, provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                 @Override
                 public void onSuccess(AuthResult authResult) {
                     //ログイン完了
-                    Log.d(TAG, "SUCSESS login with Twitter");
+                    Log.d(TAG, "SUCSESS: Login with Twitter");
                     Log.d(TAG, "---------------------------------");
                     twitterAccountSetting(authResult);
                 }
@@ -139,19 +135,19 @@ public class ActivitySelectLogin extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     //ログイン失敗
-                    Log.w(TAG, "Error login with Twitter", e);
+                    Log.w(TAG, "ERROR: Login with Twitter", e);
                     Log.w(TAG, "---------------------------------");
                 }
             });
         }
     }
 
-    //ユーザーをデータベースに追加
+    //Add User to Database（Twitter）
     private void twitterAccountSetting(AuthResult authResult) {
-        CollectionReference userRef = mFirebaseDatabase.collection("users");
+        CollectionReference userRef = firebaseFireStore.collection("users");
 
-        //ユーザーId
-        final String userId = mFirebaseAuth.getCurrentUser().getUid();
+        //UserId
+        final String userId = firebaseAuth.getCurrentUser().getUid();
 
         //ユーザー追加時刻
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
@@ -173,13 +169,14 @@ public class ActivitySelectLogin extends AppCompatActivity {
         userRef.document(userId).set(newUser, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void done) {
-                Log.d(TAG, "SUCSESS adding User to Database");
+                Log.d(TAG, "SUCSESS: Adding User to Database");
 
                 Log.d(TAG, "TwitterUserImageCheck: " + twitterUserImage);
                 UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
                         .setPhotoUri(Uri.parse(twitterUserImage))
                         .build();
 
+                Log.d(TAG, "*** Twitter_User_Info ***");
                 Log.d(TAG, "Time: " + time);
                 Log.d(TAG, "UserId: " + userId);
                 Log.d(TAG, "TwitterUserId: " + twitterUserId);
@@ -191,49 +188,18 @@ public class ActivitySelectLogin extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "Error adding User to Database", e);
+                Log.w(TAG, "ERROR: Adding User to Database", e);
                 Log.w(TAG, "---------------------------------");
             }
         });
 
-        userCheckLog(); //ユーザーチェック（試験用）
+        //ユーザー情報をSharedPreに
+        userInfo.setDeviceInfo(context);
 
         //メニュー画面へ
         Intent menu = new Intent(ActivitySelectLogin.this, ActivityMenu.class);
         menu.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(menu);
-    }
-
-    //ログイン時確認ログ
-    public void userCheckLog(){
-        //ユーザーId
-        final String userId = mFirebaseAuth.getCurrentUser().getUid();
-
-        DocumentReference userRef = mFirebaseDatabase.collection("users").document(userId);
-
-        userRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-
-                    if (document.exists()) {
-                        String datetime = document.getString("datetime");
-                        String userName = document.getString("userName");
-
-                        Log.d(TAG, "AddedDateTime: "+datetime);
-                        Log.d(TAG, "UserName: "+userName);
-                        Log.d(TAG, "UserId: "+userId);
-                        Log.d(TAG, "---------------------------------");
-
-                    } else {
-                        Log.w(TAG, "No such User");
-                    }
-                } else {
-                    Log.w(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
     }
 
     //表示フラグメント確認

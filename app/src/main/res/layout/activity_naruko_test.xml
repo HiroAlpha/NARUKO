@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:clipChildren="false"
-    tools:context=".activity.ActivityChat">
+    android:clipChildren="false">
 
     <com.hiro_a.naruko.view.BackgroundView
         android:layout_width="match_parent"
@@ -44,10 +43,23 @@
             android:layout_height="match_parent">
 
             <com.hiro_a.naruko.view.NarukoUserIconPopoutView
-                android:id="@+id/userIcon_view"
+                android:id="@+id/icon_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+            <Button
+                android:id="@+id/button_send_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/button_reset"
+                android:text="Start" />
+
+            <Button
+                android:id="@+id/button_reset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="Reset" />
         </RelativeLayout>
 
         <com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_outerCircle
@@ -61,11 +73,6 @@
             android:layout_height="wrap_content" />
 
     </FrameLayout>
-
-<!--    <androidx.recyclerview.widget.RecyclerView-->
-<!--        android:id="@+id/IconRecyclerView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
 
     <FrameLayout
         android:id="@+id/editTextlayout"

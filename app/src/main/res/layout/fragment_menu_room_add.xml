@@ -24,13 +24,14 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="5dp">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/menu_roomRegister_imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal"
-            app:civ_shadow="false"
-            app:srcCompat="@drawable/ic_launcher_background" />
+            android:src="@drawable/ic_launcher_background"
+            app:civ_border_width="4dp"
+            app:civ_border_color="#FFFFFF"/>
 
         <ImageView
             android:id="@+id/menu_roomRegister_changeImage"

@@ -33,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class menuFriend extends Fragment {
-     FriendId friendData;
+    private String TAG = "NARUKO_DEBUG @ menuFriend.fragment";
+
+    FriendId friendData;
     private List<MenuFriendData> friendList;
 
     private FirebaseAuth mFirebaseAuth;
@@ -42,8 +44,6 @@ public class menuFriend extends Fragment {
     private FirebaseFirestore mFirebaseDatabase;
     private DocumentReference friendRef;
     private CollectionReference userRef;
-
-    private String TAG = "NARUKO_DEBUG";
 
     @Nullable
     @Override
