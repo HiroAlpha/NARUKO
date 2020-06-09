@@ -1,7 +1,6 @@
 package com.hiro_a.naruko.fragment;
 
 import android.app.ProgressDialog;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -32,7 +30,7 @@ import com.hiro_a.naruko.view.RecyclerView.FriendView.LinearLayoutAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class menuFriend extends Fragment {
+public class MenuFriend extends Fragment {
     private String TAG = "NARUKO_DEBUG @ menuFriend.fragment";
 
     FriendId friendData;
@@ -153,7 +151,7 @@ public class menuFriend extends Fragment {
     //RecyclerView生成
     public void updateMenu(View view){
         //RecyclerView
-        final RecyclerView friendRecyclerView = (RecyclerView)view.findViewById(R.id.friendRecyclerView);
+        final RecyclerView friendRecyclerView = (RecyclerView)view.findViewById(R.id.fFriend_recyclerView_friend);
 
         //Adapter
         RecyclerView.Adapter adapter = new LinearLayoutAdapter(friendList){

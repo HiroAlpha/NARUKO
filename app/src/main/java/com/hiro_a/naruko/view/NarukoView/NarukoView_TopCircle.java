@@ -1,4 +1,4 @@
-package com.hiro_a.naruko.view.ChatView;
+package com.hiro_a.naruko.view.NarukoView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
 
-public class ChatCanvasView_impassive extends View {
+public class NarukoView_TopCircle extends View {
     float textCircleRadius;   //回転半径(dp)
     float boundaryLineRedius;
     float radiusPivotOffset = 45;
@@ -22,7 +22,7 @@ public class ChatCanvasView_impassive extends View {
     Path outerCirclePath;
     Path graphicPath_Line;
 
-    public ChatCanvasView_impassive(Context context, AttributeSet attrs){
+    public NarukoView_TopCircle(Context context, AttributeSet attrs){
         super(context, attrs);
 
         //中心円設定

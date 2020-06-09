@@ -1,4 +1,4 @@
-package com.hiro_a.naruko.view.ChatView;
+package com.hiro_a.naruko.view.NarukoView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,7 +14,7 @@ import android.view.View;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class ChatCanvasView extends View {
+public class NarukoView_NewMessage extends View {
     int count = 0;  //文字列受け取り回数
     float textSize = convertDp2Px(15, getContext());;  //文字サイズ
     float radius;   //回転半径
@@ -42,7 +42,7 @@ public class ChatCanvasView extends View {
     Path graphicPath_Colored;
     Path shadowPath;
 
-    public ChatCanvasView(Context context, AttributeSet attrs) {
+    public NarukoView_NewMessage(Context context, AttributeSet attrs) {
         super(context, attrs);
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), "anzu_font.ttf"); //フォント
 

@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -33,8 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityChat;
 import com.hiro_a.naruko.common.MenuRoomData;
-import com.hiro_a.naruko.task.PassDecodeTask;
-import com.hiro_a.naruko.task.PassEncodeTask;
+import com.hiro_a.naruko.task.Hash;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewLayoutManger;
 
@@ -43,14 +43,16 @@ import java.util.List;
 
 import static android.content.Context.WINDOW_SERVICE;
 
-public class menuRoom extends Fragment implements View.OnClickListener {
+public class MenuRoom extends Fragment implements View.OnClickListener {
     private String TAG = "NARUKO_DEBUG @ menuRoom.fragment";
+
     TextView favTitle;
 
     private List<MenuRoomData> dataList;
 
     private FirebaseFirestore mFirebaseDatabase;
     private CollectionReference roomRef;
+    private DocumentReference secRef;
     private StorageReference mStorageRefernce;
 
 
@@ -59,17 +61,18 @@ public class menuRoom extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_menu_room_main, container, false);
+        return inflater.inflate(R.layout.fragment_menu_room_fav, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        favTitle = (TextView) view.findViewById(R.id.menu_room_favText);
+        favTitle = (TextView) view.findViewById(R.id.fRoomFav_textView_title);
 
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
+        secRef = mFirebaseDatabase.collection("security").document("hash");
 
         mStorageRefernce = FirebaseStorage.getInstance().getReference();
 
@@ -109,10 +112,10 @@ public class menuRoom extends Fragment implements View.OnClickListener {
                                 boolean imageIs = document.getDocument().getBoolean("imageIs");
 
                                 StorageReference imageReference = null;
-                                String encodedPassword = "";
+                                String password = "";
 
                                 if (passwordIs){
-                                    encodedPassword = document.getDocument().getString("password");
+                                    password = document.getDocument().getString("password");
                                 }
 
                                 if (imageIs){
@@ -122,7 +125,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
                                 MenuRoomData data = new MenuRoomData();
                                 data.setTitle(roomName);
                                 data.setId(roomId);
-                                data.setPassword(encodedPassword);
+                                data.setPassword(password);
                                 data.setImage(imageReference);
 
                                 dataList.add(data);
@@ -148,7 +151,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
 
     //データ有無確認
     private void dataCheck(View view, ProgressDialog progressDialog){
-        TextView no_room = (TextView) view.findViewById(R.id.no_room);
+        TextView no_room = (TextView) view.findViewById(R.id.fRoomFav_textView_noRoom);
         if (!dataList.isEmpty()){
             no_room.setVisibility(View.GONE);
             roomRecycleView(view, progressDialog);
@@ -162,7 +165,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
     //RecycleView
     private void roomRecycleView(View view, ProgressDialog progressDialog){
         //RecyclerView
-        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.roomFavRecyclerView);
+        final RecyclerView menuChatRecyclerView = (RecyclerView)view.findViewById(R.id.fRoomFav_recyclerView_rooms);
 
         //Adapter
         IconRecyclerViewAdapter adapter = new IconRecyclerViewAdapter(dataList){
@@ -170,10 +173,10 @@ public class menuRoom extends Fragment implements View.OnClickListener {
             protected void onMenuClicked(@NonNull int position){
                 super.onMenuClicked(position);
                 String roomId = (dataList.get(position)).getId();
-                String encodedPassword = (dataList.get(position)).getPassword();
+                String password = (dataList.get(position)).getPassword();
 
-                if (!encodedPassword.isEmpty()){
-                    passAuthWindow(roomId, encodedPassword);
+                if (!password.isEmpty()){
+                    passAuthWindow(roomId, password);
                 } else {
                     Intent room = new Intent(getContext(), ActivityChat.class);
                     room.putExtra("roomId", roomId);
@@ -192,9 +195,9 @@ public class menuRoom extends Fragment implements View.OnClickListener {
         progressDialog.dismiss();
     }
 
-    private void passAuthWindow(String Id, String encodedPassword){
+    private void passAuthWindow(String Id, final String password){
         final String roomId = Id;
-        final String password = new PassDecodeTask().decode(getString(R.string.ENC_KEY), encodedPassword, "BLOWFISH");
+        //final String password = new PassDecodeTask().decode(getString(R.string.ENC_KEY), encodedPassword, "BLOWFISH");
 
         //ウィンドウサイズ取得
         WindowManager wm = (WindowManager)getActivity().getSystemService(WINDOW_SERVICE);
@@ -205,7 +208,7 @@ public class menuRoom extends Fragment implements View.OnClickListener {
         int screenHeight = size.y;
 
         final PopupWindow passAuthPopup = new PopupWindow(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_menu_room_main_popup, null);
+        View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_menu_room_fav_popup, null);
         passAuthPopup.setContentView(view);
         passAuthPopup.setOutsideTouchable(true);
         passAuthPopup.setFocusable(true);
@@ -215,15 +218,16 @@ public class menuRoom extends Fragment implements View.OnClickListener {
 
         passAuthPopup.showAsDropDown(favTitle);
 
-        final EditText passwordEdittext = (EditText) view.findViewById(R.id.menu_room_password);
+        final EditText passwordEdittext = (EditText) view.findViewById(R.id.fRoomFav_editText_password);
 
-        Button enterPassword = (Button) view.findViewById(R.id.menu_room_passwordButton);
+        Button enterPassword = (Button) view.findViewById(R.id.fRoomFav_button_finish);
         enterPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String enteredPassword = passwordEdittext.getText().toString();
+                String hashed_enterdPassword = new Hash().doHash(enteredPassword);
 
-                if (enteredPassword.equals(password)){
+                if (hashed_enterdPassword.equals(password)){
                     Intent room = new Intent(getContext(), ActivityChat.class);
                     room.putExtra("roomId", roomId);
                     startActivity(room);

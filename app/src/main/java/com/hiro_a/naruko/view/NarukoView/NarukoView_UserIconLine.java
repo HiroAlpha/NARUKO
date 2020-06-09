@@ -1,4 +1,4 @@
-package com.hiro_a.naruko.view.ChatView;
+package com.hiro_a.naruko.view.NarukoView;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,10 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.graphics.PorterDuff;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 
 import com.hiro_a.naruko.task.ConvertDp2Px;
@@ -17,7 +14,7 @@ import com.hiro_a.naruko.task.ConvertDp2Px;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
-public class ChatCanvasView_userIcon_Line extends View {
+public class NarukoView_UserIconLine extends View {
     int count = 0;
     int radius = 400;
     int textSize = 30;
@@ -38,7 +35,7 @@ public class ChatCanvasView_userIcon_Line extends View {
 
     Path iconOuterCirclePath;
 
-    public ChatCanvasView_userIcon_Line(Context context, AttributeSet attrs) {
+    public NarukoView_UserIconLine(Context context, AttributeSet attrs) {
         super(context, attrs);
         iconOuterCirclePath = new Path();
 

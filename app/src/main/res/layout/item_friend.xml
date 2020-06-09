@@ -1,44 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:id="@+id/itemFriend_layout_main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itemFriend_imageView_friendImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/ic_launcher_background"
+        app:civ_border_color="#00000000" />
 
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/itemFriend_layout_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/friendImage"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            app:civ_border_color="#00000000"/>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/itemFriend_textView_friendName"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:fontFamily="@font/allerta"
+            android:text="@string/sample_text"
+            android:textColor="#8F000000" />
 
-            <TextView
-                android:id="@+id/friendName"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:text="TextView"
-                android:textColor="#8F000000" />
-
-            <TextView
-                android:id="@+id/friendId"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"
-                android:text="TextView" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/itemFriend_textView_friendId"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:fontFamily="@font/allerta"
+            android:text="@string/sample_text" />
 
     </LinearLayout>
 

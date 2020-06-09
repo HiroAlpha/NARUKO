@@ -31,7 +31,6 @@ public class IconRecyclerViewAdapter extends RecyclerView.Adapter<IconRecyclerVi
             @Override
             public void onClick(View view) {
                 int position = menuHolder.getAdapterPosition();
-                final String title = (list.get(position)).getTitle();
                 onMenuClicked(position);
             }
         });

@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fLoginEmail_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/title_login"
+        android:id="@+id/fLoginEmail_textView_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/allerta"
-        android:text="ログイン"
+        android:text="@string/login"
         android:textAlignment="center"
         android:textSize="25sp" />
 
     <EditText
-        android:id="@+id/login_email_edittext"
+        android:id="@+id/fLoginEmail_editText_email"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -26,13 +27,14 @@
         android:backgroundTint="#ffffff"
         android:ems="10"
         android:fontFamily="@font/allerta"
-        android:hint="メールアドレスを入力"
+        android:hint="@string/type_email"
         android:inputType="textEmailAddress"
         android:paddingStart="15dp"
-        android:paddingEnd="15dp" />
+        android:paddingEnd="15dp"
+        android:importantForAutofill="no" />
 
     <EditText
-        android:id="@+id/login_password_edittext"
+        android:id="@+id/fLoginEmail_editText_password"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -42,29 +44,30 @@
         android:backgroundTint="#ffffff"
         android:ems="10"
         android:fontFamily="@font/allerta"
-        android:hint="パスワードを入力"
+        android:hint="@string/type_password"
         android:inputType="textPassword"
         android:paddingStart="15dp"
-        android:paddingEnd="15dp" />
+        android:paddingEnd="15dp"
+        android:importantForAutofill="no" />
 
     <LinearLayout
+        android:id="@+id/fLoginEmail_layout_saveLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <CheckBox
-            android:id="@+id/login_datasave_checkbox"
-            android:layout_width="wrap_content"
+            android:id="@+id/fLoginEmail_check_saveLogin"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="5dp"
-            android:layout_weight="1"
-            android:text="ログイン情報を保存" />
+            android:text="@string/title_saveLogin" />
     </LinearLayout>
 
     <com.hiro_a.naruko.view.CustomButton
-        android:id="@+id/emailLoginButton"
+        android:id="@+id/fLoginEmail_view_login"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -72,7 +75,7 @@
         android:background="@drawable/background_login_button"
         android:backgroundTint="#FF6600"
         android:gravity="center_vertical"
-        android:text="ログイン"
+        android:text="@string/login"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="15sp"

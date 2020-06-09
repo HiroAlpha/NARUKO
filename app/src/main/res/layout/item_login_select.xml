@@ -2,25 +2,27 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/itemLoginSelect_merge"
     android:orientation="horizontal"
     tools:parentTag="android.widget.LinearLayout">
 
     <ImageView
-        android:id="@+id/selectorImage"
+        android:id="@+id/itemLoginSelect_imageView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_weight="1"
+        android:contentDescription="@string/item_image"
         android:src="@mipmap/ic_launcher_round"
         android:tint="@android:color/background_light" />
 
     <TextView
-        android:id="@+id/selectorText"
+        android:id="@+id/itemLoginSelect_textView"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="10"
         android:gravity="center_vertical"
-        android:text="TextView"
+        android:text="@string/sample_text"
         android:textColor="#FFFFFF" />
 </merge>

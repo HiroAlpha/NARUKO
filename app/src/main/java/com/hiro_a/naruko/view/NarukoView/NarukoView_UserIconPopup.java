@@ -1,4 +1,4 @@
-package com.hiro_a.naruko.view;
+package com.hiro_a.naruko.view.NarukoView;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -7,7 +7,6 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -16,19 +15,20 @@ import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityChat;
 import com.hiro_a.naruko.task.ConvertDp2Px;
-import com.hiro_a.naruko.view.ChatView.ChatCanvasView_userIcon_Line;
+import com.hiro_a.naruko.view.UserIconView;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import static java.lang.StrictMath.cos;
-import static java.lang.StrictMath.floor;
 import static java.lang.StrictMath.sin;
 
-public class NarukoUserIconPopoutView extends View implements Animator.AnimatorListener, View.OnTouchListener {
+public class NarukoView_UserIconPopup extends View implements Animator.AnimatorListener, View.OnTouchListener {
     Context context;
     String TAG = "NARUKO_DEBUG @ NarukoUserIconPopoutView";
 
@@ -38,24 +38,24 @@ public class NarukoUserIconPopoutView extends View implements Animator.AnimatorL
 
     ArrayList<UserIconView> userIconViewArrayList;
 
-    ChatCanvasView_userIcon_Line canvasViewUserIconLine;
+    NarukoView_UserIconLine canvasViewUserIconLine;
 
-    public NarukoUserIconPopoutView(Context context) {
+    public NarukoView_UserIconPopup(Context context) {
         this(context, null);
     }
 
-    public NarukoUserIconPopoutView(Context context, @Nullable AttributeSet attrs) {
+    public NarukoView_UserIconPopup(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NarukoUserIconPopoutView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public NarukoView_UserIconPopup(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
 
         userIconViewArrayList = new ArrayList<UserIconView>();
     }
 
-    public void addUserIcon(Point screenSize, RelativeLayout relativeLayout, String userName){
+    public void addUserIcon(Point screenSize, RelativeLayout relativeLayout, String userName, String userImage){
         Point screenCenter = new Point(screenSize.x /2, screenSize.y/2);
 
         UserIconView userIconView = new UserIconView(context);
@@ -64,8 +64,13 @@ public class NarukoUserIconPopoutView extends View implements Animator.AnimatorL
         int userIconCount = userIconViewArrayList.size();
         int userIconArrayNumber = userIconCount - 1;
         int color = getResources().getColor(R.color.colorYunaLight);
+        StorageReference imageStorgeRefarence = null;
+        if (!userImage.equals("Default_Image")){
+            imageStorgeRefarence = FirebaseStorage.getInstance().getReference().child(userImage);
+        }
+
         UserIconView foregroundUserIcon = userIconViewArrayList.get(userIconArrayNumber);
-        foregroundUserIcon.setData(null, userName, color);
+        foregroundUserIcon.setData(imageStorgeRefarence, userName, color);
         foregroundUserIcon.setOnTouchListener(this);
         relativeLayout.addView(foregroundUserIcon);
 
@@ -102,7 +107,7 @@ public class NarukoUserIconPopoutView extends View implements Animator.AnimatorL
     }
 
     //define the last speaker
-    public void setLastSpeaker(ChatCanvasView_userIcon_Line chatCanvasViewUserIconLine, int iconNum){
+    public void setLastSpeaker(NarukoView_UserIconLine chatCanvasViewUserIconLine, int iconNum){
         UserIconView selectedUserIcon = userIconViewArrayList.get(iconNum);
         float selectedIconX = selectedUserIcon.getX();
         float selectedIconY = selectedUserIcon.getY();
@@ -211,7 +216,7 @@ public class NarukoUserIconPopoutView extends View implements Animator.AnimatorL
 
         for (int i=0;i<20;i++){
             splash[i] = new ImageView(context);
-            splash[i].setImageResource(R.drawable.image_chat_iconpopup);
+            splash[i].setImageResource(R.drawable.image_naruko_icon_popupitem);
             splash[i].setX(imageInitialPos.x);
             splash[i].setY(imageInitialPos.y);
             relativeLayout.addView(splash[i]);

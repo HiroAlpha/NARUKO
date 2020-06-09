@@ -44,12 +44,12 @@ public class SelectorItem extends LinearLayout {
 
     private void setProperty(Context context){
         LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.item_selector, this, true);
+        inflater.inflate(R.layout.item_login_select, this, true);
 
-        ImageView selectorImageView = (ImageView)findViewById(R.id.selectorImage);
+        ImageView selectorImageView = (ImageView)findViewById(R.id.itemLoginSelect_imageView);
         selectorImageView.setImageResource(selectorImage);
 
-        TextView selectorTextView = (TextView)findViewById(R.id.selectorText);
+        TextView selectorTextView = (TextView)findViewById(R.id.itemLoginSelect_textView);
         selectorTextView.setTextColor(selectorTextColor);
         selectorTextView.setText(selectorText);
     }

@@ -2,19 +2,15 @@ package com.hiro_a.naruko.fragment;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -41,16 +38,16 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
+import com.hiro_a.naruko.common.DeviceInfo;
 import com.hiro_a.naruko.task.ButtonColorChangeTask;
-import com.hiro_a.naruko.task.PassEncodeTask;
+import com.hiro_a.naruko.task.Hash;
+import com.hiro_a.naruko.task.MakeStoargeUri;
 import com.hiro_a.naruko.view.CustomButton;
 import com.hiro_a.naruko.view.CustomImageView;
-import com.isseiaoki.simplecropview.CropImageView;
 import com.isseiaoki.simplecropview.callback.CropCallback;
 import com.isseiaoki.simplecropview.callback.LoadCallback;
 import com.isseiaoki.simplecropview.callback.SaveCallback;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,9 +56,15 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.content.Context.WINDOW_SERVICE;
+public class MenuRoomAdd extends Fragment implements View.OnClickListener {
+    private String TAG = "NARUKO_DEBUG @ MenuRoomCreate";
+    private Context context;
 
-public class menuRoomAdd extends Fragment implements View.OnClickListener {
+    private Boolean imageIs = false;
+    private Boolean passwordIs = false;
+    private Uri imageDirectryUri;
+
+    private LinearLayout linearLayout;
     private CircleImageView roomImagePreview;
     private ImageView roomImageChange;
     private TextView roomAddTitle;
@@ -74,11 +77,6 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
     private StorageReference mStorageRefernce;
 
-    private Boolean imageIs = false;
-    private Boolean passwordIs = false;
-    private Uri trialImageUri;
-
-    private String TAG = "NARUKO_DEBUG";
     private int STRAGEACCESSFRAMEWORK_REQUEST_CODE = 42;
     private Bitmap.CompressFormat mCompressFormat = Bitmap.CompressFormat.JPEG;
 
@@ -87,30 +85,39 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        return inflater.inflate(R.layout.fragment_menu_room_add, container, false);
+        return inflater.inflate(R.layout.fragment_menu_room_create, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        roomAddTitle = (TextView) view.findViewById(R.id.menu_roomRegister_title);
-        roomImagePreview = (CircleImageView) view.findViewById(R.id.menu_roomRegister_imageView);
-        roomImageChange = (ImageView) view.findViewById(R.id.menu_roomRegister_changeImage);
+        //コンテキスト
+        context = getActivity();
+
+        //メインビュー
+
+
+        roomAddTitle = (TextView) view.findViewById(R.id.fRoomCreate_textView_title);
+        roomImagePreview = (CircleImageView) view.findViewById(R.id.fRoomCreate_imageView_userIcon);
+        roomImageChange = (ImageView) view.findViewById(R.id.fRoomCreate_imageView_changeImage);
         roomImageChange.setOnClickListener(this);
 
-        roomNameEdittext = (EditText) view.findViewById(R.id.menu_roomRegister_roomName);
-        passwordEditText = (EditText) view.findViewById(R.id.menu_roomRegister_password);
+        roomNameEdittext = (EditText) view.findViewById(R.id.fRoomCreate_editText_roomname);
+        passwordEditText = (EditText) view.findViewById(R.id.fRoomCreate_editText_password);
         passwordEditText.setEnabled(false);
 
         //チェックボックス
-        passwordCheckBox = (CheckBox) view.findViewById(R.id.menu_roomRegister_passwordCheckBox);
+        passwordCheckBox = (CheckBox) view.findViewById(R.id.fRoomCreate_check_password);
         passwordCheckBox.setOnClickListener(this);
 
         //ボタン
-        CustomButton roomAddButton = (CustomButton) view.findViewById(R.id.menu_roomRegister_button);
+        CustomButton roomAddButton = (CustomButton) view.findViewById(R.id.fRoomCreate_view_roomCreate);
         roomAddButton.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#808080")));
         roomAddButton.setOnClickListener(this);
+
+        //CropImageView表示場所
+        linearLayout = view.findViewById(R.id.fRoomCreate_layout_main);
 
         manager = getFragmentManager();
 
@@ -119,7 +126,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
     public void onClick(View view){
         switch (view.getId()) {
-            case R.id.menu_roomRegister_changeImage:
+            case R.id.fRoomCreate_imageView_changeImage:
                 //ストレージアクセスフレームワーク
                 Intent strageAccessFramework = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 strageAccessFramework.addCategory(Intent.CATEGORY_OPENABLE);    //開くことのできるファイルに限定
@@ -127,7 +134,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
                 startActivityForResult(strageAccessFramework, STRAGEACCESSFRAMEWORK_REQUEST_CODE);
                 break;
 
-            case R.id.menu_roomRegister_passwordCheckBox:
+            case R.id.fRoomCreate_check_password:
                 if (passwordCheckBox.isChecked()) {
                     passwordIs = true;
                     passwordEditText.setEnabled(true);
@@ -137,7 +144,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
                 }
                 break;
 
-            case R.id.menu_roomRegister_button:
+            case R.id.fRoomCreate_view_roomCreate:
                 if (formChecker()) {
                     ProgressDialog progressDialog = new ProgressDialog(getActivity());
                     progressDialog.setTitle("チャットルーム作成中...");
@@ -156,96 +163,21 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
         if (requestCode == STRAGEACCESSFRAMEWORK_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             if (data != null) {
-                final Uri imageUri = data.getData();    //ファイルのUriを取得
+                Uri imageUri = data.getData();    //ファイルのUriを取得
 
-                //ウィンドウサイズ取得
-                WindowManager wm = (WindowManager)getActivity().getSystemService(WINDOW_SERVICE);
-                Display disp = wm.getDefaultDisplay();
-                Point size = new Point();
-                disp.getSize(size);
+                //DeviceInfoから画面情報を取得
+                DeviceInfo userInfo = new DeviceInfo();
+                float screenHeight = userInfo.getScreenHeight(context);
 
-                int screenHeight = size.y;
-
-                cropImagePopup = new PopupWindow(getActivity());
-                View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_menu_room_add_popup, null);
-                cropImagePopup.setContentView(view);
-                cropImagePopup.setOutsideTouchable(true);
-                cropImagePopup.setFocusable(true);
-
-                cropImagePopup.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
-                cropImagePopup.setHeight((screenHeight / 3) * 2);
-
-                cropImagePopup.showAsDropDown(roomAddTitle);
-
-                final CropImageView cropImageView = (CropImageView) view.findViewById(R.id.menu_roomRegister_cropImage);
-                cropImageView.load(imageUri).execute(mLoadCallback);
-
-                //時計（右回り）
-                CustomImageView cropRotateRight = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropRotateRight);
-                cropRotateRight.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
-                cropRotateRight.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cropImageView.rotateImage(CropImageView.RotateDegrees.ROTATE_90D);
-                    }
-                });
-
-                //反時計（左回り）
-                CustomImageView cropRotateLeft = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropRotateLeft);
-                cropRotateLeft.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
-                cropRotateLeft.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cropImageView.rotateImage(CropImageView.RotateDegrees.ROTATE_M90D);
-                    }
-                });
-
-                CustomImageView cropButton = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropFinish);
-                cropButton.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
-                cropButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        cropImageView.crop(imageUri).outputHeight(300).outputMaxWidth(300).execute(new CropCallback() {
-                            @Override
-                            public void onSuccess(Bitmap cropped) {
-                                cropImageView.save(cropped)
-                                        .compressFormat(mCompressFormat)
-                                        .execute(makeNewUri(), mSaveCallback);
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-                        });
-                    }
-                });
+                //画像切り取り画面表示・画像保存先Uri取得
+                createCropView(linearLayout, imageUri, (int) screenHeight);
             }
         }
     }
 
-    //部屋画像保存Uri
-    public Uri makeNewUri(){
-        String fileName = "TrialImage.jpg";
-
-        File dataDir = new File(Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM, "NARUKO");
-        if(!dataDir.exists()){
-            dataDir.mkdirs();
-            Log.d(TAG, "SUCSESS CREATING DCIM/NARUKO");
-        }
-        File filePath = new File(dataDir,fileName);
-        trialImageUri = Uri.fromFile(filePath);
-
-        ContentValues values = new ContentValues();
-        ContentResolver contentResolver = getContext().getContentResolver();
-        values.put(MediaStore.Images.Media.TITLE, fileName);
-        values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
-        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
-        values.put(MediaStore.Images.Media.MIME_TYPE,"image/jpeg");
-        values.put(MediaStore.Images.Media.DATA, Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/" + "NARUKO/" +fileName);
-        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        return trialImageUri;
+    //画像Uri保存
+    public void saveImageDirectroy(Uri imageDirectory){
+        this.imageDirectryUri = imageDirectory;
     }
 
     //入力チェック
@@ -271,6 +203,10 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
 
     //部屋作成
     public void createRoom(final ProgressDialog progressDialog){
+        if (imageDirectryUri!=null){
+            imageIs = true;
+        }
+
         FirebaseAuth mFirebaseAuth = FirebaseAuth.getInstance();
         FirebaseFirestore mFirebaseDatabase = FirebaseFirestore.getInstance();
         CollectionReference roomRef = mFirebaseDatabase.collection("rooms");
@@ -291,8 +227,8 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         newRoom.put("imageIs", imageIs);
 
         if (passwordIs){
-            String passwordString = new PassEncodeTask().encode(getString(R.string.ENC_KEY), passwordEditText.getText().toString(), "BLOWFISH");
-            newRoom.put("password", passwordString);
+            String hashed_password = new Hash().doHash(passwordEditText.getText().toString());
+            newRoom.put("password", hashed_password);
         }
 
         roomRef.add(newRoom).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -300,16 +236,16 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
             public void onSuccess(DocumentReference documentReference) {
                 String docName = documentReference.getId().toString();
                 StorageReference uploadImageRef = mStorageRefernce.child("Images/RoomImages/" + docName + ".jpg");
-                UploadTask uploadTask = uploadImageRef.putFile(trialImageUri);
+                UploadTask uploadTask = uploadImageRef.putFile(imageDirectryUri);
                 uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                         //ルームメニューへ
-                        Fragment fragmentChat = new menuRoom();
+                        Fragment fragmentChat = new MenuRoom();
                         FragmentTransaction transactionToChat = manager.beginTransaction();
                         transactionToChat.setCustomAnimations(
                                 R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
-                        transactionToChat.replace(R.id.menu_fragment, fragmentChat, "FRAG_MENU_ROOM");
+                        transactionToChat.replace(R.id.menu_layout_fragmentContainer, fragmentChat, "FRAG_MENU_ROOM");
                         transactionToChat.commit();
 
                         progressDialog.dismiss();
@@ -340,6 +276,72 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
         });
     }
 
+    //画像切り取りビュー表示
+    public void createCropView(View parentView, final Uri imageUri, int screenHeight) {
+        final Uri imageDirectoryUri = new MakeStoargeUri().makeNewUri(context);
+
+        //CropImageViewウィンドウ
+        cropImagePopup = new PopupWindow(context);
+        View view = this.getLayoutInflater().inflate(R.layout.fragment_menu_room_create_popup, null);
+        cropImagePopup.setContentView(view);
+        cropImagePopup.setOutsideTouchable(true);
+        cropImagePopup.setFocusable(true);
+
+        //横幅
+        cropImagePopup.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+
+        //高さ
+        cropImagePopup.setHeight((screenHeight / 3) * 2);
+
+        //位置
+        cropImagePopup.showAtLocation(parentView, Gravity.CENTER, 0, (screenHeight / 2) + (screenHeight / 3));
+
+        //CropImageView本体
+        final com.isseiaoki.simplecropview.CropImageView cropImageView = (com.isseiaoki.simplecropview.CropImageView) view.findViewById(R.id.menu_roomRegister_cropImage);
+        cropImageView.load(imageUri).execute(mLoadCallback);
+
+        //画像時計方向回転
+        CustomImageView cropRotateRight = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropRotateRight);
+        cropRotateRight.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
+        cropRotateRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImageView.rotateImage(com.isseiaoki.simplecropview.CropImageView.RotateDegrees.ROTATE_90D);
+            }
+        });
+
+        //画像反時計方向回転
+        CustomImageView cropRotateLeft = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropRotateLeft);
+        cropRotateLeft.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
+        cropRotateLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImageView.rotateImage(com.isseiaoki.simplecropview.CropImageView.RotateDegrees.ROTATE_M90D);
+            }
+        });
+
+        CustomImageView cropButton = (CustomImageView) view.findViewById(R.id.menu_roomRegister_cropFinish);
+        cropButton.setOnTouchListener(new ButtonColorChangeTask(Color.parseColor("#FFFFFF")));
+        cropButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cropImageView.crop(imageUri).outputHeight(300).outputMaxWidth(300).execute(new CropCallback() {
+                    @Override
+                    public void onSuccess(Bitmap cropped) {
+                        cropImageView.save(cropped)
+                                .compressFormat(mCompressFormat)
+                                .execute(imageDirectoryUri, mSaveCallback);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+                });
+            }
+        });
+    }
+
     //↓以下コールバック
     private final LoadCallback mLoadCallback = new LoadCallback() {
         @Override public void onSuccess() {
@@ -357,7 +359,7 @@ public class menuRoomAdd extends Fragment implements View.OnClickListener {
             cropImagePopup.dismiss();
             roomImagePreview.setImageURI(outputUri);
 
-            imageIs = true;
+            imageDirectryUri = outputUri;
         }
 
         @Override public void onError(Throwable e) {

@@ -1,7 +1,6 @@
 package com.hiro_a.naruko.view.RecyclerView.ProfileView;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,7 @@ public class LinearLayoutViewHolder extends RecyclerView.ViewHolder {
     public LinearLayoutViewHolder(@NonNull View itemView){
         super(itemView);
 
-        profileNameView = (TextView)itemView.findViewById(R.id.settingTitle);
-        profileDetailView = (TextView)itemView.findViewById(R.id.settingContent);
+        profileNameView = (TextView)itemView.findViewById(R.id.itemProfile_textView_title);
+        profileDetailView = (TextView)itemView.findViewById(R.id.itemProfile_textView_content);
     }
 }

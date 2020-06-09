@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fLoginSelect_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical">
 
     <com.hiro_a.naruko.item.SelectorItem
-        android:id="@+id/loginSelector_Twitter"
+        android:id="@+id/fLoginSelect_view_twitter"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -20,7 +21,7 @@
         app:selectorTextColor="#ffffff" />
 
     <com.hiro_a.naruko.item.SelectorItem
-        android:id="@+id/loginSelector_Email"
+        android:id="@+id/fLoginSelect_view_email"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_marginStart="10dp"
@@ -32,25 +33,24 @@
         app:selectorTextColor="#ffffff" />
 
     <LinearLayout
+        android:id="@+id/fLoginSelect_layout_option"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/makeAccout"
+            android:id="@+id/fLoginSelect_textView_createAccount"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView"
             android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/security"
+            android:id="@+id/fLoginSelect_textView_policy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="TextView"
             android:textAlignment="center" />
 
     </LinearLayout>

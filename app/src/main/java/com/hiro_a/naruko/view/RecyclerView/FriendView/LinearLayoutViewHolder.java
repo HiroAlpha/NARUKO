@@ -1,7 +1,6 @@
 package com.hiro_a.naruko.view.RecyclerView.FriendView;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,8 +18,8 @@ public class LinearLayoutViewHolder extends RecyclerView.ViewHolder {
     public LinearLayoutViewHolder(@NonNull View itemView){
         super(itemView);
 
-        friendImageView = (CircleImageView) itemView.findViewById(R.id.friendImage);
-        friendNameView = (TextView)itemView.findViewById(R.id.friendName);
-        friendIdView = (TextView)itemView.findViewById(R.id.friendId);
+        friendImageView = (CircleImageView) itemView.findViewById(R.id.itemFriend_imageView_friendImage);
+        friendNameView = (TextView)itemView.findViewById(R.id.itemFriend_textView_friendName);
+        friendIdView = (TextView)itemView.findViewById(R.id.itemFriend_textView_friendId);
     }
 }

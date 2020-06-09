@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.hiro_a.naruko.R;
 
-public class menuFriendSearch extends Fragment {
+public class MenuFriendSearch extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

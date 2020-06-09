@@ -1,36 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/register_layout_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.ActivityRegister">
 
     <com.hiro_a.naruko.view.BackgroundView
-        android:id="@+id/selectlogin_background"
+        android:id="@+id/register_view_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/image_login_fromtop_background" />
 
     <LinearLayout
+        android:id="@+id/register_layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title_login"
+            android:id="@+id/register_textView_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
             android:fontFamily="@font/allerta"
-            android:text="アカウント作成"
+            android:text="@string/title_createAccount"
             android:textAlignment="center"
             android:textSize="25sp" />
 
+        <TextView
+            android:id="@+id/register_textView_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/title_email" />
+
         <EditText
-            android:id="@+id/register_email_edittext"
+            android:id="@+id/register_editText_email"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -40,14 +50,24 @@
             android:backgroundTint="#ffffff"
             android:ems="10"
             android:fontFamily="@font/allerta"
-            android:hint="メールアドレスを入力"
+            android:hint="@string/type_email"
+            android:importantForAutofill="no"
             android:inputType="textEmailAddress"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
+        <TextView
+            android:id="@+id/register_textView_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/title_password" />
+
 
         <EditText
-            android:id="@+id/register_password_edittext"
+            android:id="@+id/register_editText_password"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -57,13 +77,14 @@
             android:backgroundTint="#ffffff"
             android:ems="10"
             android:fontFamily="@font/allerta"
-            android:hint="パスワードを入力"
+            android:hint="@string/type_password"
+            android:importantForAutofill="no"
             android:inputType="textPassword"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
         <EditText
-            android:id="@+id/register_password_edittext_check"
+            android:id="@+id/register_editText_passwordAgain"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -73,14 +94,24 @@
             android:backgroundTint="#ffffff"
             android:ems="10"
             android:fontFamily="@font/allerta"
-            android:hint="パスワードを入力（確認）"
+            android:hint="@string/type_passwordAgain"
+            android:importantForAutofill="no"
             android:inputType="textPassword"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
+        <TextView
+            android:id="@+id/register_textView_userName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:text="@string/title_userName" />
+
 
         <EditText
-            android:id="@+id/register_username_edittext"
+            android:id="@+id/register_editText_userName"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -90,13 +121,15 @@
             android:backgroundTint="#ffffff"
             android:ems="10"
             android:fontFamily="@font/allerta"
-            android:hint="ユーザー名を入力"
+            android:hint="@string/type_userName"
+            android:importantForAutofill="no"
+            android:inputType="text"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
 
         <com.hiro_a.naruko.view.CustomButton
-            android:id="@+id/emailRegisterButton"
+            android:id="@+id/register_view_register"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
@@ -104,7 +137,7 @@
             android:background="@drawable/background_login_button"
             android:backgroundTint="#FF6600"
             android:gravity="center_vertical"
-            android:text="登録"
+            android:text="@string/register"
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="15sp"

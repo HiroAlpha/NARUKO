@@ -25,7 +25,7 @@ import com.hiro_a.naruko.item.SelectorItem;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class loginSelect extends Fragment implements View.OnClickListener {
+public class LoginSelect extends Fragment implements View.OnClickListener {
     String TAG = "NARUKO_DEBUG @ loginSelect.fragment";
 
     @Nullable
@@ -46,40 +46,40 @@ public class loginSelect extends Fragment implements View.OnClickListener {
         String securityMessage = "利用規約";
         SpannableString spannableSecurity = createSpannableString(securityMessage, "利用規約");
 
-        TextView makeAccountText = (TextView)view.findViewById(R.id.makeAccout);
+        TextView makeAccountText = (TextView)view.findViewById(R.id.fLoginSelect_textView_createAccount);
         makeAccountText.setText(spannableAccount);
         makeAccountText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        TextView securityText = (TextView)view.findViewById(R.id.security);
+        TextView securityText = (TextView)view.findViewById(R.id.fLoginSelect_textView_policy);
         securityText.setText(spannableSecurity);
         securityText.setMovementMethod(LinkMovementMethod.getInstance());
 
-        SelectorItem twitterSelector = (SelectorItem) view.findViewById(R.id.loginSelector_Twitter);
+        SelectorItem twitterSelector = (SelectorItem) view.findViewById(R.id.fLoginSelect_view_twitter);
         twitterSelector.setOnClickListener(this);
 
-        SelectorItem emailSelector = (SelectorItem) view.findViewById(R.id.loginSelector_Email);
+        SelectorItem emailSelector = (SelectorItem) view.findViewById(R.id.fLoginSelect_view_email);
         emailSelector.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.loginSelector_Twitter:
+            case R.id.fLoginSelect_view_twitter:
                 //Twitterログイン
                 ActivitySelectLogin activitySelectLogin = (ActivitySelectLogin)getActivity();
                 activitySelectLogin.loginWithTwitter();
                 break;
 
-            case R.id.loginSelector_Email:
+            case R.id.fLoginSelect_view_email:
                 //Emailログイン画面へ
                 FragmentManager fragmentManager = getFragmentManager();
-                Fragment fragmentEmail = new loginEmail();
+                Fragment fragmentEmail = new LoginEmail();
 
                 final FragmentTransaction transactionToEmail = fragmentManager.beginTransaction();
                 transactionToEmail.setCustomAnimations(
                         R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left,
                         R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt);
-                transactionToEmail.replace(R.id.login_fragment, fragmentEmail, "FRAG_LOGIN_EMAIL");
+                transactionToEmail.replace(R.id.loginSelect_layout_fragmentContainter, fragmentEmail, "FRAG_LOGIN_EMAIL");
                 transactionToEmail.addToBackStack(null);
                 transactionToEmail.commit();
 

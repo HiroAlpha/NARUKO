@@ -19,11 +19,9 @@ import androidx.fragment.app.Fragment;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivitySelectLogin;
 import com.hiro_a.naruko.task.ButtonColorChangeTask;
-import com.hiro_a.naruko.task.PassDecodeTask;
-import com.hiro_a.naruko.task.PassEncodeTask;
 import com.hiro_a.naruko.view.CustomButton;
 
-public class loginEmail extends Fragment implements View.OnClickListener {
+public class LoginEmail extends Fragment implements View.OnClickListener {
     String TAG = "NARUKO_DEBUG @ loginEmail.fragment";
 
     private EditText editText_Email, editText_Password;
@@ -49,40 +47,56 @@ public class loginEmail extends Fragment implements View.OnClickListener {
         KEY = getString(R.string.ENC_KEY);
         userData = getActivity().getSharedPreferences("userdata", Context.MODE_PRIVATE);
         String email = userData.getString("Email", "");
-        String password = new PassDecodeTask().decode(KEY, userData.getString("Password", ""), "BLOWFISH"); //複合化
+        String password = userData.getString("Password", ""); //複合化
+        boolean loginSave = userData.getBoolean("LoginSave", false);
 
         //メールアドレス
-        editText_Email = (EditText)view.findViewById(R.id.login_email_edittext);
-        editText_Email.setText(email);
+        editText_Email = (EditText)view.findViewById(R.id.fLoginEmail_editText_email);
 
         //パスワード
-        editText_Password = (EditText)view.findViewById(R.id.login_password_edittext);
-        editText_Password.setText(password);
+        editText_Password = (EditText)view.findViewById(R.id.fLoginEmail_editText_password);
 
         //ログインボタン
         int defaultButtonColor = Color.parseColor("#FF6600");
-        CustomButton mLoginButton = (CustomButton) view.findViewById(R.id.emailLoginButton);
+        CustomButton mLoginButton = (CustomButton) view.findViewById(R.id.fLoginEmail_view_login);
         mLoginButton.setOnTouchListener(new ButtonColorChangeTask(defaultButtonColor));
         mLoginButton.setOnClickListener(this);
 
         //チェックボックス
-        checkBox_SaveData = (CheckBox)view.findViewById(R.id.login_datasave_checkbox);
+        checkBox_SaveData = (CheckBox)view.findViewById(R.id.fLoginEmail_check_saveLogin);
+        checkBox_SaveData.setChecked(loginSave);
+
+        if (loginSave){
+            editText_Email.setText(email);
+            editText_Password.setText(password);
+        }
     }
 
     @Override
     public void onClick(View v) {
         if (formChecker()) {
+            SharedPreferences.Editor editor = userData.edit();
+
             if (checkBox_SaveData.isChecked()){
                 //ログイン情報を保存
-                SharedPreferences.Editor editor = userData.edit();
                 String email = editText_Email.getText().toString();
                 String pass = editText_Password.getText().toString();
-                String encodedPassword = new PassEncodeTask().encode(KEY, pass, "BLOWFISH");    //暗号化
+
                 editor.putString("Email", email);
-                editor.putString("Password", encodedPassword);
+                editor.putString("Password", pass);
+                editor.putBoolean("LoginSave", true);
                 editor.apply();
 
-                Log.d(TAG, "LOGIN INFO SAVED!");
+                Log.d(TAG, "LOGIN INFO SAVED");
+                Log.d(TAG, "---------------------------------");
+            } else {
+                //ログイン情報を保存しない
+                editor.putString("Email", "");
+                editor.putString("Password", "");
+                editor.putBoolean("LoginSave", false);
+                editor.apply();
+
+                Log.d(TAG, "LOGIN INFO NOT SAVED");
                 Log.d(TAG, "---------------------------------");
             }
 

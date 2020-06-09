@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_width="wrap_content">
+    android:id="@+id/itemRoom_layout_main">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/itemRoom_imageView"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/ic_launcher_background"
+        app:civ_border_color="#FFFFFF"
+        app:civ_border_width="4dp" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/menuChatImageView"
-            android:layout_width="84dp"
-            android:layout_height="84dp"
-            android:layout_centerHorizontal="true"
-            app:civ_border_color="#FFFFFF"
-            app:civ_border_width="4dp" />
+    <TextView
+        android:id="@+id/itemRoom_textView"
+        android:layout_width="100dp"
+        android:layout_height="16dp"
+        android:layout_below="@id/itemRoom_imageView"
+        android:text="@string/sample_text"
+        android:textAlignment="center" />
 
-        <TextView
-            android:id="@+id/menuChatTextView"
-            android:layout_width="100dp"
-            android:layout_height="16dp"
-            android:layout_below="@id/menuChatImageView"
-            android:text="TextView"
-            android:textAlignment="center" />
-
-    </RelativeLayout>
-
-</FrameLayout>
+</RelativeLayout>

@@ -3,7 +3,6 @@ package com.hiro_a.naruko.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.activity.ActivityChat;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -42,8 +40,8 @@ public class UserIconView extends RelativeLayout {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         layout= inflater.inflate(R.layout.item_user, this, true);
-        circleImageView = (CircleImageView) findViewById(R.id.item_user_imageview);
-        textView = (TextView) findViewById(R.id.item_user_textview);
+        circleImageView = (CircleImageView) findViewById(R.id.itemUser_imageView_userImage);
+        textView = (TextView) findViewById(R.id.itemUser_textView);
     }
 
     public void setData(StorageReference imageStorgeRefarence, String userName, int color){

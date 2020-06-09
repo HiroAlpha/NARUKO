@@ -2,32 +2,34 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_layout_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context=".activity.ActivityMenu">
 
     <FrameLayout
-        android:id="@+id/menu_fragment"
+        android:id="@+id/menu_layout_fragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/overlayColor"
+        android:id="@+id/menu_imageView_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.7"
+        android:contentDescription="@string/background_image"
         app:srcCompat="@android:color/background_dark"
         tools:visibility="gone" />
 
     <RelativeLayout
-        android:id="@+id/menuRelative"
+        android:id="@+id/menu_layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="-100dp">
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/friendAddButton"
+            android:id="@+id/menu_view_friend_add"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
@@ -41,7 +43,7 @@
             app:iconText="部員検索" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/friendButton"
+            android:id="@+id/menu_view_friend"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentBottom="true"
@@ -55,7 +57,7 @@
             app:iconText="勇者部員" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/roomFavButton"
+            android:id="@+id/menu_view_room_favorit"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
@@ -69,7 +71,7 @@
             app:iconText="FAV" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/roomAddButton"
+            android:id="@+id/menu_view_room_create"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_alignParentBottom="true"
@@ -83,7 +85,7 @@
             app:iconText="ルーム作成" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/roomButton"
+            android:id="@+id/menu_view_room"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentBottom="true"
@@ -97,7 +99,7 @@
             app:iconText="NARUKO" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/settingButton"
+            android:id="@+id/menu_view_setting"
             android:layout_width="75dp"
             android:layout_height="75dp"
             android:layout_alignParentBottom="true"
@@ -113,12 +115,13 @@
         </com.hiro_a.naruko.item.MenuItem>
 
         <ImageView
-            android:id="@+id/flowerImage"
+            android:id="@+id/menu_imageView_center"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-100dp"
+            android:contentDescription="@string/center_image"
             android:gravity="center"
             app:srcCompat="@drawable/image_menu_flower" />
     </RelativeLayout>

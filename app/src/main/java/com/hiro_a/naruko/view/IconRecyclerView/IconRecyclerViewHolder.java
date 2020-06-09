@@ -18,7 +18,7 @@ public class IconRecyclerViewHolder extends RecyclerView.ViewHolder{
     public IconRecyclerViewHolder(@NonNull View itemView) {
         super(itemView);
 
-        imageView = (CircleImageView) itemView.findViewById(R.id.menuChatImageView);
-        textView = (TextView)itemView.findViewById(R.id.menuChatTextView);
+        imageView = (CircleImageView) itemView.findViewById(R.id.itemRoom_imageView);
+        textView = (TextView)itemView.findViewById(R.id.itemRoom_textView);
     }
 }

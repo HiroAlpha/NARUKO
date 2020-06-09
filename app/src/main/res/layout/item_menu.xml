@@ -2,22 +2,25 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tool="http://schemas.android.com/tools"
+    android:id="@+id/itemMenu_merge"
     android:orientation="vertical"
     tool:parentTag="android.widget.RelativeLayout">
 
     <ImageView
-        android:id="@+id/iconImageView"
+        android:id="@+id/itemMenu_imageView"
         android:layout_width="match_parent"
         android:layout_height="36dp"
+        android:contentDescription="@string/item_image"
+        android:src="@drawable/ic_launcher_background"
         android:tint="@android:color/background_light" />
 
     <TextView
-        android:id="@+id/iconTextView"
+        android:id="@+id/itemMenu_textView"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_below="@id/iconImageView"
+        android:layout_below="@id/itemMenu_imageView"
         android:gravity="center"
-        android:text="NARUKO"
-        android:textSize="10dp" />
+        android:text="@string/sample_text"
+        android:textSize="12sp" />
 
 </merge>

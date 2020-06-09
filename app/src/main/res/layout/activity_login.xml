@@ -1,52 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/loginSelect_layout_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".activity.ActivitySelectLogin">
 
     <com.hiro_a.naruko.view.BackgroundView
-        android:id="@+id/selectlogin_background"
+        android:id="@+id/loginSelect_view_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/image_login_fromtop_background" />
 
     <LinearLayout
+        android:id="@+id/loginSelect_layout_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-<!--        <ImageView-->
-<!--            android:id="@+id/naruko_image"-->
-<!--            android:layout_width="100dp"-->
-<!--            android:layout_height="100dp"-->
-<!--            android:layout_gravity="center_horizontal"-->
-<!--            android:layout_marginTop="75dp"-->
-<!--            app:srcCompat="@drawable/image_menu_flower"-->
-<!--            android:gravity="center_vertical"-->
-<!--            android:textAlignment="center"/>-->
-
         <ImageView
-            android:id="@+id/naruko_image_test"
+            android:id="@+id/loginSelect_imageView_logo"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="75dp"
-            app:srcCompat="@mipmap/ic_launcher_foreground"
+            android:contentDescription="@string/logo_image"
             android:gravity="center_vertical"
-            android:textAlignment="center"/>
+            android:src="@mipmap/ic_launcher_foreground"
+            android:textAlignment="center" />
 
         <TextView
-            android:id="@+id/title_naruko"
+            android:id="@+id/loginSelect_textView_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/allerta"
-            android:text="NARUKO"
+            android:text="@string/app_name"
             android:textAlignment="center"
             android:textSize="35sp" />
 
         <LinearLayout
-            android:id="@+id/login_fragment"
+            android:id="@+id/loginSelect_layout_fragmentContainter"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
