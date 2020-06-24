@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
@@ -43,80 +45,88 @@ import java.util.Locale;
 import java.util.Map;
 
 public class ActivitySelectLogin extends AppCompatActivity {
-    Context context;
-    String TAG = "NARUKO_DEBUG @ ActivitySelectLogin";
+    private String TAG = "NARUKO_DEBUG @ ActivitySelectLogin";
+    private Context context;
 
-    String userId;
+    private String userId;
 
-    FirebaseAuth firebaseAuth;
-    FirebaseFirestore firebaseFireStore;
-    StorageReference storageReference;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore firebaseFireStore;
+    private StorageReference storageReference;
 
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        //コンテキスト
         context = getApplicationContext();
 
-        //Permission check
+        //アプリの権限を確認
         PermissionCheck permissionCheck = new PermissionCheck();
         permissionCheck.getPermission(context, this);
 
-        int fragmentCount = 1;
+        //フラグメントマネージャー
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragmentSelectLogin = new LoginSelect();
+
+        //ログインセレクトフラグメントを表示
+        Fragment fragmentloginSelect = new LoginSelect();
         FragmentTransaction transactionToSelect = fragmentManager.beginTransaction();
         transactionToSelect.setCustomAnimations(
                 R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left,
                 R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt);
-        transactionToSelect.replace(R.id.loginSelect_layout_fragmentContainter, fragmentSelectLogin, "FRAG_LOGIN_SELECT");
-        if (fragmentCount != 1) {
-            transactionToSelect.addToBackStack(null);
-        }
+        transactionToSelect.replace(R.id.loginSelect_layout_fragmentContainter, fragmentloginSelect, "FRAG_LOGIN_SELECT");
         transactionToSelect.commit();
 
+        //*** Firebase ***
+        //FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance();
+        //Firestore
         firebaseFireStore = FirebaseFirestore.getInstance();
+        //ストレージレファレンス
         storageReference = FirebaseStorage.getInstance().getReference();
     }
 
-    //Email login flow
+    //メールアドレス・パスワードログイン
     public void loginWithEmail(String email, String password){
-        //ProgressDialog
+        //プログレスダイアログ表示
         progressDialog = new ProgressDialog(ActivitySelectLogin.this);
         progressDialog.setTitle("ログイン中...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
+        //ログイン
         firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()){
+                if(task.isSuccessful()){
                     Log.d(TAG, "SUCSESS: Login with Email");
                     Log.d(TAG, "---------------------------------");
 
+                    //メニュー画面アクティビティに移行
                     changeToMenu(getString(R.string.PROVIDER_KEY_EMAIL));
-
-                    progressDialog.dismiss();
                 }else {
                     Log.w(TAG, "ERROR: Login with Email", task.getException());
                     Log.d(TAG, "---------------------------------");
-
-                    progressDialog.dismiss();
                 }
+
+                //プログレスダイアログ非表示
+                progressDialog.dismiss();
             }
         });
     }
 
-    //Twitter Login Flow
+    //Twitterログイン
     public void loginWithTwitter(){
+        //プログレスダイアログ表示
         progressDialog = new ProgressDialog(ActivitySelectLogin.this);
         progressDialog.setTitle("ログイン中...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
+        //プロバイダー
         final OAuthProvider.Builder provider = OAuthProvider.newBuilder("twitter.com");
 
         /*
@@ -125,36 +135,39 @@ public class ActivitySelectLogin extends AppCompatActivity {
          */
 
         Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
-        //保留中のアクティビティがある場合
-        if (pendingResultTask != null) {
-            pendingResultTask
-                    .addOnSuccessListener(
+
+        if (pendingResultTask != null) {    //保留中のアクティビティがある場合
+            pendingResultTask.addOnSuccessListener(
                             new OnSuccessListener<AuthResult>() {
                                 @Override
                                 public void onSuccess(AuthResult authResult) {
                                     Log.d(TAG, "SUCSESS: Handling Twitter login");
                                     Log.d(TAG, "---------------------------------");
+
+                                    //プログレスダイアログ非表示
+                                    progressDialog.dismiss();
                                 }
-                            })
-                    .addOnFailureListener(
+                            }).addOnFailureListener(
                             new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.w(TAG, "ERROR: Handling Twitter login", e);
                                     Log.w(TAG, "---------------------------------");
 
+                                    //プログレスダイアログ非表示
                                     progressDialog.dismiss();
                                 }
                             });
-        } else {
-            //保留中の物がない場合
-
+        } else {    //保留中のアクティビティがない場合
+            //ログイン
             firebaseAuth.startActivityForSignInWithProvider(ActivitySelectLogin.this, provider.build()).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                 @Override
                 public void onSuccess(AuthResult authResult) {
                     //ログイン完了
                     Log.d(TAG, "SUCSESS: Login with Twitter");
                     Log.d(TAG, "---------------------------------");
+
+                    //ユーザードキュメント確認
                     CheckDocument(authResult);
 
                 }
@@ -165,33 +178,36 @@ public class ActivitySelectLogin extends AppCompatActivity {
                     Log.w(TAG, "ERROR: Login with Twitter", e);
                     Log.w(TAG, "---------------------------------");
 
+                    //プログレスダイアログ非表示
                     progressDialog.dismiss();
                 }
             });
         }
     }
 
+    //ユーザードキュメント確認
     private void CheckDocument(final AuthResult authResult){
-        //UserRefarence
+        //ユーザーフォルダパス
         final CollectionReference userRef = firebaseFireStore.collection("users");
 
-        //UserId
+        //ユーザーID取得
         userId = firebaseAuth.getCurrentUser().getUid();
 
+        //ユーザーIDが既に存在するか確認
         userRef.document(userId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()){
                     DocumentSnapshot documentSnapshot = task.getResult();
 
-                    if (documentSnapshot.exists()){
-                        //Don't create new account
+                    if (documentSnapshot.exists()){ //存在する場合
                         Log.d(TAG, "NOTICE: Account Exists, skipping user create...");
                         Log.d(TAG, "---------------------------------");
 
+                        //アカウントを新規に作らずスキップ
                         changeToMenu(getString(R.string.PROVIDER_KEY_TWITTER));
-                    } else {
-                        //Create Account
+                    } else {    //存在しない場合
+                        //アカウント作成
                         twitterAccountSetting(authResult, userRef);
                     }
                 }
@@ -199,81 +215,99 @@ public class ActivitySelectLogin extends AppCompatActivity {
         });
     }
 
-    //Add User to Database（Twitter）
+    //ユーザー情報をFirestoreに送信
     private void twitterAccountSetting(AuthResult authResult, CollectionReference userRef) {
 
-        //ユーザー追加時刻
+        //ユーザー作成日時
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
-        final String time = SD.format(new Date()).toString();
+        final String userCreated = SD.format(new Date());
 
-        final String twitterUserId = authResult.getAdditionalUserInfo().getUsername();      //TwitterユーザーId
-        final Map<String, Object> profile = authResult.getAdditionalUserInfo().getProfile();    //Twitterユーザー情報
-        final String providerId = authResult.getAdditionalUserInfo().getProviderId();  //プロバイダーId（Twitter.com）
+        //TwitterID
+        final String twitterUserId = authResult.getAdditionalUserInfo().getUsername();
 
+        //Twitterプロファイル
+        final Map<String, Object> profile = authResult.getAdditionalUserInfo().getProfile();
+
+        //Twitterユーザー名
         final String twitterUserName = profile.get("name").toString();
 
+        //Twitterユーザー画像URL
         final String userImageUrlString = profile.get("profile_image_url").toString().replace("normal", "200x200");
 
-        //Upload userImage
+        //Twitterユーザー画像をFirestorageに送信
         final UserImageStream asyncTask = new UserImageStream(ActivitySelectLogin.this);
         asyncTask.execute(userImageUrlString);
 
+        //ユーザー情報
         Map<String, Object> newUser = new HashMap<>();
-        newUser.put("datetime", time);
-        newUser.put("userName", twitterUserName);
-        newUser.put("userId", userId);
-        newUser.put("userImageIs", true);
+        newUser.put("UserCreated", userCreated);
+        newUser.put("UserName", twitterUserName);
+        newUser.put("UserId", userId);
+        newUser.put("UserImageIs", true);
 
-        userRef.document(userId).set(newUser, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+        userRef.document(userId).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void done) {
+                //送信成功
                 Log.d(TAG, "SUCSESS: Adding User to Database");
 
+                //メニュー画面へ
                 changeToMenu(getString(R.string.PROVIDER_KEY_TWITTER));
 
-                /*
-                //Update userImage
-                UserProfileChangeRequest userProfileChangeRequest = new UserProfileChangeRequest.Builder()
-                        .setPhotoUri(Uri.parse(userImageUrlString))
-                        .build();
-                 */
-
-                /*
-                Log.d(TAG, "*** Twitter_User_Info ***");
-                Log.d(TAG, "Time: " + time);
-                Log.d(TAG, "UserId: " + userId);
-                Log.d(TAG, "TwitterUserId: " + twitterUserId);
-                Log.d(TAG, "TwitterUserName: " + twitterUserName);
-                Log.d(TAG, "TwitterUserImage: " + twitterUserImage);
-                Log.d(TAG, "ProviderId:" + providerId);
-                Log.d(TAG, "---------------------------------");
-                 */
-
+                //プログレスダイアログ非表示
                 progressDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.w(TAG, "datetime: " + time);
+                //送信失敗
+                Log.w(TAG, "UserCreated: " + userCreated);
                 Log.w(TAG, "UserId: " + userId);
                 Log.w(TAG, "TwitterUserId: " + twitterUserId);
                 Log.w(TAG, "TwitterUserName: " + twitterUserName);
                 Log.w(TAG, "ERROR: Adding User to Database", e);
                 Log.w(TAG, "---------------------------------");
 
+                //プログレスダイアログ非表示
                 progressDialog.dismiss();
             }
         });
 
     }
 
+    //ユーザー画像アップロード
     public void UploadUserImage(InputStream stream) {
         try {
-            StorageReference uploadImageRef = storageReference.child("Images/UserImages/" + userId + ".jpg");
+            //Firebaseでのユーザー画像パス
+            final StorageReference uploadImageRef = storageReference.child("Images/UserImages/" + userId + ".jpg");
+
+            //アップロード
             UploadTask uploadTask = uploadImageRef.putStream(stream);
             uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    uploadImageRef.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                        @Override
+                        public void onSuccess(StorageMetadata storageMetadata) {
+                            //画像更新日時取得
+                            long createdDatetime = storageMetadata.getCreationTimeMillis();
+
+                            //SharedPreferences
+                            SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = userData.edit();
+
+                            //画像送信日時をsharedPrefarencesへ
+                            editor.putLong("UserImageUpdateTime", createdDatetime);
+                            editor.apply();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "ERROR: Getting MetaData", e);
+                            Log.w(TAG, "---------------------------------");
+                        }
+                    });
+
                     Log.d(TAG, "SUCSESS: Adding UserImage to Database");
                     Log.d(TAG, "---------------------------------");
                 }
@@ -295,46 +329,9 @@ public class ActivitySelectLogin extends AppCompatActivity {
         //ユーザー情報をSharedPreに
         new DeviceInfo().setDeviceInfo(context, providerKey);
 
-        //メニュー画面へ
+        //メニュー画面アクティビティに移行
         Intent menu = new Intent(ActivitySelectLogin.this, ActivityMenu.class);
         menu.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(menu);
     }
-
-    /*
-    //wifiアドレス取得
-    private static String getWifiIPAddress(Context context) {
-        WifiManager manager = (WifiManager)context.getSystemService(WIFI_SERVICE);
-        WifiInfo info = manager.getConnectionInfo();
-        int ipAddr = info.getIpAddress();
-        String wifiIp = String.format("%02d.%02d.%02d.%02d", (ipAddr>>0)&0xff, (ipAddr>>8)&0xff, (ipAddr>>16)&0xff, (ipAddr>>24)&0xff);
-
-        if (wifiIp.equals("00.00.00.00")){
-            return "none";
-        } else {
-            return wifiIp;
-        }
-    }
-
-    //ipv4アドレス取得
-    public String getLocalIpv4Address(){
-        try{
-            for (Enumeration<NetworkInterface> networkInterfaceEnum = NetworkInterface.getNetworkInterfaces(); networkInterfaceEnum.hasMoreElements();){
-                NetworkInterface networkInterface = networkInterfaceEnum.nextElement();
-                for (Enumeration<InetAddress> ipAddressEnum = networkInterface.getInetAddresses(); ipAddressEnum.hasMoreElements();) {
-                    InetAddress inetAddress = (InetAddress) ipAddressEnum.nextElement();
-
-                    //ipv4かどうか
-                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                        return inetAddress.getHostAddress();
-                    }
-                }
-            }
-        } catch (SocketException ex){
-            Log.w(TAG, "Error getting ipv4 address", ex);
-        }
-
-        return "none";
-    }
-    */
 }

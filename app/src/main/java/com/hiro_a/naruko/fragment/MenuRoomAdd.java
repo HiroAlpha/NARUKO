@@ -67,7 +67,6 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
     private LinearLayout linearLayout;
     private CircleImageView roomImagePreview;
     private ImageView roomImageChange;
-    private TextView roomAddTitle;
     private EditText roomNameEdittext;
     private EditText passwordEditText;
     private CheckBox passwordCheckBox;
@@ -98,7 +97,7 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
         //メインビュー
 
 
-        roomAddTitle = (TextView) view.findViewById(R.id.fRoomCreate_textView_title);
+        TextView roomAddTitle = (TextView) view.findViewById(R.id.fRoomCreate_textView_title);
         roomImagePreview = (CircleImageView) view.findViewById(R.id.fRoomCreate_imageView_userIcon);
         roomImageChange = (ImageView) view.findViewById(R.id.fRoomCreate_imageView_changeImage);
         roomImageChange.setOnClickListener(this);
@@ -235,29 +234,42 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
             @Override
             public void onSuccess(DocumentReference documentReference) {
                 String docName = documentReference.getId().toString();
-                StorageReference uploadImageRef = mStorageRefernce.child("Images/RoomImages/" + docName + ".jpg");
-                UploadTask uploadTask = uploadImageRef.putFile(imageDirectryUri);
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        //ルームメニューへ
-                        Fragment fragmentChat = new MenuRoom();
-                        FragmentTransaction transactionToChat = manager.beginTransaction();
-                        transactionToChat.setCustomAnimations(
-                                R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
-                        transactionToChat.replace(R.id.menu_layout_fragmentContainer, fragmentChat, "FRAG_MENU_ROOM");
-                        transactionToChat.commit();
 
-                        progressDialog.dismiss();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        Log.w(TAG, "Error adding RoomImage to Database", e);
-                        Log.w(TAG, "---------------------------------");
-                    }
-                });
+                if (imageIs){   //画像がある場合
+                    StorageReference uploadImageRef = mStorageRefernce.child("Images/RoomImages/" + docName + ".jpg");
+                    UploadTask uploadTask = uploadImageRef.putFile(imageDirectryUri);
+                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            //ルームメニューへ
+                            Fragment fragmentChat = new MenuRoom();
+                            FragmentTransaction transactionToChat = manager.beginTransaction();
+                            transactionToChat.setCustomAnimations(
+                                    R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
+                            transactionToChat.replace(R.id.menu_layout_fragmentContainer, fragmentChat, "FRAG_MENU_ROOM");
+                            transactionToChat.commit();
+
+                            progressDialog.dismiss();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Log.w(TAG, "Error adding RoomImage to Database", e);
+                            Log.w(TAG, "---------------------------------");
+                        }
+                    });
+                } else {    //画像がない場合
+                    //ルームメニューへ
+                    Fragment fragmentChat = new MenuRoom();
+                    FragmentTransaction transactionToChat = manager.beginTransaction();
+                    transactionToChat.setCustomAnimations(
+                            R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
+                    transactionToChat.replace(R.id.menu_layout_fragmentContainer, fragmentChat, "FRAG_MENU_ROOM");
+                    transactionToChat.commit();
+
+                    progressDialog.dismiss();
+                }
 
                 Log.d(TAG, "SCSESS adding Room to Database");
                 Log.d(TAG, "RoomName: " + roomName);

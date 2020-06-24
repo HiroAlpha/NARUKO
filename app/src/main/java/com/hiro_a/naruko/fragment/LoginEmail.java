@@ -21,15 +21,15 @@ import com.hiro_a.naruko.activity.ActivitySelectLogin;
 import com.hiro_a.naruko.task.ButtonColorChangeTask;
 import com.hiro_a.naruko.view.CustomButton;
 
-public class LoginEmail extends Fragment implements View.OnClickListener {
+public class LoginEmail extends Fragment implements View.OnClickListener, View.OnLongClickListener {
     String TAG = "NARUKO_DEBUG @ loginEmail.fragment";
+
+    private int onLongCount = 0;
 
     private EditText editText_Email, editText_Password;
     private CheckBox checkBox_SaveData;
 
     private SharedPreferences userData;
-
-    String KEY = "";
 
     @Nullable
     @Override
@@ -44,10 +44,9 @@ public class LoginEmail extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         //データ読み込み
-        KEY = getString(R.string.ENC_KEY);
         userData = getActivity().getSharedPreferences("userdata", Context.MODE_PRIVATE);
-        String email = userData.getString("Email", "");
-        String password = userData.getString("Password", ""); //複合化
+        String email = userData.getString("UserEmail", "");
+        String password = userData.getString("UserPassword", ""); //複合化
         boolean loginSave = userData.getBoolean("LoginSave", false);
 
         //メールアドレス
@@ -61,6 +60,7 @@ public class LoginEmail extends Fragment implements View.OnClickListener {
         CustomButton mLoginButton = (CustomButton) view.findViewById(R.id.fLoginEmail_view_login);
         mLoginButton.setOnTouchListener(new ButtonColorChangeTask(defaultButtonColor));
         mLoginButton.setOnClickListener(this);
+        mLoginButton.setOnLongClickListener(this);
 
         //チェックボックス
         checkBox_SaveData = (CheckBox)view.findViewById(R.id.fLoginEmail_check_saveLogin);
@@ -82,8 +82,8 @@ public class LoginEmail extends Fragment implements View.OnClickListener {
                 String email = editText_Email.getText().toString();
                 String pass = editText_Password.getText().toString();
 
-                editor.putString("Email", email);
-                editor.putString("Password", pass);
+                editor.putString("UserEmail", email);
+                editor.putString("UserPassword", pass);
                 editor.putBoolean("LoginSave", true);
                 editor.apply();
 
@@ -91,8 +91,8 @@ public class LoginEmail extends Fragment implements View.OnClickListener {
                 Log.d(TAG, "---------------------------------");
             } else {
                 //ログイン情報を保存しない
-                editor.putString("Email", "");
-                editor.putString("Password", "");
+                editor.putString("UserEmail", "");
+                editor.putString("UserPassword", "");
                 editor.putBoolean("LoginSave", false);
                 editor.apply();
 
@@ -104,6 +104,23 @@ public class LoginEmail extends Fragment implements View.OnClickListener {
             ActivitySelectLogin activitySelectLogin = (ActivitySelectLogin)getActivity();
             activitySelectLogin.loginWithEmail(editText_Email.getText().toString(), editText_Password.getText().toString());
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        onLongCount++;
+
+        if (onLongCount == 3){
+            SharedPreferences.Editor editor = userData.edit();
+            editor.clear().apply();
+
+            Log.d(TAG, "SHAREDPREFERENCES RESET");
+            Log.d(TAG, "---------------------------------");
+
+            onLongCount = 0;
+        }
+
+        return true;
     }
 
     //入力チェック

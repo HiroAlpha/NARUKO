@@ -134,7 +134,7 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
                             createUser(userId, editText_UserName.getText().toString());
 
                             //登録完了トースト
-                            Toast.makeText(context, "登録完了！", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "登録完了", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.w(TAG, "ERROR: Exception Occured", task.getException());
                             Log.w(TAG, "---------------------------------");
@@ -194,16 +194,16 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         //ユーザー情報登録用データーベースへのパス
         CollectionReference userRef = firebaseFirestore.collection("users");
 
-        //登録日時
+        //作成日時
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
-        String time = SD.format(new Date());
+        String userCreated = SD.format(new Date());
 
         //登録情報
         Map<String, Object> newUser = new HashMap<>();
-        newUser.put("datetime", time);
-        newUser.put("userId", userId);
-        newUser.put("userName", username);
-        newUser.put("userImageIs", false);
+        newUser.put("UserCreated", userCreated);
+        newUser.put("UserId", userId);
+        newUser.put("UserName", username);
+        newUser.put("UserImageIs", false);
 
         //Firestoreに情報を送信
         userRef.document(userId).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {

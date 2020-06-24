@@ -60,10 +60,10 @@ public class DeviceInfo {
                         boolean userEmailVerified = user.isEmailVerified();
 
                         //ユーザー名
-                        String userName = document.getString("userName");
+                        String userName = document.getString("UserName");
 
                         //ユーザー画像の有無
-                        boolean userImageIs = document.getBoolean("userImageIs");
+                        boolean userImageIs = document.getBoolean("UserImageIs");
 
                         //ユーザー情報
                         editor.putString("LoginProvider", loginProvider);
@@ -124,6 +124,12 @@ public class DeviceInfo {
         final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
 
         return userData.getBoolean("UserImageIs", false);
+    }
+
+    public long getUserImageUpdateTime(Context context){
+        final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
+
+        return userData.getLong("UserImageUpdateTime", 0);
     }
 
     public float getScreenWidth(Context context){

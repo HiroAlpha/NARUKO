@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityRegister;
 import com.hiro_a.naruko.activity.ActivitySelectLogin;
+import com.hiro_a.naruko.activity.ActivitySettingPolicy;
 import com.hiro_a.naruko.item.SelectorItem;
 
 import java.util.regex.Matcher;
@@ -113,6 +114,8 @@ public class LoginSelect extends Fragment implements View.OnClickListener {
 
                 if (keyword.equals("利用規約")){
                     //利用規約へ
+                    Intent activityPolicy = new Intent(getActivity(), ActivitySettingPolicy.class);
+                    startActivity(activityPolicy);
                 }
 
             }

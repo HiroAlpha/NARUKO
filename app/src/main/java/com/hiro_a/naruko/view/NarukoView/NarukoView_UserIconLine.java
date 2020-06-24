@@ -89,12 +89,17 @@ public class NarukoView_UserIconLine extends View {
         }
     }
 
-    public void getUserGrid(Point grid){
+    public void getUserGrid(Point grid, boolean largeText){
         userIconGrid = new Point(grid.y, -grid.x);
 
         //1回目の文字列は既定の半径、2回目以降はTextSize分ずらす
         if (count < 6){
             count++;
+
+            //メッセージが2段の場合はさらに下にずらす
+            if (largeText){
+                count++;
+            }
         }
         radius = ((count-1) * (textSize+10)) + 400;
 

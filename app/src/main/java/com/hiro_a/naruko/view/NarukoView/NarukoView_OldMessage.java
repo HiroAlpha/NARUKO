@@ -9,24 +9,27 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
 
 import static java.lang.Math.cos;
+import static java.lang.Math.floor;
 import static java.lang.Math.sin;
 
 public class NarukoView_OldMessage extends View {
     float textSize = convertDp2Px(15, getContext());  //文字サイズ
     float radius;   //回転半径
-    float radiusPivotOffset = 45;
+    float radiusPivotOffset;
     float sweepangle = 89.15f;
-    float chatCircleRedius = convertDp2Px(10, getContext()); //UI白丸半径
+    float chatCircleRedius; //UI白丸半径
     String text = "";
     ArrayList<String> textHolder = new ArrayList<String>(); //過去の文字列格納用Array
     float btmArcLeft, btmArcTop, btmArcRight, btmArcBttom;
     float topArcLeft, topArcTop, topArcRight, topArcBttom;
     double rightCircleSin, rightCircleCos;
+    double leftCircleSin, leftCircleCos;
     float coloredArcLeft, coloredArcTop, coloredArcRight, coloredArcBttom;
     float shadowCircleLeft, shadowCircleTop, shadowCircleRight, shadowCircleBttom;
 
@@ -68,7 +71,6 @@ public class NarukoView_OldMessage extends View {
         graphicPaint_Colored = new Paint(Paint.ANTI_ALIAS_FLAG);
         graphicPaint_Colored.setStyle(Paint.Style.STROKE);
         graphicPaint_Colored.setColor(Color.rgb(255,192,203));
-        graphicPaint_Colored.setStrokeWidth(chatCircleRedius*2);
 
         //影
         //UI下色影円設定
@@ -79,7 +81,6 @@ public class NarukoView_OldMessage extends View {
         shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         shadowPaint.setStyle(Paint.Style.STROKE);
         shadowPaint.setColor(Color.argb(128, 100, 100, 100));
-        shadowPaint.setStrokeWidth(chatCircleRedius);
 
         //UI白線Path設定
         graphicPaint_Line = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -94,33 +95,74 @@ public class NarukoView_OldMessage extends View {
 
         if (textHolder.size() > 1){
             int multiplier = 0;
+            //表示する文字列の最初の番号
             int textSpan = 0;
-            if (textHolder.size() >= 7){
-                textSpan = textHolder.size() - 6;
+            if (textHolder.size() >= 9){
+                textSpan = textHolder.size() - 8;
             }
 
             //入力されたものより1つ前の文字列から最も古いものまで
-            for (int i=textSpan; i<textHolder.size()-1; i++){
-                radius = (multiplier * (textSize + convertDp2Px(5, getContext()))) + convertDp2Px(200, getContext());    //TextSize分半径をずらす
-                sweepangle = (multiplier * 0.06f) + 89.15f;
+            for (int i=0; i<textHolder.size()-1; i++){
+                //メッセージバー円半径
+                 chatCircleRedius = convertDp2Px(10, getContext());
+                 radiusPivotOffset = 45;
+                 float angle_leftCircle = 0;
+                 boolean large = false;
+                 //2行目以降の場合
+                if (i != 0){
+                    //前のメッセージの長さが23文字以上の場合
+                    if (textHolder.get(i-1).length() > 23){
+                        multiplier++;
+                    }
+                }
+
+                //メッセージの長さが23文字以上の場合
+                if (textHolder.get(i).length() > 23){
+                    //メッセージバー円半径×２
+                    chatCircleRedius = chatCircleRedius * 2;
+
+                    angle_leftCircle = 2;
+                    large = true;
+                }
+
+                //右円の半径が決定したのでメッセージバーの色の太さを設定
+                graphicPaint_Colored.setStrokeWidth(chatCircleRedius*2);
+
+                //右円の半径が決定したのでメッセージバーの影の太さを設定
+                shadowPaint.setStrokeWidth(chatCircleRedius);
+
+                //TextSize分メッセージバーの表示半径をずらす
+                radius = (multiplier * (textSize + convertDp2Px(5, getContext()))) + convertDp2Px(200, getContext());
+                //大型円の場合
+                if (large){
+                    //さらにずらす
+                    radius = radius + textSize/2 + convertDp2Px(5, getContext())/2;
+                }
 
                 //文字列補助線
                 textPath = new Path();
                 textPath.addCircle(-radiusPivotOffset, 0, radius, Path.Direction.CCW);    //円形のパスをx-400、y0を中心として描画、反時計回り
                 //canvas.drawPath(textPath, pathPaint);
 
+                //左白丸描画用座標
+                leftCircleSin = (sin(Math.toRadians(angle_leftCircle))*(radius-(textSize/2)));
+                leftCircleCos = (cos(Math.toRadians(angle_leftCircle))*(radius-(textSize/2))) - radiusPivotOffset;
                 //右白丸描画用座標
                 rightCircleSin = (sin(Math.toRadians(90))*(radius-(textSize/2)));
                 rightCircleCos = (cos(Math.toRadians(90))*(radius-(textSize/2))) - radiusPivotOffset;
                 //円弧描画用座標（上側）
-                topArcLeft = -(radiusPivotOffset+radius-(textSize/2)-chatCircleRedius);
+                topArcLeft = -(radius-(textSize/2)-chatCircleRedius+radiusPivotOffset);
                 topArcTop = -(radius-(textSize/2)-chatCircleRedius);
-                topArcRight = radius-radiusPivotOffset-(textSize/2)-chatCircleRedius;
+                topArcRight = radius-(textSize/2)-chatCircleRedius-radiusPivotOffset;
                 topArcBttom = radius-(textSize/2)-chatCircleRedius;
+                if (large){
+                    leftCircleSin = (sin(Math.toRadians(angle_leftCircle))*(radius-(textSize/2)-1.5));
+                    leftCircleCos = (cos(Math.toRadians(angle_leftCircle))*(radius-(textSize/2)-1.5)) - radiusPivotOffset;
+                }
                 //円弧描画用座標（下側）
-                btmArcLeft = -(radiusPivotOffset+radius-(textSize/2)+chatCircleRedius);
+                btmArcLeft = -(radius-(textSize/2)+chatCircleRedius+radiusPivotOffset);
                 btmArcTop = -(radius-(textSize/2)+chatCircleRedius);
-                btmArcRight = radius-radiusPivotOffset-(textSize/2)+chatCircleRedius;
+                btmArcRight = radius-(textSize/2)+chatCircleRedius-radiusPivotOffset;
                 btmArcBttom = radius-(textSize/2)+chatCircleRedius;
                 //色付き円弧描画用座標
                 coloredArcLeft = topArcLeft-chatCircleRedius;
@@ -151,7 +193,7 @@ public class NarukoView_OldMessage extends View {
                 canvas.drawPath(graphicPath_Colored, graphicPaint_Colored);
 
                 //共通項
-                graphicPath.addCircle(radius-radiusPivotOffset-(textSize/2), 0, chatCircleRedius, Path.Direction.CW); //左丸
+                graphicPath.addCircle((float) leftCircleCos, -((float)leftCircleSin), chatCircleRedius, Path.Direction.CW); //左丸
                 graphicPath.addCircle((float) rightCircleCos, -((float)rightCircleSin), chatCircleRedius, Path.Direction.CW); //右丸
                 canvas.drawPath(graphicPath, graphicPaint_Colored_FILL);
                 canvas.drawPath(graphicPath, graphicPaint_Line);
@@ -164,7 +206,11 @@ public class NarukoView_OldMessage extends View {
                 canvas.drawPath(graphicPath_Line, graphicPaint_Line);
 
                 //曲線文字列
-                canvas.drawTextOnPath(textHolder.get(i), textPath, 30, 0, textPaint);
+                int textAngleOffset = 30;
+                if (large){
+                    textAngleOffset = 70;
+                }
+                canvas.drawTextOnPath(textHolder.get(i), textPath, textAngleOffset, 0, textPaint);
 
                 multiplier++;
             }

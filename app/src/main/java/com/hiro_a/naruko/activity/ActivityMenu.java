@@ -143,7 +143,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             //設定ボタン
             case R.id.menu_view_setting:
                 //設定アクティビティに移行
-                Intent setting = new Intent(ActivityMenu.this, ActivitySetting.class);
+                Intent setting = new Intent(ActivityMenu.this, ActivitySettingList.class);
                 startActivity(setting);
 
                 //収納アニメーション

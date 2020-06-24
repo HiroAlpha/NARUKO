@@ -40,7 +40,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/change_image"
+            android:contentDescription="@string/edit_image"
             android:tint="#5F5F5F"
             app:srcCompat="@drawable/ic_perm_media_black_24dp" />
 

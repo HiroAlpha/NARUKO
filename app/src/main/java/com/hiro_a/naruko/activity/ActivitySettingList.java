@@ -14,17 +14,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.hiro_a.naruko.R;
 
-public class ActivitySetting extends AppCompatActivity {
+public class ActivitySettingList extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
 
     private static final String[] settings = {
-      "ユーザー設定", "チャットルーム設定", "ログアウト"
+      "ユーザー設定", "チャットルーム設定", "ログアウト", "利用規約"
     };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_setting_list);
 
         //Back_Button active
         ActionBar actionBar = getSupportActionBar();
@@ -49,7 +49,7 @@ public class ActivitySetting extends AppCompatActivity {
     private void startSettings(String item){
         if (item.equals("ユーザー設定")){
             //to Profile Setting
-            Intent setting = new Intent(ActivitySetting.this, ActivitySettingUserProfile.class);
+            Intent setting = new Intent(ActivitySettingList.this, ActivitySettingUserProfile.class);
             startActivity(setting);
         }
 
@@ -57,8 +57,14 @@ public class ActivitySetting extends AppCompatActivity {
             //Logout
             mFirebaseAuth.signOut();
 
-            Intent logout = new Intent(ActivitySetting.this, ActivitySelectLogin.class);
+            Intent logout = new Intent(ActivitySettingList.this, ActivitySelectLogin.class);
             startActivity(logout);
+        }
+
+        if (item.equals("利用規約")){
+            //利用規約へ
+            Intent policy = new Intent(ActivitySettingList.this, ActivitySettingPolicy.class);
+            startActivity(policy);
         }
     }
 }

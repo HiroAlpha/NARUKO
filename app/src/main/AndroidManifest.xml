@@ -36,14 +36,24 @@
         <activity android:name=".activity.ActivityChat"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".activity.ActivitySetting"
+        <activity android:name=".activity.ActivitySettingList"
             android:theme="@style/SettingTheme"
             android:label="設定"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
         <activity android:name=".activity.ActivitySettingUserProfile"
             android:theme="@style/SettingTheme"
-            android:label="ユーザー設定"
+            android:label="ユーザー情報"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity android:name=".activity.ActivitySettingUserProfile_Edit"
+            android:theme="@style/SettingTheme"
+            android:label="ユーザー情報編集"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
+
+        <activity android:name=".activity.ActivitySettingPolicy"
+            android:theme="@style/SettingTheme"
+            android:label="利用規約"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
     </application>

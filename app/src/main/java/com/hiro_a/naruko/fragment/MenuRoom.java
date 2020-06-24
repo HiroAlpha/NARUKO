@@ -84,7 +84,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
 
     }
 
-    //グループ取得
+    //ルーム取得
     public void updateRoom(final View view){
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("チャットルーム読み込み中...");

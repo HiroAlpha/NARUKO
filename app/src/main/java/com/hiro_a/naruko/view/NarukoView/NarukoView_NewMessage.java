@@ -138,9 +138,15 @@ public class NarukoView_NewMessage extends View {
         text = messageText;
 
         //1回目の文字列は既定の半径、2回目以降はTextSize分ずらす
-        if (count < 6){
+        if (count < 8){
             count++;
+
+            //メッセージが2段の場合はさらに下にずらす
+            if (text.length() > 23){
+                count++;
+            }
         }
+
         radius = ((count-1) * (textSize + convertDp2Px(5, getContext()))) + convertDp2Px(200, getContext());
         sweepangle = ((count-1) * 0.06f) + 89.15f;
 

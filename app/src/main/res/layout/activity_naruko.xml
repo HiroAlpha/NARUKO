@@ -51,15 +51,10 @@
 
         </RelativeLayout>
 
-        <com.hiro_a.naruko.view.NarukoView.NarukoView_UserIconCircle
-            android:id="@+id/naruko_view_userIconCircle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
         <com.hiro_a.naruko.view.NarukoView.NarukoView_TopCircle
             android:id="@+id/naruko_view_topCircle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </FrameLayout>
 

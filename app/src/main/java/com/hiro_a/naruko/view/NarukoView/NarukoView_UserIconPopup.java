@@ -107,13 +107,13 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
     }
 
     //define the last speaker
-    public void setLastSpeaker(NarukoView_UserIconLine chatCanvasViewUserIconLine, int iconNum){
+    public void setLastSpeaker(NarukoView_UserIconLine chatCanvasViewUserIconLine, int iconNum, boolean largeText){
         UserIconView selectedUserIcon = userIconViewArrayList.get(iconNum);
         float selectedIconX = selectedUserIcon.getX();
         float selectedIconY = selectedUserIcon.getY();
 
         Point selectedIconGrid = new Point((int) selectedIconX, (int) selectedIconY);
-        chatCanvasViewUserIconLine.getUserGrid(selectedIconGrid);
+        chatCanvasViewUserIconLine.getUserGrid(selectedIconGrid, largeText);
 
         lastSpeakerNum = iconNum;
         canvasViewUserIconLine = chatCanvasViewUserIconLine;
