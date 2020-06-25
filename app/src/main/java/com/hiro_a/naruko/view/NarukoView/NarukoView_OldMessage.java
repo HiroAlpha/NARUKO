@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Math.cos;
 import static java.lang.Math.floor;
@@ -40,6 +42,7 @@ public class NarukoView_OldMessage extends View {
     Paint shadowPaint, shadowPaint_FILL;
 
     Path textPath;
+    Path textPathSecond;
     Path graphicPath;
     Path graphicPath_Line;
     Path graphicPath_Colored;
@@ -54,7 +57,6 @@ public class NarukoView_OldMessage extends View {
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         textPaint.setColor(Color.BLACK);
         textPaint.setTypeface(typeface);
-        textPaint.setTextSize(textSize);
 
         //文字列補助線Path設定
         pathPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -103,6 +105,28 @@ public class NarukoView_OldMessage extends View {
 
             //入力されたものより1つ前の文字列から最も古いものまで
             for (int i=0; i<textHolder.size()-1; i++){
+                if (i == 0){
+                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
+                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
+                }
+                if (i == 1){
+                    graphicPaint_Colored_FILL.setColor(Color.rgb(244,115,106));
+                    graphicPaint_Colored.setColor(Color.rgb(244,115,106));
+                }
+                if (i == 2){
+                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
+                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
+                }
+                if (i == 3){
+                    graphicPaint_Colored_FILL.setColor(Color.rgb(243,228,138));
+                    graphicPaint_Colored.setColor(Color.rgb(243,228,138));
+                }
+                if (i == 4){
+                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
+                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
+                }
+
+
                 //メッセージバー円半径
                  chatCircleRedius = convertDp2Px(10, getContext());
                  radiusPivotOffset = 45;
@@ -141,7 +165,15 @@ public class NarukoView_OldMessage extends View {
 
                 //文字列補助線
                 textPath = new Path();
-                textPath.addCircle(-radiusPivotOffset, 0, radius, Path.Direction.CCW);    //円形のパスをx-400、y0を中心として描画、反時計回り
+                textPathSecond = new Path();
+                if (large){
+                    textPaint.setTextSize((textSize*6)/7);
+                    textPath.addCircle(-radiusPivotOffset, 0, radius-textSize/2, Path.Direction.CCW);    //円形のパスをx-400、y0を中心として描画、反時計回り
+                    textPathSecond.addCircle(-radiusPivotOffset, 0, radius+textSize/2, Path.Direction.CCW);    //円形のパスをx-400、y0を中心として描画、反時計回り
+                } else {
+                    textPaint.setTextSize(textSize);
+                    textPath.addCircle(-radiusPivotOffset, 0, radius, Path.Direction.CCW);    //円形のパスをx-400、y0を中心として描画、反時計回り
+                }
                 //canvas.drawPath(textPath, pathPaint);
 
                 //左白丸描画用座標
@@ -185,7 +217,7 @@ public class NarukoView_OldMessage extends View {
                 shadowPath.addArc(shadowArc, 270, sweepangle); //円弧
                 canvas.drawPath(shadowPath, shadowPaint);
                 RectF shadowCircle = new RectF(shadowCircleLeft, shadowCircleTop, shadowCircleRight, shadowCircleBttom);   //半円範囲
-                canvas.drawArc(shadowCircle, 0, 180, false, shadowPaint_FILL);  //円だとかぶるので半円
+                //canvas.drawArc(shadowCircle, 0, 180, false, shadowPaint_FILL);  //円だとかぶるので半円
 
                 //UI下色
                 RectF coloredArc = new RectF(coloredArcLeft, coloredArcTop, coloredArcRight, coloredArcBttom);   //円弧範囲
@@ -207,10 +239,22 @@ public class NarukoView_OldMessage extends View {
 
                 //曲線文字列
                 int textAngleOffset = 30;
+                String text1;
+                String text2;
                 if (large){
-                    textAngleOffset = 70;
+                    textAngleOffset = 65;
+                    text1 = textHolder.get(i).substring(0, 23);
+                    text2 = textHolder.get(i).substring(23);
+
+                    canvas.drawTextOnPath(text1, textPath, textAngleOffset, 0, textPaint);
+                    canvas.drawTextOnPath(text2, textPathSecond, textAngleOffset, 0, textPaint);
+
+                    Log.d("NARUKO_", "1: "+text1);
+                    Log.d("NARUKO_", "2: "+text2);
+                }else {
+                    canvas.drawTextOnPath(textHolder.get(i), textPath, textAngleOffset, 0, textPaint);
                 }
-                canvas.drawTextOnPath(textHolder.get(i), textPath, textAngleOffset, 0, textPaint);
+
 
                 multiplier++;
             }

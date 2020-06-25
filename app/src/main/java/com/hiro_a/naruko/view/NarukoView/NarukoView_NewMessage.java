@@ -147,6 +147,9 @@ public class NarukoView_NewMessage extends View {
             }
         }
 
+        graphicPaint_Colored_FILL.setColor(Color.rgb(158,243,114));
+        graphicPaint_Colored.setColor(Color.rgb(158,243,114));
+
         radius = ((count-1) * (textSize + convertDp2Px(5, getContext()))) + convertDp2Px(200, getContext());
         sweepangle = ((count-1) * 0.06f) + 89.15f;
 

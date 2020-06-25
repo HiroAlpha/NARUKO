@@ -193,6 +193,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         //メッセージ更新
         updateMessage();
+
     }
 
     @Override
@@ -323,7 +324,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                             //ユーザー画像が存在する場合画像パス生成
                             String userImage = "Default_Image";
                             if (userImageIs){
-                                userImage = "Images/UserImages/" + userId + ".jpg";
+                                userImage = "Images/UserImages/" + userId + ".png";
                             }
 
                             //メッセージ取得
@@ -347,7 +348,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 //                                Log.d(TAG, "MessageArraySize: "+messageArrray.size());
 
                                 //メッセージ配列のサイズとスナップショットサイズが同じ場合
-                                if (messageArrray.size() == snapshots.size()){
+                                if (messageArrray.size() == snapshots.size() && firstLoad){
                                     //メッセージバー表示用配列作成
                                     ArrayList<NarukoMessageData> messageArray8Line = new ArrayList<>();
                                     int count = 0;
@@ -362,16 +363,15 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                                         count++;
                                     }
 
-                                    //初回ロードの時はリストを逆転
-                                    if (firstLoad){
-                                        Collections.reverse(messageArrray);
-                                        Collections.reverse(messageArray8Line);
+                                    Collections.reverse(messageArrray);
+                                    Collections.reverse(messageArray8Line);
 
-                                        firstLoad = !firstLoad;
-                                    }
+                                    firstLoad = !firstLoad;
 
                                     //メッセージ表示
                                     showMessage(messageArray8Line);
+                                } else if (!firstLoad){
+                                    showMessage(messageArrray);
                                 }
                             }
                             break;
@@ -386,6 +386,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showMessage(ArrayList<NarukoMessageData> messageArray8Line){
+        NarukoView_UserIconPopup narukoUserIconPopoutView = findViewById(R.id.naruko_view_userIcon);
         for (int i=0;i<messageArray8Line.size();i++){
             //メッセージデータ
             NarukoMessageData messageData = messageArray8Line.get(i);
@@ -413,7 +414,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             narukoView_oldMessage.getMessage(text);
 
             //送信者のアイコンがまだ表示されていない場合アイコンを表示
-            NarukoView_UserIconPopup narukoUserIconPopoutView = findViewById(R.id.naruko_view_userIcon);
+
             if (!userIdArray.contains(userId)){
                 //ユーザーをuserIdArrayに追加
                 userIdArray.add(userId);
@@ -428,6 +429,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             //白線を表示
             narukoUserIconPopoutView.setLastSpeaker(narukoView_userIconLine, lastSpokeIconNum, text.length()>23);
         }
+
+        narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), "東郷", "Images/UserImages/tougou.png");
     }
 
     //送信者のグローバルIP取得

@@ -5,6 +5,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -36,6 +37,8 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
     private int preDx, preDy;
     boolean whiteline = false;
 
+    int count;
+
     ArrayList<UserIconView> userIconViewArrayList;
 
     NarukoView_UserIconLine canvasViewUserIconLine;
@@ -53,6 +56,8 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         this.context = context;
 
         userIconViewArrayList = new ArrayList<UserIconView>();
+
+        count =0;
     }
 
     public void addUserIcon(Point screenSize, RelativeLayout relativeLayout, String userName, String userImage){
@@ -63,7 +68,23 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
 
         int userIconCount = userIconViewArrayList.size();
         int userIconArrayNumber = userIconCount - 1;
-        int color = getResources().getColor(R.color.colorYunaLight);
+
+        int color = Color.BLACK;
+        if (count == 0){
+
+            color = getResources().getColor(R.color.colorKarinLight);
+        }else if (count == 1){
+            color = getResources().getColor(R.color.colorYunaLight);
+        }else if (count == 2){
+            color = getResources().getColor(R.color.colorItsukiLight);
+        }
+        else if (count == 3){
+            color = getResources().getColor(R.color.colorHuuLight);
+        }
+        else if (count == 4){
+            color = getResources().getColor(R.color.colorTougouLight);
+        }
+
         StorageReference imageStorgeRefarence = null;
         if (!userImage.equals("Default_Image")){
             imageStorgeRefarence = FirebaseStorage.getInstance().getReference().child(userImage);
@@ -94,6 +115,8 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         foregroundUserIcon.setY(iconY - (iconSize/2));
 
         popupAnimation(relativeLayout, foregroundUserIcon, iconX, iconY);
+
+        count++;
     }
 
     public void removeUserIcon(RelativeLayout relativeLayout){
