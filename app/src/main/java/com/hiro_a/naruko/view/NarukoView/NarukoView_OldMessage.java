@@ -105,27 +105,9 @@ public class NarukoView_OldMessage extends View {
 
             //入力されたものより1つ前の文字列から最も古いものまで
             for (int i=0; i<textHolder.size()-1; i++){
-                if (i == 0){
-                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
-                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
-                }
-                if (i == 1){
-                    graphicPaint_Colored_FILL.setColor(Color.rgb(244,115,106));
-                    graphicPaint_Colored.setColor(Color.rgb(244,115,106));
-                }
-                if (i == 2){
-                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
-                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
-                }
-                if (i == 3){
-                    graphicPaint_Colored_FILL.setColor(Color.rgb(243,228,138));
-                    graphicPaint_Colored.setColor(Color.rgb(243,228,138));
-                }
-                if (i == 4){
-                    graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
-                    graphicPaint_Colored.setColor(Color.rgb(255,192,203));
-                }
 
+                graphicPaint_Colored_FILL.setColor(Color.rgb(255,192,203));
+                graphicPaint_Colored.setColor(Color.rgb(255,192,203));
 
                 //メッセージバー円半径
                  chatCircleRedius = convertDp2Px(10, getContext());

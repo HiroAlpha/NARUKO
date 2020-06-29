@@ -82,7 +82,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class ActivityChat extends AppCompatActivity implements View.OnClickListener{
+public class ActivityChat extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
     private String TAG = "NARUKO_DEBUG @ ActivityChat";
     private Context context;
 
@@ -91,7 +91,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     private String userId_original;
     private Boolean userImageIs_original;
     private int lastSpokeIconNum;
-    private boolean menuPos = true;
+    private boolean chatTextShown = false;
+    private boolean menuShown = true;
     private boolean firstLoad = true;
 
     private ArrayList<String> userIdArray;
@@ -155,6 +156,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         //送信ボタン
         ImageView imageView_sendMessageButton = findViewById(R.id.naruko_imageView_sendMessage);
         imageView_sendMessageButton.setOnClickListener(this);
+        imageView_sendMessageButton.setOnLongClickListener(this);
 
         //下部メニュー
         bottomMenu = findViewById(R.id.naruko_view_bottomMenu);
@@ -208,10 +210,19 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()){
             //メッセージ送信ボタン
             case R.id.naruko_imageView_sendMessage:
-                //メッセージが空でない場合のみ送信
-                if (!(TextUtils.isEmpty(editText_message.getText().toString()))){
-                    sendMessage();
+                //文字入力画面が表示されている場合
+                if (chatTextShown){
+                    //メッセージが空でない場合のみ送信
+                    if (!(TextUtils.isEmpty(editText_message.getText().toString()))){
+                        sendMessage();
+                    }
+                } else {
+                    //文字入力画面表示
+                    findViewById(R.id.naruko_layout_editText).setVisibility(View.VISIBLE);
+
+                    chatTextShown = true;
                 }
+
                 break;
 
             //メッセージ履歴表示ボタン
@@ -229,6 +240,18 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                 break;
 
         }
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (chatTextShown){
+            //文字入力画面非表示
+            findViewById(R.id.naruko_layout_editText).setVisibility(View.INVISIBLE);
+
+            chatTextShown = false;
+        }
+
+        return false;
     }
 
     //メッセージ送信
@@ -429,8 +452,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             //白線を表示
             narukoUserIconPopoutView.setLastSpeaker(narukoView_userIconLine, lastSpokeIconNum, text.length()>23);
         }
-
-        narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), "東郷", "Images/UserImages/tougou.png");
     }
 
     //送信者のグローバルIP取得
@@ -534,17 +555,17 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         //移動距離
         int bottomMenubar_slideLength = -(screenSize.x/2)+20;
 
-        if (menuPos){ //下部メニューが出ている場合
+        if (menuShown){ //下部メニューが出ている場合
             ObjectAnimator translate = ObjectAnimator.ofFloat(bottomMenu, "translationX", 0, bottomMenubar_slideLength);
             translate.setDuration(700);
             translate.start();
-            menuPos = false;
+            menuShown = false;
 
-        } else if (!menuPos){ //下部メニューが隠されている場合
+        } else if (!menuShown){ //下部メニューが隠されている場合
             ObjectAnimator translate = ObjectAnimator.ofFloat(bottomMenu, "translationX", bottomMenubar_slideLength, 0);
             translate.setDuration(700);
             translate.start();
-            menuPos = true;
+            menuShown = true;
         }
     }
 }

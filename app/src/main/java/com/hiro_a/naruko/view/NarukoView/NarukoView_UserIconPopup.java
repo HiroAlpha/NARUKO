@@ -69,21 +69,7 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         int userIconCount = userIconViewArrayList.size();
         int userIconArrayNumber = userIconCount - 1;
 
-        int color = Color.BLACK;
-        if (count == 0){
-
-            color = getResources().getColor(R.color.colorKarinLight);
-        }else if (count == 1){
-            color = getResources().getColor(R.color.colorYunaLight);
-        }else if (count == 2){
-            color = getResources().getColor(R.color.colorItsukiLight);
-        }
-        else if (count == 3){
-            color = getResources().getColor(R.color.colorHuuLight);
-        }
-        else if (count == 4){
-            color = getResources().getColor(R.color.colorTougouLight);
-        }
+        int color = getResources().getColor(R.color.colorYunaLight);
 
         StorageReference imageStorgeRefarence = null;
         if (!userImage.equals("Default_Image")){
