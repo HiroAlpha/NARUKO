@@ -85,6 +85,21 @@ public class NarukoView_NewMessage extends View {
         shadowPaint_Stroke.setStyle(Paint.Style.STROKE);
         shadowPaint_Stroke.setColor(Color.argb(128, 100, 100, 100));
         shadowPaint_Stroke.setStrokeWidth(chatCircleRedius);
+
+        //パス
+        textPath = new Path();
+        textPathSecond = new Path();
+        shadowPath = new Path();
+        graphicPath = new Path();
+        graphicPath_Colored = new Path();
+        graphicPath_Line = new Path();
+
+        //範囲
+        shadowArc = new RectF();
+        shadowCircle = new RectF();
+        coloredArc = new RectF();
+        topArcRect = new RectF();
+        bottomArcRect = new RectF();
     }
 
     @Override
@@ -93,21 +108,6 @@ public class NarukoView_NewMessage extends View {
 
         //canvas.drawPath(textPath, textPathPaint);
         if (message != null){
-            //パス
-            textPath = new Path();
-            textPathSecond = new Path();
-            shadowPath = new Path();
-            graphicPath = new Path();
-            graphicPath_Colored = new Path();
-            graphicPath_Line = new Path();
-
-            //範囲
-            shadowArc = new RectF();
-            shadowCircle = new RectF();
-            coloredArc = new RectF();
-            topArcRect = new RectF();
-            bottomArcRect = new RectF();
-
             //左円半径
             chatCircleRedius = convertDp2Px(10, getContext());
             //回転中心位置をずらす
@@ -191,7 +191,7 @@ public class NarukoView_NewMessage extends View {
 
             //UI影
             shadowArc.set(btmArcLeft, btmArcTop, btmArcRight, btmArcBttom);   //円弧範囲
-            shadowPath.addArc(shadowArc, 270, sweepangle); //円弧
+            shadowPath.addArc(shadowArc, 270, 90); //円弧
             canvas.drawPath(shadowPath, shadowPaint_Stroke);
             shadowCircle.set(shadowCircleLeft, shadowCircleTop, shadowCircleRight, shadowCircleBttom);   //半円範囲
             canvas.drawArc(shadowCircle, 0, 180, false, shadowPaint_Fill);  //円だとかぶるので半円

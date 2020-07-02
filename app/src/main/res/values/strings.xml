@@ -34,9 +34,9 @@
     <string name="title_userName" translatable="true">ユーザー名</string>
 
     <string name="type_email" translatable="true">メールアドレスを入力</string>
-    <string name="type_password" translatable="true">パスワードを入力</string>
+    <string name="type_password" translatable="true">パスワードを入力（半角英数8文字以内）</string>
     <string name="type_passwordAgain" translatable="true">パスワードを入力（確認）</string>
-    <string name="type_userName" translatable="true">ユーザー名を入力</string>
+    <string name="type_userName" translatable="true">ユーザー名を入力（全半角8文字以内）</string>
     <string name="title_saveLogin" translatable="true">ログイン情報を保存</string>
 
     <string name="register" translatable="true">登録</string>

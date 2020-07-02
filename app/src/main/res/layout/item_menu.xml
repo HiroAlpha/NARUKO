@@ -21,6 +21,6 @@
         android:layout_below="@id/itemMenu_imageView"
         android:gravity="center"
         android:text="@string/sample_text"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
 </merge>

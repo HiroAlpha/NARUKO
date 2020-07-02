@@ -80,6 +80,8 @@
             android:hint="@string/type_password"
             android:importantForAutofill="no"
             android:inputType="textPassword"
+            android:maxLength="8"
+            android:maxLines="1"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
@@ -97,6 +99,8 @@
             android:hint="@string/type_passwordAgain"
             android:importantForAutofill="no"
             android:inputType="textPassword"
+            android:maxLength="8"
+            android:maxLines="1"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 
@@ -124,6 +128,7 @@
             android:hint="@string/type_userName"
             android:importantForAutofill="no"
             android:inputType="text"
+            android:maxLength="8"
             android:paddingStart="15dp"
             android:paddingEnd="15dp" />
 

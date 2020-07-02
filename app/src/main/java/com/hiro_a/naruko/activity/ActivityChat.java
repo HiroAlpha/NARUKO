@@ -97,6 +97,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     private boolean firstLoad = true;
 
     private ArrayList<String> userIdArray;
+    private ArrayList<String> userNameArray;
     private ArrayList<NarukoMessageData> messageArrray;
 
     private View bottomMenu;
@@ -105,6 +106,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     private NarukoView_NewMessage narukoView_newMessage;
     private NarukoView_OldMessage narukoView_oldMessage;
     private NarukoView_UserIconLine narukoView_userIconLine;
+    private NarukoView_UserIconPopup narukoUserIconPopoutView;
 
     private PopupWindow historyView;
 
@@ -120,8 +122,10 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         //コンテキスト
         context = getApplicationContext();
 
-        //ユーザーリスト作成
+        //ユーザーIDリスト作成
         userIdArray = new ArrayList<>();
+        //ユーザー名リスト作成
+        userNameArray = new ArrayList<>();
 
         //フォント設定
         Typeface typeface = Typeface.createFromAsset(getAssets(), "anzu_font.ttf");
@@ -180,6 +184,9 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         //アイコンからメッセージへの白線
         narukoView_userIconLine = findViewById(R.id.naruko_view_userIconLine);
 
+        //ユーザーアイコン
+        narukoUserIconPopoutView = findViewById(R.id.naruko_view_userIcon);
+
         //*** Firebase ***
         //FirebaseStorage
         firebaseStorage = FirebaseStorage.getInstance().getReference();
@@ -217,6 +224,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                     //メッセージが空でない場合のみ送信
                     if (!(TextUtils.isEmpty(editText_message.getText().toString()))){
                         sendMessage();
+                    } else {
+                        narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), "クローン", "Default_Image", "Yuuna");
                     }
                 } else {
                     //文字入力画面表示
@@ -253,7 +262,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             chatTextShown = false;
         }
 
-        return false;
+        return true;
     }
 
     //メッセージ送信
@@ -404,7 +413,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showMessage(ArrayList<NarukoMessageData> messageArray8Line){
-        NarukoView_UserIconPopup narukoUserIconPopoutView = findViewById(R.id.naruko_view_userIcon);
         for (int i=0;i<messageArray8Line.size();i++){
             //メッセージデータ
             NarukoMessageData messageData = messageArray8Line.get(i);
@@ -435,11 +443,18 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
             //送信者のアイコンがまだ表示されていない場合アイコンを表示
             if (!userIdArray.contains(userId)){
-                //ユーザーをuserIdArrayに追加
+                //ユーザーを配列に追加
                 userIdArray.add(userId);
+                userNameArray.add(userName);
 
                 //ユーザーアイコンを表示
                 narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), userName, userImage, userColor);
+            } else if(!userNameArray.get(userIdArray.indexOf(userId)).equals(userName)) {
+                //ユーザー情報書き換え
+                userNameArray.set(userIdArray.indexOf(userId), userName);
+
+                //ユーザーアイコンを更新
+                narukoUserIconPopoutView.updateUserIcon(userIdArray.indexOf(userId), userName, userImage, userColor);
             }
 
             //最終発言者の配列番号を記録

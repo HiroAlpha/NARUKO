@@ -78,7 +78,9 @@
             android:ems="10"
             android:fontFamily="@font/allerta"
             android:importantForAutofill="no"
-            android:inputType="text" />
+            android:inputType="text"
+            android:maxLength="23"
+            android:maxLines="1" />
     </FrameLayout>
 
     <LinearLayout

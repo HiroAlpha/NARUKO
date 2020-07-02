@@ -96,7 +96,7 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         }
 
         float iconX = (screenSize.x / 6) * (userIconColumn + (userIconColumn - 1));
-        float iconY = screenCenter.y + (iconSize - (iconSize * 0.6f * (userIconColumn-1))) + ((iconSize * (userIconRow-1))+iconSize/4);
+        float iconY = screenCenter.y + (iconSize/1.5f - (iconSize * 0.4f * (userIconColumn-1))) + ((iconSize * (userIconRow-1))+iconSize/4);
 
         foregroundUserIcon.setX(iconX - (iconSize/2));
         foregroundUserIcon.setY(iconY - (iconSize/2));
@@ -104,6 +104,20 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         popupAnimation(relativeLayout, foregroundUserIcon, iconX, iconY);
 
         count++;
+    }
+
+    public void updateUserIcon(int userIconNumber, String userName, String userImage, String userColor){
+        //ユーザーカラー
+        int color = getResources().getColor(getResources().getIdentifier("color"+userColor+"Light", "color", context.getPackageName()));
+
+        //画像
+        StorageReference imageStorgeRefarence = null;
+        if (!userImage.equals("Default_Image")){
+            imageStorgeRefarence = FirebaseStorage.getInstance().getReference().child(userImage);
+        }
+
+        UserIconView userIcon = userIconViewArrayList.get(userIconNumber);
+        userIcon.setData(imageStorgeRefarence, userName, color);
     }
 
     public void removeUserIcon(RelativeLayout relativeLayout){
