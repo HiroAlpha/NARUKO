@@ -6,6 +6,7 @@ public class NarukoMessageData {
     String userName;
     String userId;
     String userImage;
+    String userColor;
     String message;
 
     public void setPostedTime(String postedTime) {
@@ -26,6 +27,10 @@ public class NarukoMessageData {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public void setUserColor(String userColor) {
+        this.userColor = userColor;
     }
 
     public void setMessage(String message) {
@@ -50,6 +55,10 @@ public class NarukoMessageData {
 
     public String getUserImage() {
         return userImage;
+    }
+
+    public String getUserColor() {
+        return userColor;
     }
 
     public String getMessage() {

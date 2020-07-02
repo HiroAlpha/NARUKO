@@ -5,5 +5,5 @@
         android:width="16dp"
         android:height="16dp">
     </size>
-    <solid android:color="@color/colorYuna" />
+    <solid android:color="@color/colorYuuna" />
 </shape>

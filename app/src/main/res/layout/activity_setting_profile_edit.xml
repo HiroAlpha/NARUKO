@@ -7,28 +7,45 @@
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/profileEdit_layout_profileImage"
-        android:layout_width="wrap_content"
+        android:id="@+id/profileEdit_layout_color"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center|center_horizontal|center_vertical">
-
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profileEdit_imageView_userImage"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/ic_launcher_background"
-            app:civ_border_color="#FFFFFF"
-            app:civ_border_width="4dp" />
+        android:background="@color/colorYuuna"
+        android:paddingBottom="10dp">
 
         <ImageView
-            android:id="@+id/profileEdit_imageView_editImage"
+            android:id="@+id/profileEdit_imageView_editColor"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/edit_image"
-            android:tint="#5F5F5F"
-            app:srcCompat="@drawable/ic_perm_media_black_24dp" />
+            android:contentDescription="@string/color_image"
+            app:srcCompat="@drawable/ic_baseline_colorize_24" />
+
+        <FrameLayout
+            android:id="@+id/profileEdit_layout_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|top">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileEdit_imageView_userImage"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal|top"
+                android:layout_marginTop="10dp"
+                android:src="@drawable/ic_launcher_background"
+                app:civ_border_color="#FFFFFF"
+                app:civ_border_width="4dp" />
+
+            <ImageView
+                android:id="@+id/profileEdit_imageView_editImage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom|end"
+                android:contentDescription="@string/edit_image"
+                android:tint="#5F5F5F"
+                app:srcCompat="@drawable/ic_perm_media_black_24dp" />
+        </FrameLayout>
 
     </FrameLayout>
 

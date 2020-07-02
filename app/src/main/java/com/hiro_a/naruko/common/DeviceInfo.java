@@ -50,6 +50,12 @@ public class DeviceInfo {
                     DocumentSnapshot document = task.getResult();
 
                     if (document.exists()) {
+                        //作成日時
+                        String userCreated = document.getString("UserCreated");
+
+                        //最終更新日時
+                        String userLastUpdated = document.getString("UserLastUpdated");
+
                         //メールアドレス
                         String userEmail = user.getEmail();
                         if (userEmail==null){
@@ -65,24 +71,33 @@ public class DeviceInfo {
                         //ユーザー画像の有無
                         boolean userImageIs = document.getBoolean("UserImageIs");
 
+                        //ユーザーカラー
+                        String userColor = document.getString("UserColor");
+
                         //ユーザー情報
                         editor.putString("LoginProvider", loginProvider);
+                        editor.putString("UserCreated", userCreated);
+                        editor.putString("UserLastUpdated", userLastUpdated);
                         editor.putString("UserName", userName);
                         editor.putString("UserId", userId);
                         editor.putString("UserEmail", userEmail);
                         editor.putBoolean("UserEmailVerified", userEmailVerified);
                         editor.putBoolean("UserImageIs", userImageIs);
+                        editor.putString("UserColor", userColor);
                         editor.apply();
 
                         Log.d(TAG, "***Device_Info***");
                         Log.d(TAG, "ScreenWidth: " + screenSize.x);
                         Log.d(TAG, "ScreenHeight: " + screenSize.y);
                         Log.d(TAG, "LoginProvider: " + loginProvider);
+                        Log.d(TAG, "UserCreated: " + userCreated);
+                        Log.d(TAG, "UserLastUpdated: " + userLastUpdated);
                         Log.d(TAG, "UserName: " + userName);
                         Log.d(TAG, "UserId: " + userId);
                         Log.d(TAG, "UserEmail: " + userEmail);
                         Log.d(TAG, "UserEmailVerified: " + userEmailVerified);
                         Log.d(TAG, "UserImageIs: " + userImageIs);
+                        Log.d(TAG, "UserColor: " + userColor);
                         Log.d(TAG, "---------------------------------");
                     } else {
                         Log.w(TAG, "ERROR: Document Not Found");
@@ -130,6 +145,12 @@ public class DeviceInfo {
         final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
 
         return userData.getLong("UserImageUpdateTime", 0);
+    }
+
+    public String getUserColor(Context context){
+        final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
+
+        return userData.getString("UserColor", "Yuuna");
     }
 
     public float getScreenWidth(Context context){

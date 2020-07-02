@@ -9,10 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,9 +57,12 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         //コンテキスト
         Context context = getApplicationContext();
 
-        //DeviceInfoから画面情報を取得
-        DeviceInfo userInfo = new DeviceInfo();
-        screenHeight = userInfo.getScreenHeight(context);
+        //画面情報を取得
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display disp = wm.getDefaultDisplay();
+        final Point screenSize = new Point();
+        disp.getSize(screenSize);
+        screenHeight = screenSize.y;
 
         //半透明背景
         image_Overlay = findViewById(R.id.menu_imageView_background);

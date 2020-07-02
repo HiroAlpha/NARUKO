@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -45,6 +46,7 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
     private String userEmail;
     private boolean userEmailVerified = false;
 
+    private AppBarLayout topbar;
     private TextView title_UserImage;
     private CircleImageView image_UserImage;
 
@@ -77,6 +79,7 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
         userEmailVerified = userInfo.getUserEmailVerified(context);
         boolean userImageIs = userInfo.getUserImageIs(context);
         long userImageUpdateTime = userInfo.getUserImageUpdateTime(context);
+        String userColor = userInfo.getUserColor(context);
         Log.d(TAG, "*** User_Info ***");
         Log.d(TAG, "UserName: " + userName);
         Log.d(TAG, "UserId: " + userId);
@@ -84,7 +87,13 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
         Log.d(TAG, "UserEmailVerified: " + userEmailVerified);
         Log.d(TAG, "UserImageIs: " + userImageIs);
         Log.d(TAG, "UserImageUpdateTime: " + userImageUpdateTime);
+        Log.d(TAG, "UserColor: " + userColor);
         Log.d(TAG, "---------------------------------");
+
+        //背景アップバー
+        topbar = (AppBarLayout) findViewById(R.id.profile_appBar_topBar);
+        //背景色
+        topbar.setBackgroundResource(getResources().getIdentifier("color"+userColor, "color", getPackageName()));
 
         //ユーザー名表示スペース
         title_UserImage = (TextView)findViewById(R.id.profile_textView_userName);
@@ -92,6 +101,8 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
 
         //ユーザー画像表示スペース
         image_UserImage = (CircleImageView) findViewById(R.id.profile_imageView_userIcon);
+        //枠線色
+        image_UserImage.setBorderColor(getResources().getColor(getResources().getIdentifier("color"+userColor+"Light", "color", getPackageName())));
         if (userImageIs){   //ユーザー画像がある場合
             //ユーザー画像パス作成
             String userImage = "Images/UserImages/" + userId + ".jpg";
@@ -113,6 +124,11 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
         settingRecyclerView();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     //アクションバーメニューを読み込み
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,7 +144,11 @@ public class ActivitySettingUserProfile extends AppCompatActivity {
         switch (item.getItemId()){
             //戻るボタン
             case android.R.id.home:
-                //アクティビティを終了して戻る
+                //ユーザー情報編集アクティビティに移行
+                Intent settingList = new Intent(ActivitySettingUserProfile.this, ActivitySettingList.class);
+                settingList.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(settingList);
+
                 finish();
                 return true;
 

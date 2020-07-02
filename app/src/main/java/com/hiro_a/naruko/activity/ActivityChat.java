@@ -90,6 +90,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     private String userName_original;
     private String userId_original;
     private Boolean userImageIs_original;
+    private String  userColor_original;
     private int lastSpokeIconNum;
     private boolean chatTextShown = false;
     private boolean menuShown = true;
@@ -130,6 +131,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
         userId_original = userInfo.getUserId(context);
         userName_original = userInfo.getUserName(context);
         userImageIs_original = userInfo.getUserImageIs(context);
+        userColor_original = userInfo.getUserColor(context);
         Log.d(TAG, "*** User_Info ***");
         Log.d(TAG, "UserName: " + userName_original);
         Log.d(TAG, "UserId: " + userId_original);
@@ -268,12 +270,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
         //送信内容
         Map<String, Object> message = new HashMap<>();
-        message.put("datetime", time);
-        message.put("globalIP", globalIP);
-        message.put("userName", userName_original);
-        message.put("userId", userId_original);
-        message.put("userImageIs", userImageIs_original);
-        message.put("message", text);
+        message.put("Datetime", time);
+        message.put("GlobalIP", globalIP);
+        message.put("UserName", userName_original);
+        message.put("UserId", userId_original);
+        message.put("UserImageIs", userImageIs_original);
+        message.put("UserColor", userColor_original);
+        message.put("Message", text);
 
         //Firestoreに送信
         messageRef.add(message).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -287,12 +290,6 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             public void onFailure(@NonNull Exception e) {
                 Log.w(TAG, "ERROR: Adding Document Failed", e);
                 Log.w(TAG, "---------------------------------");
-
-                //送信失敗時ダイアログ表示
-                new AlertDialog.Builder(context)
-                        .setTitle("エラー")
-                        .setMessage("メッセージの送信に失敗しました。")
-                        .show();
             }
         });
 
@@ -303,19 +300,13 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
     //メッセージ更新
     public void updateMessage(){
         //日時でソートして表示
-        listenerRegistration = messageRef.orderBy("datetime", Query.Direction.DESCENDING).limit(25).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        listenerRegistration = messageRef.orderBy("Datetime", Query.Direction.DESCENDING).limit(25).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
                 //更新失敗
                 if (e != null) {
                     Log.w(TAG, "ERROR: Listen Failed", e);
                     Log.w(TAG, "---------------------------------");
-
-                    //更新失敗時ダイアログ表示
-                    new AlertDialog.Builder(context)
-                            .setTitle("エラー")
-                            .setMessage("メッセージの更新に失敗しました。")
-                            .show();
 
                     //更新終了
                     return;
@@ -330,19 +321,19 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                         //メッセージ追加時
                         case ADDED:
                             //送信日時取得
-                            String datetime = document.getDocument().getString("datetime");
+                            String datetime = document.getDocument().getString("Datetime");
 
                             //グローバルIP取得
-                            String globalIP = document.getDocument().getString("globalIP");
+                            String globalIP = document.getDocument().getString("GlobalIP");
 
                             //ユーザー名取得
-                            String userName = document.getDocument().getString("userName");
+                            String userName = document.getDocument().getString("UserName");
 
                             //ユーザーID取得
-                            String userId = document.getDocument().getString("userId");
+                            String userId = document.getDocument().getString("UserId");
 
                             //ユーザー画像の有無取得
-                            Boolean userImageIs = document.getDocument().getBoolean("userImageIs");
+                            Boolean userImageIs = document.getDocument().getBoolean("UserImageIs");
 
                             //ユーザー画像が存在する場合画像パス生成
                             String userImage = "Default_Image";
@@ -350,8 +341,11 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                                 userImage = "Images/UserImages/" + userId + ".png";
                             }
 
+                            //ユーザーカラー取得
+                            String color = document.getDocument().getString("UserColor");
+
                             //メッセージ取得
-                            String text = document.getDocument().getString("message");
+                            String text = document.getDocument().getString("Message");
 
                             //メッセージが空でない場合
                             if (!TextUtils.isEmpty(text)) {
@@ -362,6 +356,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
                                 messageData.setUserName(userName);
                                 messageData.setUserId(userId);
                                 messageData.setUserImage(userImage);
+                                messageData.setUserColor(color);
                                 messageData.setMessage(text);
 
                                 //配列に追加
@@ -418,6 +413,7 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             String userName = messageData.getUserName();
             String userId = messageData.getUserId();
             String userImage = messageData.getUserImage();
+            String userColor = messageData.getUserColor();
             String text = messageData.getMessage();
 
             Log.d(TAG, "*** Message_Info ***");
@@ -426,24 +422,24 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
             Log.d(TAG, "UserName: "+userName);
             Log.d(TAG, "UserId: "+userId);
             Log.d(TAG, "UserImage: "+userImage);
+            Log.d(TAG, "UserColor: "+userColor);
             Log.d(TAG, "Message: "+text);
             Log.d(TAG, "---------------------------------");
 
             //メッセージを表示
-            (narukoView_newMessage).getMessage(text);
+            (narukoView_newMessage).getMessage(context, text, userColor);
             viewRotate();
 
             //古いメッセージ欄を更新
-            narukoView_oldMessage.getMessage(text);
+            narukoView_oldMessage.getMessage(context, text, userColor);
 
             //送信者のアイコンがまだ表示されていない場合アイコンを表示
-
             if (!userIdArray.contains(userId)){
                 //ユーザーをuserIdArrayに追加
                 userIdArray.add(userId);
 
                 //ユーザーアイコンを表示
-                narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), userName, userImage);
+                narukoUserIconPopoutView.addUserIcon(screenSize, (RelativeLayout) findViewById(R.id.naruko_layout_userIcon), userName, userImage, userColor);
             }
 
             //最終発言者の配列番号を記録
@@ -539,8 +535,8 @@ public class ActivityChat extends AppCompatActivity implements View.OnClickListe
 
     //------以下アニメーション------
 
-        //メッセージ欄アニメーション
-        private void viewRotate(){
+    //メッセージ欄アニメーション
+    private void viewRotate(){
         //文字列回転アニメーション
         Animation rotate = AnimationUtils.loadAnimation(this, R.anim.view_rotation);    //アニメーションはR.anim.view_rotationから
         narukoView_newMessage.startAnimation(rotate);

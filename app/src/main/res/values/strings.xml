@@ -22,6 +22,7 @@
     <string name="item_image" translatable="false">item_image</string>
     <string name="center_image" translatable="false">center_image</string>
     <string name="edit_image" translatable="false">change_image</string>
+    <string name="color_image" translatable="false">color_image</string>
 
     <!--    サンプルテキスト-->
     <string name="sample_text" translatable="true">サンプルテキスト</string>

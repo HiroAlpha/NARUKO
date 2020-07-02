@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class ActivityRegister extends AppCompatActivity implements View.OnClickListener{
     private String TAG = "NARUKO_DEBUG @ ActivityRegister";
@@ -198,12 +199,32 @@ public class ActivityRegister extends AppCompatActivity implements View.OnClickL
         SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
         String userCreated = SD.format(new Date());
 
+        //ユーザーカラー
+        String[] color = {
+                "Yuuna",
+                "Tougou",
+                "Huu",
+                "Itsuki",
+                "Karin"
+        };
+        Random random = new Random();
+        String userColor = color[random.nextInt(5)];
+
         //登録情報
         Map<String, Object> newUser = new HashMap<>();
         newUser.put("UserCreated", userCreated);
         newUser.put("UserId", userId);
         newUser.put("UserName", username);
         newUser.put("UserImageIs", false);
+        newUser.put("UserColor", userColor);
+
+        Log.d(TAG, "*** User_Info @ Create ***");
+        Log.d(TAG, "UserCreated: " + userCreated);
+        Log.d(TAG, "UserId: " + userId);
+        Log.d(TAG, "UserName: " + username);
+        Log.d(TAG, "UserImageIs: " + false);
+        Log.d(TAG, "UserColor: " + userColor);
+        Log.d(TAG, "---------------------------------");
 
         //Firestoreに情報を送信
         userRef.document(userId).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {

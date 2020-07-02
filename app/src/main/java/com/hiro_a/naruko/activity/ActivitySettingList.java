@@ -2,11 +2,13 @@ package com.hiro_a.naruko.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,6 +46,19 @@ public class ActivitySettingList extends AppCompatActivity {
         });
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+    }
+
+    //メニュークリック時
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            //戻るボタン
+            case android.R.id.home:
+                Intent menu = new Intent(ActivitySettingList.this, ActivityMenu.class);
+                startActivity(menu);
+                break;
+        }
+        return true;
     }
 
     private void startSettings(String item){

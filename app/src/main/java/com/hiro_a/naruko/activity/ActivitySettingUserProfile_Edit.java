@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -49,8 +50,12 @@ import com.isseiaoki.simplecropview.callback.CropCallback;
 import com.isseiaoki.simplecropview.callback.LoadCallback;
 import com.isseiaoki.simplecropview.callback.SaveCallback;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,12 +63,15 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
     private String TAG = "NARUKO_DEBUG @ ActivitySettingUserProfile_edit";
     private Context context;
 
-    String userId;
-    String userName;
-    private boolean userNameChanged = false;
+    private String userId;
+    private String userName_original;
+    private String userName_new;
+    private String userColor_original;
+    private String userColor_new;
     private boolean imageChanged = false;
     private Uri imageDirectryUri;
 
+    FrameLayout frameLayout_userColor;
     CircleImageView imageView_userImage;
     EditText editText_userName;
     private PopupWindow cropImagePopup;
@@ -98,18 +106,32 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
         //DeviceInfoからユーザー情報を取得
         DeviceInfo userInfo = new DeviceInfo();
         userId = userInfo.getUserId(context);
-        userName = userInfo.getUserName(context);
+        userName_original = userInfo.getUserName(context);
         boolean userImageIs = userInfo.getUserImageIs(context);
         long userImageUpdateTime = userInfo.getUserImageUpdateTime(context);
+        userColor_original = userInfo.getUserColor(context);
+        userColor_new = userColor_original;
         Log.d(TAG, "*** User_Info ***");
-        Log.d(TAG, "UserName: " + userName);
+        Log.d(TAG, "UserName: " + userName_original);
         Log.d(TAG, "UserId: " + userId);
         Log.d(TAG, "UserImageIs: " + userImageIs);
         Log.d(TAG, "UserImageUpdateTime: " + userImageUpdateTime);
+        Log.d(TAG, "UserColor: " + userColor_original);
         Log.d(TAG, "---------------------------------");
+
+        //ユーザーカラー表示スペース
+        frameLayout_userColor = findViewById(R.id.profileEdit_layout_color);
+        //背景色
+        frameLayout_userColor.setBackgroundResource(getResources().getIdentifier("color"+userColor_original, "color", getPackageName()));
+
+        //ユーザーカラー変更ボタン
+        ImageView imageView_editColor = findViewById(R.id.profileEdit_imageView_editColor);
+        imageView_editColor.setOnClickListener(this);
 
         //ユーザー画像表示スペース
         imageView_userImage = findViewById(R.id.profileEdit_imageView_userImage);
+        //枠線色
+        imageView_userImage.setBorderColor(getResources().getColor(getResources().getIdentifier("color"+userColor_original+"Light", "color", getPackageName())));
         if (userImageIs){   //ユーザー画像がある場合
             //ユーザー画像パス作成
             String userImage = "Images/UserImages/" + userId + ".jpg";
@@ -134,7 +156,7 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
 
         //ユーザー名変更スペース
         editText_userName = findViewById(R.id.profileEdit_editText_userName);
-        editText_userName.setText(userName);
+        editText_userName.setText(userName_original);
 
         //*** Firebase ***
         //Firestore
@@ -182,6 +204,27 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            //ユーザーカラー変更ボタン
+            case R.id.profileEdit_imageView_editColor:
+                //ユーザーカラー
+                String[] color = {
+                        "Yuuna",
+                        "Tougou",
+                        "Huu",
+                        "Itsuki",
+                        "Karin"
+                };
+                //ランダムな色に変更
+                Random random = new Random();
+                userColor_new = color[random.nextInt(5)];
+
+                //背景色変更
+                frameLayout_userColor.setBackgroundResource(getResources().getIdentifier("color"+userColor_new, "color", getPackageName()));
+                //枠線色変更
+                imageView_userImage.setBorderColor(getResources().getColor(getResources().getIdentifier("color"+userColor_new+"Light", "color", getPackageName())));
+
+                break;
+
             //ユーザー画像変更ボタン
             case R.id.profileEdit_imageView_editImage:
                 //ストレージアクセスフレームワーク
@@ -251,29 +294,48 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
         //送信内容
         final Map<String, Object> userInfo = new HashMap<>();
 
+        //更新日時
+        SimpleDateFormat SD = new SimpleDateFormat("yyyyMMddkkmmssSSS", Locale.JAPAN);
+        String userLastUpdated = SD.format(new Date());
+        editor.putString("UserLastUpdated", userLastUpdated);
+        userInfo.put("UserLastUpdated", userLastUpdated);
+
         //ユーザー画像が変更されていた場合
         if (imageChanged){
             //sharedPrefarencesの変更項目にユーザー画像の有無を追加
             editor.putBoolean("UserImageIs", true);
 
             //送信内容にユーザー画像の有無を追加
-            userInfo.put("userImageIs", true);
+            userInfo.put("UserImageIs", true);
+
+            Log.d(TAG, "UserImage Changed");
         }
 
         //ユーザー名が変更されていた場合
-        if (!userName.equals(editText_userName.getText().toString())){
+        userName_new = editText_userName.getText().toString();
+        if (!userName_original.equals(userName_new)){
             //sharedPrefarencesの変更項目にユーザー名を追加
-            editor.putString("UserName", editText_userName.getText().toString());
+            editor.putString("UserName", userName_new);
 
             //送信内容にユーザー名を追加
-            userInfo.put("userName", editText_userName.getText().toString());
+            userInfo.put("UserName", userName_new);
 
-            //ユーザー名変更をtrueに
-            userNameChanged = true;
+            Log.d(TAG, "UserName Changed");
         }
 
-        //どちらかが変更されていた場合
-        if (userNameChanged || imageChanged){
+        //ユーザーカラーが変更されていた場合
+        if (!userColor_original.equals(userColor_new)){
+            //sharedPrefarencesの変更項目にユーザー名を追加
+            editor.putString("UserColor", userColor_new);
+
+            //送信内容にユーザー名を追加
+            userInfo.put("UserColor", userColor_new);
+
+            Log.d(TAG, "UserColor Changed");
+        }
+
+        //どれかが変更されていた場合
+        if (!userColor_original.equals(userColor_new) || !userName_original.equals(userName_new) || imageChanged){
             //Firestoreに送信
             userRef.set(userInfo, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
@@ -301,7 +363,6 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
                                         editor.apply();
 
                                         imageChanged = false;
-                                        userNameChanged = false;
 
                                         //更新完了トースト
                                         Toast.makeText(context, "更新完了", Toast.LENGTH_SHORT).show();
@@ -340,6 +401,14 @@ public class ActivitySettingUserProfile_Edit extends AppCompatActivity implement
                         });
 
                         progressDialog.dismiss();
+                    } else {
+                        //sharedPrefarences更新
+                        editor.apply();
+
+                        //ユーザー情報アクティビティに戻る
+                        Intent profile = new Intent(ActivitySettingUserProfile_Edit.this, ActivitySettingUserProfile.class);
+                        profile.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(profile);
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {

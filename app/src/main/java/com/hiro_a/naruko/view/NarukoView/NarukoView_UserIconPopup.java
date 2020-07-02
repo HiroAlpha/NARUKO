@@ -60,7 +60,7 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         count =0;
     }
 
-    public void addUserIcon(Point screenSize, RelativeLayout relativeLayout, String userName, String userImage){
+    public void addUserIcon(Point screenSize, RelativeLayout relativeLayout, String userName, String userImage, String userColor){
         Point screenCenter = new Point(screenSize.x /2, screenSize.y/2);
 
         UserIconView userIconView = new UserIconView(context);
@@ -69,7 +69,8 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         int userIconCount = userIconViewArrayList.size();
         int userIconArrayNumber = userIconCount - 1;
 
-        int color = getResources().getColor(R.color.colorYunaLight);
+        //ユーザーカラー
+        int color = getResources().getColor(getResources().getIdentifier("color"+userColor+"Light", "color", context.getPackageName()));
 
         StorageReference imageStorgeRefarence = null;
         if (!userImage.equals("Default_Image")){

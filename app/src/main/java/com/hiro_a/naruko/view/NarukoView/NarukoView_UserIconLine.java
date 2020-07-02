@@ -101,7 +101,7 @@ public class NarukoView_UserIconLine extends View {
                 count++;
             }
         }
-        radius = ((count) * (textSize)) + 400;
+        radius = (count * textSize) + 400;
 
         ConvertDp2Px convertDp2Px = new ConvertDp2Px();
         iconOffset = convertDp2Px.convert(50, getContext());

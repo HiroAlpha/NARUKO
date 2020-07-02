@@ -12,7 +12,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="192dp"
-        android:background="#D66A91"
+        android:background="@color/colorYuuna"
         android:gravity="center">
 
         <FrameLayout
@@ -35,7 +35,7 @@
             android:id="@+id/profile_layout_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="@color/colorYuna"
+            app:contentScrim="@color/colorYuuna"
 
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:toolbarId="@+id/profile_toolBar_title">
