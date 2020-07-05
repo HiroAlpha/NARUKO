@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 public class ActivitySelectLogin extends AppCompatActivity {
     private String TAG = "NARUKO_DEBUG @ ActivitySelectLogin";
@@ -238,12 +239,24 @@ public class ActivitySelectLogin extends AppCompatActivity {
         final UserImageStream asyncTask = new UserImageStream(ActivitySelectLogin.this);
         asyncTask.execute(userImageUrlString);
 
+        //ユーザーカラー
+        String[] color = {
+                "Yuuna",
+                "Tougou",
+                "Huu",
+                "Itsuki",
+                "Karin"
+        };
+        Random random = new Random();
+        String userColor = color[random.nextInt(5)];
+
         //ユーザー情報
         Map<String, Object> newUser = new HashMap<>();
         newUser.put("UserCreated", userCreated);
         newUser.put("UserName", twitterUserName);
         newUser.put("UserId", userId);
         newUser.put("UserImageIs", true);
+        newUser.put("UserColor", userColor);
 
         userRef.document(userId).set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

@@ -62,7 +62,7 @@ public class MenuFriend extends Fragment {
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         userRef = mFirebaseDatabase.collection("users");
         friendRef = mFirebaseDatabase.collection("users").document(userId);
-        getFriend(view);
+        //getFriend(view);
     }
 
     //フレンド取得（自動更新はしない）
