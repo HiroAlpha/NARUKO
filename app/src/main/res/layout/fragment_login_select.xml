@@ -4,7 +4,7 @@
     android:id="@+id/fLoginSelect_layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_vertical"
+    android:layout_marginTop="20dp"
     android:orientation="vertical">
 
     <com.hiro_a.naruko.item.SelectorItem
@@ -48,7 +48,7 @@
 
         <TextView
             android:id="@+id/fLoginSelect_textView_policy"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textAlignment="center" />

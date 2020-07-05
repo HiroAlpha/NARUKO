@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.OAuthProvider;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -36,6 +38,8 @@ import com.hiro_a.naruko.fragment.Dialog;
 import com.hiro_a.naruko.fragment.LoginSelect;
 import com.hiro_a.naruko.task.PermissionCheck;
 import com.hiro_a.naruko.task.UserImageStream;
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -88,6 +92,40 @@ public class ActivitySelectLogin extends AppCompatActivity {
         firebaseFireStore = FirebaseFirestore.getInstance();
         //ストレージレファレンス
         storageReference = FirebaseStorage.getInstance().getReference();
+
+        //アップデート情報取得
+        getInfomation();
+    }
+
+    //アップデート情報取得
+    private void getInfomation(){
+        //お知らせ情報
+        DocumentReference updateRef = firebaseFireStore.collection("infomations").document("update");
+        updateRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()){
+                        String updateInfo = document.getString("Infomation");
+
+                        Log.d(TAG, "UpdateInfo: " + updateInfo);
+                        Log.d(TAG, "---------------------------------");
+
+                        //アップデート情報テキスト
+                        TextView textView_updateInfo = findViewById(R.id.loginSelect_textView_infomation);
+                        textView_updateInfo.setText(updateInfo);
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.w(TAG, "ERROR: getting update info", e);
+                Log.d(TAG, "---------------------------------");
+            }
+        });
     }
 
     //メールアドレス・パスワードログイン

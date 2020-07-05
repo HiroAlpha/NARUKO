@@ -39,6 +39,14 @@
             android:textAlignment="center"
             android:textSize="35sp" />
 
+        <TextView
+            android:id="@+id/loginSelect_textView_infomation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/now_loading_update"
+            android:textAlignment="center" />
+
         <LinearLayout
             android:id="@+id/loginSelect_layout_fragmentContainter"
             android:layout_width="match_parent"
