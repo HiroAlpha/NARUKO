@@ -1,6 +1,5 @@
 package com.hiro_a.naruko.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,19 +26,16 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.common.DeviceInfo;
-import com.hiro_a.naruko.fragment.Dialog;
+import com.hiro_a.naruko.fragment.LoginInfo;
 import com.hiro_a.naruko.fragment.LoginSelect;
 import com.hiro_a.naruko.task.PermissionCheck;
 import com.hiro_a.naruko.task.UserImageStream;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -82,8 +78,16 @@ public class ActivitySelectLogin extends AppCompatActivity {
         transactionToSelect.setCustomAnimations(
                 R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left,
                 R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt);
-        transactionToSelect.replace(R.id.loginSelect_layout_fragmentContainter, fragmentloginSelect, "FRAG_LOGIN_SELECT");
+        transactionToSelect.replace(R.id.loginSelect_layout_fragmentContainter_login, fragmentloginSelect, "FRAG_LOGIN_SELECT");
         transactionToSelect.commit();
+
+        //アップデート情報フラグメントを表示
+        Fragment fragmentUpdateInfo = new LoginInfo();
+        FragmentTransaction transactionToInfo = fragmentManager.beginTransaction();
+        transactionToInfo.setCustomAnimations(
+                R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
+        transactionToInfo.replace(R.id.loginSelect_layout_fragmentContainter_info, fragmentUpdateInfo, "FRAG_LOGIN_INFO");
+        transactionToInfo.commit();
 
         //*** Firebase ***
         //FirebaseAuth

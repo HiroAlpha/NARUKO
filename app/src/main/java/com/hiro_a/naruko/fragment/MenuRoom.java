@@ -32,7 +32,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.activity.ActivityChat;
+import com.hiro_a.naruko.activity.ActivityNaruko;
 import com.hiro_a.naruko.common.MenuRoomData;
 import com.hiro_a.naruko.task.Hash;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
@@ -178,7 +178,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
                 if (!password.isEmpty()){
                     passAuthWindow(roomId, password);
                 } else {
-                    Intent room = new Intent(getContext(), ActivityChat.class);
+                    Intent room = new Intent(getContext(), ActivityNaruko.class);
                     room.putExtra("roomId", roomId);
                     startActivity(room);
                 }
@@ -228,7 +228,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
                 String hashed_enterdPassword = new Hash().doHash(enteredPassword);
 
                 if (hashed_enterdPassword.equals(password)){
-                    Intent room = new Intent(getContext(), ActivityChat.class);
+                    Intent room = new Intent(getContext(), ActivityNaruko.class);
                     room.putExtra("roomId", roomId);
                     startActivity(room);
 

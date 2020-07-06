@@ -20,7 +20,7 @@ public class ActivitySettingList extends AppCompatActivity {
     FirebaseAuth mFirebaseAuth;
 
     private static final String[] settings = {
-      "ユーザー設定", "チャットルーム設定", "ログアウト", "利用規約"
+      "ユーザー設定", "NARUKO設定", "ログアウト", "利用規約"
     };
 
     @Override
@@ -66,6 +66,11 @@ public class ActivitySettingList extends AppCompatActivity {
             //to Profile Setting
             Intent setting = new Intent(ActivitySettingList.this, ActivitySettingUserProfile.class);
             startActivity(setting);
+        }
+
+        if (item.equals("NARUKO設定")){
+            //NARUKOの設定へ
+            
         }
 
         if (item.equals("ログアウト")){

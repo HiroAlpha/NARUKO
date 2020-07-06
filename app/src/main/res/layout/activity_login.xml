@@ -43,17 +43,34 @@
             android:id="@+id/loginSelect_textView_infomation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="20dp"
             android:text="@string/now_loading_update"
             android:textAlignment="center" />
 
         <LinearLayout
-            android:id="@+id/loginSelect_layout_fragmentContainter"
+            android:id="@+id/loginSelect_layout_fragmentContainter_login"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
         </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/loginSelect_textView_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:text="@string/version"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <LinearLayout
+        android:id="@+id/loginSelect_layout_fragmentContainter_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
     </LinearLayout>
 
 </FrameLayout>

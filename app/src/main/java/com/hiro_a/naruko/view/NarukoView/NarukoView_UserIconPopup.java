@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -19,7 +18,7 @@ import androidx.annotation.Nullable;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.activity.ActivityChat;
+import com.hiro_a.naruko.activity.ActivityNaruko;
 import com.hiro_a.naruko.task.ConvertDp2Px;
 import com.hiro_a.naruko.view.UserIconView;
 
@@ -165,7 +164,7 @@ public class NarukoView_UserIconPopup extends View implements Animator.AnimatorL
         switch (event.getAction()) {
             // タッチダウンでdragされた
             case MotionEvent.ACTION_MOVE:
-                ActivityChat activityChat = new ActivityChat();
+                ActivityNaruko activityChat = new ActivityNaruko();
 
                 float dx = view.getX();
                 float dy = view.getY();

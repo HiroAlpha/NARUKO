@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fLoginInfo_layout_backgroud"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:alpha="1.0"
+    android:clickable="true">
+
+    <ImageView
+        android:id="@+id/fLoginInfo_imageview_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.7"
+        android:background="@color/colorYuunaLight" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fLoginInfo_layout_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/fLoginInfo_textView_info"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/allerta"
+            android:text="@string/update_infomation"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toTopOf="@+id/fLoginInfo_view_next"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.hiro_a.naruko.view.CustomButton
+            android:id="@+id/fLoginInfo_view_next"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/background_login_button"
+            android:backgroundTint="@color/colorKarin"
+            android:gravity="center_vertical"
+            android:text="@string/next"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

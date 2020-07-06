@@ -17,12 +17,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityRegister;
 import com.hiro_a.naruko.activity.ActivitySelectLogin;
@@ -50,7 +44,7 @@ public class LoginSelect extends Fragment implements View.OnClickListener {
         String makeAccountMessage = "まだアカウントをお持ちでない方はこちら。";
         SpannableString spannableAccount = createSpannableString(makeAccountMessage, "こちら");
 
-        String securityMessage = "利用規約";
+        String securityMessage = "利用規約をよく読んでご利用ください。";
         SpannableString spannableSecurity = createSpannableString(securityMessage, "利用規約");
 
         TextView makeAccountText = (TextView)view.findViewById(R.id.fLoginSelect_textView_createAccount);
@@ -86,7 +80,7 @@ public class LoginSelect extends Fragment implements View.OnClickListener {
                 transactionToEmail.setCustomAnimations(
                         R.anim.fragment_slide_in_right, R.anim.fragment_slide_out_left,
                         R.anim.fragment_slide_in_left, R.anim.fragment_slide_out_rigt);
-                transactionToEmail.replace(R.id.loginSelect_layout_fragmentContainter, fragmentEmail, "FRAG_LOGIN_EMAIL");
+                transactionToEmail.replace(R.id.loginSelect_layout_fragmentContainter_login, fragmentEmail, "FRAG_LOGIN_EMAIL");
                 transactionToEmail.addToBackStack(null);
                 transactionToEmail.commit();
 

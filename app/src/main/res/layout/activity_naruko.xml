@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:orientation="vertical"
-    tools:context=".activity.ActivityChat">
+    tools:context=".activity.ActivityNaruko">
 
     <com.hiro_a.naruko.view.BackgroundView
         android:id="@+id/naruko_view_background"

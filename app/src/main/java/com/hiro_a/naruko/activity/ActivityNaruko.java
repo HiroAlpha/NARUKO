@@ -82,7 +82,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class ActivityChat extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
+public class ActivityNaruko extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
     private String TAG = "NARUKO_DEBUG @ ActivityChat";
     private Context context;
 

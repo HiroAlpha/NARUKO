@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="version">1.0β</string>
+
+    <string name="update_infomation" translatable="true">
+        <big><b>Release 1.0β</b></big>\n
+        <b>更新情報</b>\n
+        ・ アップデート情報画面（仮）を追加\n
+        ・ ログイン画面に一行お知らせ欄を表示\n
+        \n
+        <font color="#ff0000">このアプリはベータテストの初期段階です。重大な不具合などが発生する場合があります。\n
+        不具合等はスクリーンショットとともにNARUKOプロジェクト公式メールアドレスに送信してください。\n</font>
+        \n
+        讃州中学技術部 NARUKOプロジェクト\n
+        Email: narukoapp@gmail.com\n
+    </string>
+</resources>
