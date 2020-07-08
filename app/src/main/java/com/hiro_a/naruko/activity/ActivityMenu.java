@@ -24,10 +24,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.hiro_a.naruko.R;
-import com.hiro_a.naruko.common.DeviceInfo;
 import com.hiro_a.naruko.fragment.MenuFriend;
-import com.hiro_a.naruko.fragment.MenuRoom;
+import com.hiro_a.naruko.fragment.MenuRoomFav;
 import com.hiro_a.naruko.fragment.MenuRoomAdd;
+import com.hiro_a.naruko.fragment.MenuRoomSearch;
 import com.hiro_a.naruko.item.MenuItem;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
     private boolean roomMenu_out = false;
 
     private ImageView image_Center, image_Overlay;
-    private MenuItem button_Room, button_Room_Create, button_Room_Fav;
+    private MenuItem button_Room, button_Room_Create, button_Room_Search;
     private MenuItem button_Friend, button_Friend_Search;
     private MenuItem button_setting;
 
@@ -79,15 +79,15 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
         button_Room.setOnLongClickListener(this);
         button_Room.setOnTouchListener(this);
 
+        button_Room_Search = findViewById(R.id.menu_view_room_search);
+        button_Room_Search.setVisibility(View.GONE);
+        button_Room_Search.setOnClickListener(this);
+        button_Room_Search.setOnTouchListener(this);
+
         button_Room_Create = findViewById(R.id.menu_view_room_create);
         button_Room_Create.setVisibility(View.GONE);
         button_Room_Create.setOnClickListener(this);
         button_Room_Create.setOnTouchListener(this);
-
-        button_Room_Fav = findViewById(R.id.menu_view_room_favorit);
-        button_Room_Fav.setVisibility(View.GONE);
-        button_Room_Fav.setOnClickListener(this);
-        button_Room_Fav.setOnTouchListener(this);
 
         //フレンド関連ボタン
         button_Friend = findViewById(R.id.menu_view_friend);
@@ -123,6 +123,15 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             case R.id.menu_view_room:
                 //お気に入りルーム画面に切り替え
                 fragmentChanger("FRAG_MENU_ROOM");
+
+                //収納アニメーション
+                goBackAnimation();
+                break;
+
+            //ルーム検索ボタン
+            case R.id.menu_view_room_search:
+                //ルーム検索画面に切り替え
+                fragmentChanger("FRAG_MENU_ROOM_SEARCH");
 
                 //収納アニメーション
                 goBackAnimation();
@@ -215,7 +224,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
             //ルーム関連ボタン
             case R.id.menu_view_room:
             case R.id.menu_view_room_create:
-            case R.id.menu_view_room_favorit:
+            case R.id.menu_view_room_search:
                 //色を設定
                 defaultButtonColor = Color.parseColor("#b6b8e7");
                 break;
@@ -271,7 +280,7 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
 
             //お気に入りルーム画面に切り替え
             case "FRAG_MENU_ROOM":
-                Fragment fragmentChat = new MenuRoom();
+                Fragment fragmentChat = new MenuRoomFav();
 
                 //切替アニメーション
                 FragmentTransaction transactionToChat = fragmentManager.beginTransaction();
@@ -285,6 +294,18 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 transactionToChat.commit();
 
                 recyCount++;
+                break;
+
+            //ルーム作成画面に切り替え
+            case "FRAG_MENU_ROOM_SEARCH":
+                Fragment fragmentRoomSeacrh = new MenuRoomSearch();
+
+                //切替アニメーション
+                FragmentTransaction transactionToRoomSearch = fragmentManager.beginTransaction();
+                transactionToRoomSearch.setCustomAnimations(
+                        R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
+                transactionToRoomSearch.replace(R.id.menu_layout_fragmentContainer, fragmentRoomSeacrh, "FRAG_MENU_ROOM_ADD");
+                transactionToRoomSearch.commit();
                 break;
 
             //ルーム作成画面に切り替え
@@ -582,8 +603,8 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 lastButtonEndGridY = (float) (300 * Math.sin(Math.toRadians(mainButtonDegree)) + (screenHeight / 3));
 
                 //サブボタンをリストに追加
+                viewList_subButton.add(button_Room_Search);
                 viewList_subButton.add(button_Room_Create);
-                viewList_subButton.add(button_Room_Fav);
 
                 //サブボタンを設定
                 for (int i=0;i<viewList_subButton.size();i++){
@@ -710,8 +731,8 @@ public class ActivityMenu extends AppCompatActivity implements View.OnClickListe
                 mainButtonDegree = 90f;
 
                 //サブボタンをリストに追加
+                viewList_subButton.add(button_Room_Search);
                 viewList_subButton.add(button_Room_Create);
-                viewList_subButton.add(button_Room_Fav);
 
                 //ルームサブボタン展開true/falseを逆に
                 roomMenu_out = !roomMenu_out;

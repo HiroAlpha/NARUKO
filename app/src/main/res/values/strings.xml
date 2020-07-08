@@ -23,6 +23,7 @@
     <string name="center_image" translatable="false">center_image</string>
     <string name="edit_image" translatable="false">change_image</string>
     <string name="color_image" translatable="false">color_image</string>
+    <string name="option_image" translatable="false">option_image</string>
 
     <!--    サンプルテキスト-->
     <string name="sample_text" translatable="true">サンプルテキスト</string>
@@ -44,6 +45,21 @@
     <string name="login" translatable="true">ログイン</string>
     <string name="finish" translatable="true">完了</string>
 
+    <!--    ルームメニュー-->
+    <string name="title_favRoom" translatable="true">ルーム</string>
+    <string name="notification_noRoom_hasAdded" translatable="true">チャットルームが追加されいていません</string>
+
+
+    <!--    ルーム検索-->
+    <string name="room_search_byID" translatable="true">IDで検索</string>
+    <string name="room_search" translatable="true">検索</string>
+    <string name="room_filter" translatable="true">並び替え</string>
+    <string name="room_name" translatable="true">ルーム名: </string>
+    <string name="room_created" translatable="true">作成日時: </string>
+    <string name="room_item_fav" translatable="true">NARUKO画面に追加</string>
+    <string name="room_item_copy" translatable="true">IDをコピー</string>
+    <string name="notification_noRoom" translatable="true">チャットルームが作成されていません</string>
+
     <!--    ルーム作成-->
     <string name="title_createRoom" translatable="true">ルーム作成</string>
     <string name="type_roomName" translatable="true">部屋名（全半角15文字以内）</string>
@@ -51,9 +67,6 @@
     <string name="type_roomPassword" translatable="true">パスワード（半角英数8文字以内）</string>
     <string name="createRoom" translatable="true">部屋を作成</string>
 
-    <!--    ルームメニュー-->
-    <string name="title_favRoom" translatable="true">ルーム</string>
-    <string name="notification_noRoom" translatable="true">まだチャットルームが作成されていません</string>
 
     <!--    その他-->
     <string name="next" translatable="true">次へ</string>

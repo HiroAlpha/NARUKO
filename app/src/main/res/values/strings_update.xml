@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="version">1.0β</string>
+    <string name="version">1.01β</string>
 
     <string name="update_infomation" translatable="true">
-        <big><b>Release 1.0β</b></big>\n
+        <big><b>Release 1.01β</b></big>\n
         <b>更新情報</b>\n
         ・ アップデート情報画面（仮）を追加\n
-        ・ ログイン画面に一行お知らせ欄を表示\n
+        ・ ログイン画面に一行お知らせ欄を追加\n
+        ・ メインメニューの背景を変更\n
+        ・ ルーム検索機能を追加\n
         \n
         <font color="#ff0000">このアプリはベータテストの初期段階です。重大な不具合などが発生する場合があります。\n
         不具合等はスクリーンショットとともにNARUKOプロジェクト公式メールアドレスに送信してください。\n</font>

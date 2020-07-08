@@ -8,6 +8,12 @@
     android:background="@color/colorPrimary"
     tools:context=".activity.ActivityMenu">
 
+    <com.hiro_a.naruko.view.BackgroundView
+        android:id="@+id/nmenu_view_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/image_background_primary" />
+
     <FrameLayout
         android:id="@+id/menu_layout_fragmentContainer"
         android:layout_width="match_parent"
@@ -57,20 +63,6 @@
             app:iconText="勇者部員" />
 
         <com.hiro_a.naruko.item.MenuItem
-            android:id="@+id/menu_view_room_favorit"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="-35dp"
-            android:background="@drawable/menu_main_button_background"
-            android:backgroundTint="#b6b8e7"
-            android:gravity="center"
-            android:tint="@android:color/background_light"
-            app:iconImage="@drawable/ic_star_black_24dp"
-            app:iconText="FAV" />
-
-        <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/menu_view_room_create"
             android:layout_width="70dp"
             android:layout_height="70dp"
@@ -83,6 +75,20 @@
             android:tint="@android:color/background_light"
             app:iconImage="@drawable/ic_group_add_black_24dp"
             app:iconText="ルーム作成" />
+
+        <com.hiro_a.naruko.item.MenuItem
+            android:id="@+id/menu_view_room_search"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-35dp"
+            android:background="@drawable/menu_main_button_background"
+            android:backgroundTint="#b6b8e7"
+            android:gravity="center"
+            android:tint="@android:color/background_light"
+            app:iconImage="@drawable/ic_baseline_search_24"
+            app:iconText="ルーム検索" />
 
         <com.hiro_a.naruko.item.MenuItem
             android:id="@+id/menu_view_room"

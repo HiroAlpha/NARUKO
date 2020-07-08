@@ -17,6 +17,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 public class DeviceInfo {
     String TAG = "NARUKO_DEBUG @ DeviceInfo";
 
@@ -151,6 +156,27 @@ public class DeviceInfo {
         final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
 
         return userData.getString("UserColor", "Yuuna");
+    }
+
+    public ArrayList<String> getUserFavRooms(Context context){
+        final SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
+
+        String json = userData.getString("UserFavRooms", null);
+        ArrayList<String> favRooms = new ArrayList<>();
+        if (json != null){
+            try{
+                JSONArray jsonArray = new JSONArray(json);
+                for (int i=0;i<jsonArray.length();i++){
+                    String favRoom = jsonArray.optString(i);
+                    favRooms.add(favRoom);
+                }
+
+            } catch (JSONException e){
+                e.printStackTrace();
+            }
+        }
+
+        return favRooms;
     }
 
     public float getScreenWidth(Context context){

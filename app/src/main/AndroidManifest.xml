@@ -37,7 +37,8 @@
 
         <!--    メニュー画面-->
         <activity android:name=".activity.ActivityMenu"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"/>
 
         <!--    NARUKO画面-->
         <activity android:name=".activity.ActivityNaruko"

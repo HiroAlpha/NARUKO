@@ -219,15 +219,15 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
         final String roomName = roomNameEdittext.getText().toString();
 
         Map<String, Object> newRoom = new HashMap<>();
-        newRoom.put("datetime", time);
-        newRoom.put("creatorId", userId);
-        newRoom.put("roomName", roomName);
-        newRoom.put("passwordIs", passwordIs);
-        newRoom.put("imageIs", imageIs);
+        newRoom.put("CreatedTime", time);
+        newRoom.put("CreatorId", userId);
+        newRoom.put("RoomName", roomName);
+        newRoom.put("PasswordIs", passwordIs);
+        newRoom.put("ImageIs", imageIs);
 
         if (passwordIs){
             String hashed_password = new Hash().doHash(passwordEditText.getText().toString());
-            newRoom.put("password", hashed_password);
+            newRoom.put("Password", hashed_password);
         }
 
         roomRef.add(newRoom).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
@@ -242,7 +242,7 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             //ルームメニューへ
-                            Fragment fragmentChat = new MenuRoom();
+                            Fragment fragmentChat = new MenuRoomFav();
                             FragmentTransaction transactionToChat = manager.beginTransaction();
                             transactionToChat.setCustomAnimations(
                                     R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);
@@ -261,7 +261,7 @@ public class MenuRoomAdd extends Fragment implements View.OnClickListener {
                     });
                 } else {    //画像がない場合
                     //ルームメニューへ
-                    Fragment fragmentChat = new MenuRoom();
+                    Fragment fragmentChat = new MenuRoomFav();
                     FragmentTransaction transactionToChat = manager.beginTransaction();
                     transactionToChat.setCustomAnimations(
                             R.anim.fragment_slide_in_back, R.anim.fragment_slide_out_front);

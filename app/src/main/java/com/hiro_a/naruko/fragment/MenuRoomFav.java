@@ -1,7 +1,9 @@
 package com.hiro_a.naruko.fragment;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -21,9 +23,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -33,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.hiro_a.naruko.R;
 import com.hiro_a.naruko.activity.ActivityNaruko;
+import com.hiro_a.naruko.common.DeviceInfo;
 import com.hiro_a.naruko.common.MenuRoomData;
 import com.hiro_a.naruko.task.Hash;
 import com.hiro_a.naruko.view.IconRecyclerView.IconRecyclerViewAdapter;
@@ -43,17 +49,18 @@ import java.util.List;
 
 import static android.content.Context.WINDOW_SERVICE;
 
-public class MenuRoom extends Fragment implements View.OnClickListener {
-    private String TAG = "NARUKO_DEBUG @ menuRoom.fragment";
+public class MenuRoomFav extends Fragment implements View.OnClickListener {
+    private String TAG = "NARUKO_DEBUG @ MenuRoomFav.fragment";
+    private Context context;
 
+    View mainView;
     TextView favTitle;
 
     private List<MenuRoomData> dataList;
 
     private FirebaseFirestore mFirebaseDatabase;
     private CollectionReference roomRef;
-    private DocumentReference secRef;
-    private StorageReference mStorageRefernce;
+    private StorageReference storageReference;
 
 
     @Nullable
@@ -68,15 +75,20 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        //メインビュー定義
+        this.mainView = view;
+
+        //コンテキスト
+        context = getContext();
+
         favTitle = (TextView) view.findViewById(R.id.fRoomFav_textView_title);
 
         mFirebaseDatabase = FirebaseFirestore.getInstance();
         roomRef = mFirebaseDatabase.collection("rooms");
-        secRef = mFirebaseDatabase.collection("security").document("hash");
 
-        mStorageRefernce = FirebaseStorage.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
 
-        updateRoom(view);
+        updateRoom();
     }
 
     @Override
@@ -85,41 +97,48 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
     }
 
     //ルーム取得
-    public void updateRoom(final View view){
+    public void updateRoom(){
+
         final ProgressDialog progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("チャットルーム読み込み中...");
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 
+        //SharedPreferences
+        SharedPreferences userData = context.getSharedPreferences("userdata", Context.MODE_PRIVATE);
+
+        //お気に入り取得
+        final ArrayList<String> favRooms = new DeviceInfo().getUserFavRooms(context);
+
         dataList = new ArrayList<>();
-        roomRef.orderBy("datetime", Query.Direction.ASCENDING).addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) {
-                    Log.w(TAG, "ERROR: Listening Room", e);
-                    return;
-                }
-                Log.d(TAG, "***ChatRoom_Update_Info***");
-                for (DocumentChange document : snapshots.getDocumentChanges()) {
-                    final String roomName = document.getDocument().getString("roomName");
-                    final String roomId = document.getDocument().getId();
 
-                    switch (document.getType()){
-                        case ADDED:
-                            Log.w(TAG, "Event Occurred: " + roomName + " ADDED");
-                            if (!TextUtils.isEmpty(roomName)) {
-                                boolean passwordIs = document.getDocument().getBoolean("passwordIs");
-                                boolean imageIs = document.getDocument().getBoolean("imageIs");
+        if (!favRooms.isEmpty()){
+            for (int i=0;i<favRooms.size();i++){
+                roomRef.document(favRooms.get(i)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
 
-                                StorageReference imageReference = null;
+                            if (documentSnapshot.exists()){
+                                //ルーム名
+                                String roomName = documentSnapshot.getString("RoomName");
+
+                                //ルームID
+                                String roomId = documentSnapshot.getId();
+
+                                //パスワード
+                                boolean passwordIs = documentSnapshot.getBoolean("PasswordIs");
                                 String password = "";
-
                                 if (passwordIs){
-                                    password = document.getDocument().getString("password");
+                                    password = documentSnapshot.getString("Password");
                                 }
 
+                                //画像
+                                boolean imageIs = documentSnapshot.getBoolean("ImageIs");
+                                StorageReference imageReference = null;
                                 if (imageIs){
-                                    imageReference = mStorageRefernce.child("Images/RoomImages/" + roomId + ".jpg");
+                                    imageReference = storageReference.child("Images/RoomImages/" + roomId + ".jpg");
                                 }
 
                                 MenuRoomData data = new MenuRoomData();
@@ -128,25 +147,23 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
                                 data.setPassword(password);
                                 data.setImage(imageReference);
 
+                                Log.d(TAG, roomName);
+                                Log.d(TAG, roomId);
+                                Log.d(TAG, password);
+                                Log.d(TAG, "---------------------------------");
+
                                 dataList.add(data);
+
+                                if (dataList.size() >= favRooms.size()){
+                                    dataCheck(mainView, progressDialog);
+                                }
                             }
-
-                            break;
-
-                        case REMOVED:
-                            Log.w(TAG, "Event Occurred: " + roomName + " REMOVED");
-                            break;
-
-                        case MODIFIED:
-                            Log.w(TAG, "Event Occurred: " + roomName + " MODIFIED");
-                            break;
-
+                        }
                     }
-                }
-                dataCheck(view, progressDialog);
-                Log.d(TAG, "---------------------------------");
+                });
             }
-        });
+        }
+
     }
 
     //データ有無確認
@@ -179,7 +196,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
                     passAuthWindow(roomId, password);
                 } else {
                     Intent room = new Intent(getContext(), ActivityNaruko.class);
-                    room.putExtra("roomId", roomId);
+                    room.putExtra("RoomId", roomId);
                     startActivity(room);
                 }
             }
@@ -195,17 +212,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
         progressDialog.dismiss();
     }
 
-    private void passAuthWindow(String Id, final String password){
-        final String roomId = Id;
-        //final String password = new PassDecodeTask().decode(getString(R.string.ENC_KEY), encodedPassword, "BLOWFISH");
-
-        //ウィンドウサイズ取得
-        WindowManager wm = (WindowManager)getActivity().getSystemService(WINDOW_SERVICE);
-        Display disp = wm.getDefaultDisplay();
-        Point size = new Point();
-        disp.getSize(size);
-
-        int screenHeight = size.y;
+    private void passAuthWindow(final String roomId, final String password){
 
         final PopupWindow passAuthPopup = new PopupWindow(getActivity());
         View view = getActivity().getLayoutInflater().inflate(R.layout.fragment_menu_room_fav_popup, null);
@@ -229,7 +236,7 @@ public class MenuRoom extends Fragment implements View.OnClickListener {
 
                 if (hashed_enterdPassword.equals(password)){
                     Intent room = new Intent(getContext(), ActivityNaruko.class);
-                    room.putExtra("roomId", roomId);
+                    room.putExtra("RoomId", roomId);
                     startActivity(room);
 
                     passAuthPopup.dismiss();

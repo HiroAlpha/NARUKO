@@ -149,7 +149,7 @@ public class ActivityNaruko extends AppCompatActivity implements View.OnClickLis
 
         //MenuRoomから渡されたRoomIdを取得
         Intent room = getIntent();
-        String roomId = room.getStringExtra("roomId");
+        String roomId = room.getStringExtra("RoomId");
         Log.d(TAG, "*** ChatRoom_Info ***");
         Log.d(TAG, "RoomId: " + roomId);
         Log.d(TAG, "---------------------------------");

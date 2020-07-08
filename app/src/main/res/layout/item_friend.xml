@@ -4,6 +4,7 @@
     android:id="@+id/itemFriend_layout_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="#FFFFFF"
     android:orientation="horizontal">
 
 
@@ -16,14 +17,14 @@
 
     <LinearLayout
         android:id="@+id/itemFriend_layout_detail"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/itemFriend_textView_friendName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:fontFamily="@font/allerta"
@@ -32,7 +33,7 @@
 
         <TextView
             android:id="@+id/itemFriend_textView_friendId"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:fontFamily="@font/allerta"

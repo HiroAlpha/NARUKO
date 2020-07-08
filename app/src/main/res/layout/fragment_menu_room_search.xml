@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fRoomSearch_layout_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginRight="10dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/fRoomSearch_editText_search"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/background_login_selectbutton"
+            android:backgroundTint="#ffffff"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:hint="@string/room_search_byID"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp" />
+
+        <TextView
+            android:id="@+id/fRoomSearch_textView_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/background_login_selectbutton"
+            android:backgroundTint="@color/colorHuu"
+            android:fontFamily="@font/allerta"
+            android:gravity="center"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:text="@string/room_search"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/fRoomSearch_textView_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/room_filter" />
+
+    <Spinner
+        android:id="@+id/fRoomSearch_spinner_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#FFFFFF"
+        android:spinnerMode="dialog"
+        android:textAlignment="center" />
+
+    <FrameLayout
+        android:id="@+id/fRoomSearch_layout_rooms"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fRoomSearch_recyclerView_rooms"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/fRoomSearch_textView_noRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:fontFamily="@font/allerta"
+            android:text="@string/notification_noRoom"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:visibility="gone" />
+
+    </FrameLayout>
+</LinearLayout>

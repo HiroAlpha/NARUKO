@@ -7,11 +7,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <com.hiro_a.naruko.view.BackgroundView
-        android:id="@+id/fRoomFav_view_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/image_chat_background" />
+<!--    <com.hiro_a.naruko.view.BackgroundView-->
+<!--        android:id="@+id/fRoomFav_view_background"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:src="@drawable/image_background_naruko" />-->
 
     <RelativeLayout
         android:id="@+id/fRoomFav_layout_main"
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|center_vertical"
                 android:fontFamily="@font/allerta"
-                android:text="@string/notification_noRoom"
+                android:text="@string/notification_noRoom_hasAdded"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 tools:visibility="gone" />

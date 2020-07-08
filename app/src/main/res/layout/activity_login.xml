@@ -11,7 +11,7 @@
         android:id="@+id/loginSelect_view_background"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/image_login_fromtop_background" />
+        android:src="@drawable/image_background_yuuna" />
 
     <LinearLayout
         android:id="@+id/loginSelect_layout_main"
